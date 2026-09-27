@@ -1,8 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Geist, Geist_Mono } from "next/font/google";
+import { Fraunces, Geist } from "next/font/google";
 import "./globals.css";
 import { site } from "@/lib/content";
 import { Providers } from "@/components/ui/Providers";
+import { Nav } from "@/components/ui/Nav";
+import { ScrollProgress } from "@/components/ui/ScrollProgress";
+import { SmoothAnchors } from "@/components/ui/SmoothAnchors";
+import { Footer } from "@/components/sections/Footer";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -15,13 +19,6 @@ const geist = Geist({
   subsets: ["latin"],
   variable: "--font-geist",
   display: "swap",
-});
-
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-geist-mono",
-  display: "swap",
-  preload: false, // small labels only — keep bandwidth for hero fonts
 });
 
 export const metadata: Metadata = {
@@ -68,8 +65,8 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-// Runs before paint: apply the stored theme (dark by default) so there is no flash.
-const themeScript = `(function(){try{var t=localStorage.getItem('theme');document.documentElement.dataset.theme=(t==='light'||t==='dark')?t:'dark';}catch(e){document.documentElement.dataset.theme='dark';}})();`;
+// Runs before first paint: stored choice → OS preference → dark. Prevents any theme flash.
+const themeScript = `(function(){var d=document.documentElement,t;try{t=localStorage.getItem('theme')}catch(e){}if(t!=='light'&&t!=='dark'){t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'}d.dataset.theme=t})();`;
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -90,7 +87,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       data-theme="dark"
       suppressHydrationWarning
-      className={`${fraunces.variable} ${geist.variable} ${geistMono.variable}`}
+      className={`${fraunces.variable} ${geist.variable}`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
@@ -99,14 +96,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="grain">
+      <body>
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-accent focus:px-4 focus:py-2 focus:text-accent-ink"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-accent focus:px-4 focus:py-2 focus:text-on-accent"
         >
           Skip to content
         </a>
-        <Providers>{children}</Providers>
+        <Providers>
+          <ScrollProgress />
+          <Nav />
+          {children}
+          <Footer />
+          <SmoothAnchors />
+        </Providers>
       </body>
     </html>
   );

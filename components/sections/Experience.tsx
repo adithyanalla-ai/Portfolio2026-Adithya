@@ -31,8 +31,8 @@ export function Experience() {
 
             <div className="md:col-span-9">
               <Reveal>
-                <h3 className="font-display text-display-md">{role.title}</h3>
-                <p className="mt-2 text-lg text-bone-soft">{role.company}</p>
+                <h3 className="font-display text-h3">{role.title}</h3>
+                <p className="mt-2 text-lg text-secondary">{role.company}</p>
               </Reveal>
 
               {role.path ? (
@@ -46,8 +46,8 @@ export function Experience() {
                           <span
                             className={`rounded-full border px-3.5 py-1.5 text-sm ${
                               last
-                                ? "border-accent bg-accent-soft text-bone"
-                                : "border-line text-bone-soft"
+                                ? "border-accent bg-accent-soft text-primary"
+                                : "border-line text-secondary"
                             }`}
                           >
                             {step.title}
@@ -65,7 +65,7 @@ export function Experience() {
 
               <RevealGroup as="ul" className="mt-10 grid gap-x-10 gap-y-5 lg:grid-cols-2">
                 {role.highlights.map((h, i) => (
-                  <RevealItem as="li" key={h} className="flex gap-4 text-bone-soft">
+                  <RevealItem as="li" key={h} className="flex gap-4 text-secondary">
                     <span className="label pt-1 text-accent">{String(i + 1).padStart(2, "0")}</span>
                     <span className="text-pretty leading-relaxed">{h}</span>
                   </RevealItem>

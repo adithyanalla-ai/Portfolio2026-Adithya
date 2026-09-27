@@ -53,8 +53,8 @@ export function SkillExplorer({ groups }: { groups: SkillGroup[] }) {
               onClick={() => setActive(i)}
               className={`group flex shrink-0 items-baseline gap-4 whitespace-nowrap rounded-full border px-4 py-2 text-left transition-colors duration-300 md:whitespace-normal md:rounded-none md:border-0 md:border-b md:border-line md:px-0 md:py-5 ${
                 selected
-                  ? "border-accent text-bone"
-                  : "border-line text-muted hover:text-bone"
+                  ? "border-accent text-primary"
+                  : "border-line text-muted hover:text-primary"
               }`}
             >
               <span className={`label hidden md:inline ${selected ? "text-accent" : ""}`}>
@@ -84,7 +84,7 @@ export function SkillExplorer({ groups }: { groups: SkillGroup[] }) {
             className="rounded-2xl border border-line p-6 sm:p-10"
           >
             <p className="label">{group.label}</p>
-            <p className="mt-3 font-display text-2xl text-bone text-balance">{group.blurb}</p>
+            <p className="mt-3 font-display text-2xl text-primary text-balance">{group.blurb}</p>
             <m.ul
               className="mt-8"
               initial="hidden"

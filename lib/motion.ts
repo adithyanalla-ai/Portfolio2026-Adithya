@@ -10,7 +10,7 @@ export const spring = {
   heavy: { type: "spring", stiffness: 80, damping: 18, mass: 1.2 } as Transition,
 };
 
-export const stagger = 0.06;
+export const stagger = 0.07;
 
 export const fadeUp: Variants = {
   hidden: { opacity: 0, y: 24 },

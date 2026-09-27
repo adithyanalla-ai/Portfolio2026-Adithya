@@ -26,13 +26,13 @@ export function Publications() {
             key={pub.title}
             className="group grid grid-cols-[3rem_1fr] gap-x-4 border-b border-line py-10 sm:grid-cols-[4rem_1fr]"
           >
-            <span className="font-mono text-sm text-accent">[{i + 1}]</span>
+            <span className="text-sm font-medium tabular-nums text-accent">[{i + 1}]</span>
             <article>
               <p className="label mb-4">{pub.kind}</p>
               <h3 className="font-display text-2xl leading-snug text-balance sm:text-3xl">
                 “{pub.title}.”
               </h3>
-              <p className="mt-4 text-bone-soft">
+              <p className="mt-4 text-secondary">
                 <cite className="italic">{pub.venue}</cite>
                 <span className="text-muted">
                   {" · "}
@@ -45,7 +45,7 @@ export function Publications() {
                   href={pub.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="label mt-6 inline-flex items-center gap-2 text-bone-soft hover:text-accent"
+                  className="label mt-6 inline-flex items-center gap-2 text-secondary hover:text-accent"
                 >
                   <span className="link-draw">View source</span>
                   <Arrow />

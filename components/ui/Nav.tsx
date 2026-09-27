@@ -1,17 +1,22 @@
 "use client";
 
-import { AnimatePresence, m } from "framer-motion";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { nav, site } from "@/lib/content";
+import { nav, navHref, site, type NavItem } from "@/lib/content";
 import { container, fadeUp, spring } from "@/lib/motion";
 import { ThemeToggle } from "./ThemeToggle";
 
-function useActiveSection(ids: readonly string[]) {
+const sectionIds = nav.filter((n) => !n.href).map((n) => n.id);
+
+/** Active section via IntersectionObserver: a thin band across the middle of the viewport decides. */
+function useActiveSection(ids: readonly string[], enabled: boolean) {
   const [active, setActive] = useState<string>("");
   useEffect(() => {
+    if (!enabled) return;
     const els = ids.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
     if (!els.length) return;
-    // A thin band across the middle of the viewport decides which section is "current".
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
@@ -22,17 +27,53 @@ function useActiveSection(ids: readonly string[]) {
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, [ids]);
-  return active;
+  }, [ids, enabled]);
+  return enabled ? active : "";
 }
 
-const ids = nav.map((n) => n.id);
+/** Same-page hash links stay plain <a> (spring-scrolled by SmoothAnchors); everything else routes via next/link. */
+function NavLink({
+  item,
+  onHome,
+  className,
+  onClick,
+  children,
+  current,
+}: {
+  item: NavItem;
+  onHome: boolean;
+  className: string;
+  onClick?: () => void;
+  children: React.ReactNode;
+  current: boolean;
+}) {
+  const href = navHref(item, onHome);
+  const aria = current ? (item.href ? "page" : "location") : undefined;
+  if (href.startsWith("#")) {
+    return (
+      <a href={href} className={className} onClick={onClick} aria-current={aria}>
+        {children}
+      </a>
+    );
+  }
+  return (
+    <Link href={href} className={className} onClick={onClick} aria-current={aria}>
+      {children}
+    </Link>
+  );
+}
 
 export function Nav() {
-  const active = useActiveSection(ids);
+  const pathname = usePathname();
+  const onHome = pathname === "/";
+  const activeSection = useActiveSection(sectionIds, onHome);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
+  const reduce = useReducedMotion();
+
+  const isCurrent = (item: NavItem) =>
+    item.href ? pathname.startsWith(item.href) : item.id === activeSection;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -58,47 +99,46 @@ export function Nav() {
     };
   }, [open]);
 
+  const close = () => setOpen(false);
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-500 ${
-        scrolled && !open
-          ? "border-b border-line bg-ink/75 backdrop-blur-md"
-          : "border-b border-transparent"
+        scrolled && !open ? "border-b border-line bg-surface/80 backdrop-blur-md" : "border-b border-transparent"
       }`}
     >
       <nav aria-label="Primary" className="container-x flex h-[var(--nav-h)] items-center justify-between">
-        <a
-          href="#top"
-          className="group flex items-baseline gap-2"
-          onClick={() => setOpen(false)}
-        >
-          <span aria-hidden className="font-display text-xl italic">AR</span>
-          <span aria-hidden className="label hidden transition-colors group-hover:text-bone sm:inline">
-            {site.name}
-          </span>
-          <span className="sr-only">{site.name}, back to top</span>
-        </a>
+        {onHome ? (
+          <a href="#top" className="group flex items-baseline gap-2" onClick={close}>
+            <Logo />
+          </a>
+        ) : (
+          <Link href="/" className="group flex items-baseline gap-2" onClick={close}>
+            <Logo />
+          </Link>
+        )}
 
         <ul className="hidden items-center gap-1 md:flex">
           {nav.map((item) => {
-            const isActive = active === item.id;
+            const current = isCurrent(item);
             return (
               <li key={item.id}>
-                <a
-                  href={`#${item.id}`}
-                  aria-current={isActive ? "location" : undefined}
+                <NavLink
+                  item={item}
+                  onHome={onHome}
+                  current={current}
                   className={`relative flex items-center gap-2 rounded-full px-3 py-2 text-sm transition-colors duration-300 ${
-                    isActive ? "text-bone" : "text-muted hover:text-bone"
+                    current ? "text-primary" : "text-muted hover:text-primary"
                   }`}
                 >
                   <span
                     aria-hidden
                     className={`size-1 rounded-full bg-accent transition-all duration-500 ease-[var(--ease-spring)] ${
-                      isActive ? "scale-100 opacity-100" : "scale-0 opacity-0"
+                      current ? "scale-100 opacity-100" : "scale-0 opacity-0"
                     }`}
                   />
                   {item.label}
-                </a>
+                </NavLink>
               </li>
             );
           })}
@@ -109,7 +149,7 @@ export function Nav() {
           <button
             ref={menuButton}
             type="button"
-            className="grid size-10 place-items-center rounded-full md:hidden"
+            className="grid size-10 place-items-center rounded-full transition-colors hover:bg-accent-soft md:hidden"
             aria-expanded={open}
             aria-controls="mobile-menu"
             aria-label={open ? "Close menu" : "Open menu"}
@@ -117,12 +157,12 @@ export function Nav() {
           >
             <span className="relative block h-3 w-5" aria-hidden>
               <m.span
-                className="absolute left-0 top-0 h-px w-5 bg-bone"
+                className="absolute left-0 top-0 h-px w-5 bg-primary"
                 animate={open ? { y: 6, rotate: 45 } : { y: 0, rotate: 0 }}
                 transition={spring.snappy}
               />
               <m.span
-                className="absolute bottom-0 left-0 h-px w-5 bg-bone"
+                className="absolute bottom-0 left-0 h-px w-5 bg-primary"
                 animate={open ? { y: -5, rotate: -45 } : { y: 0, rotate: 0 }}
                 transition={spring.snappy}
               />
@@ -136,28 +176,25 @@ export function Nav() {
           <m.div
             id="mobile-menu"
             key="menu"
-            className="fixed inset-0 top-[var(--nav-h)] z-40 flex flex-col justify-between bg-ink px-[var(--gutter)] pb-10 pt-8 md:hidden"
+            className="fixed inset-0 top-[var(--nav-h)] z-40 flex flex-col justify-between bg-surface px-[var(--gutter)] pb-10 pt-8 md:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
           >
-            <m.ul
-              className="flex flex-col gap-2"
-              initial="hidden"
-              animate="visible"
-              variants={container(0.05, 0.05)}
-            >
-              {nav.map((item, i) => (
+            <m.ul className="flex flex-col" initial="hidden" animate="visible" variants={reduce ? container(0, 0) : container(0.05, 0.05)}>
+              {nav.map((item) => (
                 <m.li key={item.id} variants={fadeUp}>
-                  <a
-                    href={`#${item.id}`}
-                    onClick={() => setOpen(false)}
-                    className="flex items-baseline gap-4 border-b border-line py-3"
+                  <NavLink
+                    item={item}
+                    onHome={onHome}
+                    current={isCurrent(item)}
+                    onClick={close}
+                    className="flex items-baseline justify-between border-b border-line py-4"
                   >
-                    <span className="label text-accent">0{i + 1}</span>
-                    <span className="font-display text-4xl">{item.label}</span>
-                  </a>
+                    <span className="font-display text-h3">{item.label}</span>
+                    {isCurrent(item) ? <span aria-hidden className="size-1.5 rounded-full bg-accent" /> : null}
+                  </NavLink>
                 </m.li>
               ))}
             </m.ul>
@@ -166,5 +203,19 @@ export function Nav() {
         ) : null}
       </AnimatePresence>
     </header>
+  );
+}
+
+function Logo() {
+  return (
+    <>
+      <span aria-hidden className="font-display text-xl italic">
+        AR
+      </span>
+      <span aria-hidden className="label hidden transition-colors group-hover:text-primary sm:inline">
+        {site.name}
+      </span>
+      <span className="sr-only">{site.name}, home</span>
+    </>
   );
 }

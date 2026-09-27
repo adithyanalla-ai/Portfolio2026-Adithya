@@ -1,6 +1,6 @@
 "use client";
 
-import { m } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 import type { Variants } from "framer-motion";
 import { container, fadeUp, spring } from "@/lib/motion";
 
@@ -46,13 +46,15 @@ export function RevealGroup({
   amount = 0.15,
 }: RevealProps & { stagger?: number }) {
   const Component = m[as];
+  // Reduced motion: children fade together — no staggered choreography.
+  const reduce = useReducedMotion();
   return (
     <Component
       className={className}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount }}
-      variants={container(delay, stagger)}
+      variants={reduce ? container(0, 0) : container(delay, stagger)}
     >
       {children}
     </Component>

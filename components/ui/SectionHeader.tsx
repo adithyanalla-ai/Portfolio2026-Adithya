@@ -20,10 +20,10 @@ export function SectionHeader({ index, label, title, id, aside }: Props) {
         </p>
       </Reveal>
       <Reveal className="md:col-span-9" delay={0.05}>
-        <h2 id={id} className="font-display text-display-lg text-balance">
+        <h2 id={id} className="font-display text-h2">
           {title}
         </h2>
-        {aside ? <div className="mt-6 max-w-2xl text-lg text-bone-soft text-pretty">{aside}</div> : null}
+        {aside ? <div className="mt-6 max-w-2xl text-lg text-secondary text-pretty">{aside}</div> : null}
       </Reveal>
     </header>
   );

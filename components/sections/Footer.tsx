@@ -1,7 +1,12 @@
-import { nav, site } from "@/lib/content";
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { nav, navHref, site } from "@/lib/content";
 import { Arrow } from "@/components/ui/Arrow";
 
 export function Footer() {
+  const onHome = usePathname() === "/";
   return (
     <footer className="border-t border-line">
       <div className="container-x flex flex-col gap-6 py-8 text-sm text-muted md:flex-row md:items-center md:justify-between">
@@ -10,15 +15,24 @@ export function Footer() {
         </p>
         <nav aria-label="Footer">
           <ul className="flex flex-wrap gap-x-5 gap-y-2">
-            {nav.map((n) => (
-              <li key={n.id}>
-                <a href={`#${n.id}`} className="link-draw hover:text-bone">
-                  {n.label}
-                </a>
-              </li>
-            ))}
+            {nav.map((n) => {
+              const href = navHref(n, onHome);
+              return (
+                <li key={n.id}>
+                  {href.startsWith("#") ? (
+                    <a href={href} className="link-draw hover:text-primary">
+                      {n.label}
+                    </a>
+                  ) : (
+                    <Link href={href} className="link-draw hover:text-primary">
+                      {n.label}
+                    </Link>
+                  )}
+                </li>
+              );
+            })}
             <li>
-              <a href="#top" className="group inline-flex items-center gap-1 hover:text-bone">
+              <a href={onHome ? "#top" : "#main"} className="group inline-flex items-center gap-1 hover:text-primary">
                 <span className="link-draw">Back to top</span>
                 <Arrow className="-rotate-45" />
               </a>

@@ -4,8 +4,8 @@ import { useEffect, useRef } from "react";
 
 /**
  * "Neural field" — a quiet grid of points drifting on a cheap sine flow.
- * Points near the pointer are pushed aside, warm up to the accent colour,
- * and wire themselves to the cursor like neurons firing.
+ * Points near the pointer are gently pushed aside and warm up to the accent
+ * colour — a ripple, not a particle web.
  *
  * Cost control: 2D canvas, DPR capped at 1.5, rects not arcs, rAF paused
  * off-screen / in background tabs, single static frame for reduced motion.
@@ -61,7 +61,6 @@ export function NeuralField({ className = "" }: { className?: string }) {
 
     const RADIUS = 170;
     const R2 = RADIUS * RADIUS;
-    const near: { x: number; y: number; d: number }[] = [];
 
     const draw = (t: number) => {
       ctx.clearRect(0, 0, w, h);
@@ -70,7 +69,6 @@ export function NeuralField({ className = "" }: { className?: string }) {
       // ease pointer toward target for a soft, springy feel
       pointer.x += (pointer.tx - pointer.x) * 0.12;
       pointer.y += (pointer.ty - pointer.y) * 0.12;
-      near.length = 0;
 
       const ox = (w - (cols - 1) * gap) / 2;
       const oy = (h - (rows - 1) * gap) / 2;
@@ -98,7 +96,6 @@ export function NeuralField({ className = "" }: { className?: string }) {
               const push = heat * heat * 22;
               x += (dx / d) * push;
               y += (dy / d) * push;
-              if (heat > 0.35 && near.length < 14) near.push({ x, y, d });
             }
           }
 
@@ -111,17 +108,6 @@ export function NeuralField({ className = "" }: { className?: string }) {
             ctx.fillStyle = `rgb(${dot} / ${base})`;
             ctx.fillRect(x - 0.7, y - 0.7, 1.4, 1.4);
           }
-        }
-      }
-
-      if (near.length) {
-        ctx.lineWidth = 0.6;
-        for (const p of near) {
-          ctx.strokeStyle = `rgb(${accent} / ${(1 - p.d / RADIUS) * 0.35})`;
-          ctx.beginPath();
-          ctx.moveTo(pointer.x, pointer.y);
-          ctx.lineTo(p.x, p.y);
-          ctx.stroke();
         }
       }
     };

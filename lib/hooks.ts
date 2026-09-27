@@ -13,8 +13,3 @@ export function useMediaQuery(query: string) {
   }, [query]);
   return matches;
 }
-
-/** True on devices with a precise hovering pointer and no reduced-motion preference. */
-export function useFinePointer() {
-  return useMediaQuery("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
-}

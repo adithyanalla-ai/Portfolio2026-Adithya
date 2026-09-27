@@ -23,14 +23,21 @@ export const site = {
     "Adithya Reddy — Lead AI Engineer in Hyderabad building agentic AI, LLM automation, and ML systems with measurable business impact. Published researcher.",
 } as const;
 
-export const nav = [
+export type NavItem = { id: string; label: string; /** Separate route instead of an on-page section */ href?: string };
+
+export const nav: NavItem[] = [
   { id: "about", label: "About" },
   { id: "experience", label: "Experience" },
   { id: "work", label: "Work" },
   { id: "research", label: "Research" },
   { id: "skills", label: "Skills" },
+  { id: "blog", label: "Blog", href: "/blog" },
   { id: "contact", label: "Contact" },
-] as const;
+];
+
+/** Resolve a nav item to a link that works from any page. */
+export const navHref = (item: NavItem, onHome: boolean) =>
+  item.href ?? (onHome ? `#${item.id}` : `/#${item.id}`);
 
 export const about = {
   lede:

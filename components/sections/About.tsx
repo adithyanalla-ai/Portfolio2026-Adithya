@@ -22,7 +22,7 @@ export function About() {
           <Reveal>
             <p className="text-lede text-pretty">{about.lede}</p>
           </Reveal>
-          <RevealGroup className="mt-8 grid gap-6 text-bone-soft sm:grid-cols-2" delay={0.1}>
+          <RevealGroup className="mt-8 grid gap-6 text-secondary sm:grid-cols-2" delay={0.1}>
             {about.body.map((p) => (
               <RevealItem as="p" key={p} className="text-pretty leading-relaxed">
                 {p}
@@ -44,7 +44,7 @@ export function About() {
             } ${i % 2 === 1 ? "border-l pl-6 lg:pl-8" : ""}`}
           >
             <dt className="text-sm text-muted text-pretty">{s.label}</dt>
-            <dd className="order-first font-display text-display-md font-light">
+            <dd className="order-first font-display text-h2 font-light">
               <Counter value={s.value} />
             </dd>
           </RevealItem>

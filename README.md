@@ -1,9 +1,9 @@
 # Adithya Reddy — Portfolio
 
-A single-page portfolio for Adithya Reddy (AI/ML Engineer · Agentic AI & LLM Systems · Business Analyst).
-It's minimalist and led by typography, with motion based on spring physics.
+A portfolio and blog for Adithya Reddy (AI/ML Engineer · Agentic AI & LLM Systems · Business Analyst).
+It's minimalist and led by typography, and its motion is driven by springs and scroll position.
 
-**Stack:** Next.js 16 (App Router) · TypeScript · Tailwind CSS v4 (custom design tokens) · Framer Motion (via `LazyMotion`)
+**Stack:** Next.js 16 (App Router) · TypeScript · Tailwind CSS v4 (custom design tokens) · Framer Motion (via `LazyMotion`) · `marked` for blog Markdown
 
 ```bash
 npm install
@@ -17,99 +17,122 @@ npm run typecheck  # tsc --noEmit
 
 ## Design system
 
-| | |
-|---|---|
-| **Display type** | *Fraunces*, a variable serif with a real italic. Used for the name, section titles and emphasis |
-| **Body type** | *Geist*, a clean grotesk |
-| **Labels / data** | *Geist Mono*, uppercase and tracked, for indices, dates and meta. Gives the page a lab-notebook feel |
-| **Dark (default)** | ink `#0D0D0B` · bone `#ECE8DF` · muted `#8C887E` · accent vermilion `#FF6B3D` |
-| **Light** | paper `#F2EEE6` · ink `#151412` · muted `#6B675E` · accent `#B33D16` (deepened to pass AA on paper) |
-| **Spacing** | Tailwind's 4px base, fluid `--gutter` and `--section-y`, 12-column grid, 88rem max width |
-| **Type scale** | Fluid `clamp()` tokens: `text-display-xl` (hero, up to about 11.5rem) → `display-lg` → `display-md` → `lede` |
-| **Motion** | Springs only (`lib/motion.ts`). `soft` (120/20) for entrances, `snappy` (300/30) for micro-interactions. Entrances fade in with a 24px rise, staggered 60ms |
+**Two typefaces only:** *Fraunces* (display: names, headings, emphasis, with a true italic) and *Geist* (body and labels).
+Both load through `next/font`, which self-hosts and subsets them, so there's no layout shift. Labels are small uppercase Geist with wide letter-spacing, not a third face.
 
-All colours are CSS variables in `app/globals.css`. Tailwind utilities such as `bg-ink`, `text-bone`, `text-accent` and `border-line`
-point at those variables through `@theme inline`, so every class follows the theme automatically.
+**Type scale:** a perfect fourth (1.333). The top sizes are fluid with `clamp()`:
 
-### Motion & interaction
+| token | size | use |
+|---|---|---|
+| `text-label` | 12px | eyebrows, meta, dates |
+| `text-base` | 17px / 1.7 | body |
+| `text-lede` | ≈ 22.7px | intro paragraphs |
+| `text-h3` | ≈ 30px | role titles, project names |
+| `text-h2` | ≈ 54px | section titles |
+| `text-display` | ≈ 71px | contact and blog headlines |
+| `text-hero` | up to 120px | the name |
 
-- **Hero:** name letters rise from behind a mask. This is done in CSS so it plays before hydration, which protects LCP.
-- **Neural field:** a canvas dot grid drifting on a sine flow. Near the cursor the dots warm up and wire themselves to it.
-  It uses a DPR cap, pauses when off-screen or in a hidden tab, drops to 30fps on touch devices, and starts only once the main thread is idle.
-- **Scroll progress:** a hairline bar at the top, driven by a spring.
-- **Navigation:** smooth anchor scrolling, plus an active-section highlight driven by an `IntersectionObserver`.
-- **Projects:** sticky stacked cards. Earlier cards shrink and dim as the next one slides over them. Desktop only.
-- **Skills:** an ARIA tabs explorer (arrow, Home and End keys) instead of a wall of tag badges.
-- **Stats:** count up once, when scrolled into view.
-- **Cursor and magnetic buttons:** a custom cursor and magnetic primary buttons. Only on devices with `(hover: hover) and (pointer: fine)`.
-- **Theme toggle:** a sun/moon morph. The choice persists to `localStorage`, and an inline script applies it before first paint, so there's no flash.
-- **`prefers-reduced-motion`:**
-  - Framer Motion runs with `reducedMotion="user"`, so animations fall back to opacity.
-  - The custom cursor, magnetic pull, canvas animation and card stacking are switched off.
-  - CSS animations collapse to near-zero duration.
+Display headings use tight tracking (−0.03em; −0.04em on the hero).
+
+**Colour tokens**, tuned separately for each theme in `app/globals.css`:
+
+| token | dark | light |
+|---|---|---|
+| `surface` / `surface-raised` / `surface-sunken` | `#0E0E0C` / `#161614` / `#0A0A09` | `#F6F4EF` / `#FFFFFF` / `#EDEAE3` |
+| `primary` / `secondary` / `muted` (text) | `#EDEAE3` / `#B5B1A7` / `#8A867C` | `#161513` / `#4A4740` / `#69655C` |
+| `line` / `line-strong` | bone at 10% / 20% | ink at 10% / 20% |
+| `accent` / `accent-hover` | `#FF6B3D` / `#FF8A63` | `#B33D16` / `#942F0E` |
+
+Every text/surface pair meets WCAG AA. Tailwind classes (`bg-surface`, `text-secondary`, `border-line`, `bg-accent`, …)
+point at these variables through `@theme inline`, so every class follows the theme automatically.
+
+**Spacing:** Tailwind's 4px base, a fluid `--gutter` and `--section-y`, a 12-column grid, and an 88rem max width.
+
+### Motion
+
+- **Springs everywhere.** Presets live in `lib/motion.ts`: `soft` for entrances, `snappy` for micro-interactions.
+- **Section entrances:** fade in with a 24px rise. Children stagger 70ms apart (experience bullets, stats, list items).
+- **Parallax:** scroll-linked depth on two elements. The hero's canvas layer lags behind the scroll, and the name drifts ahead of it.
+- **Anchor links:** spring-animated scrolling (`components/ui/SmoothAnchors.tsx`). The scroll stops as soon as the visitor scrolls themselves, and focus moves to the target section.
+- **Nav:** the active section is tracked with `IntersectionObserver`, and a hairline progress bar runs along the top.
+- **Projects:** sticky stacked cards. Each one recedes as the next slides over it (desktop).
+- **Buttons:** `.btn` lifts slightly on hover and presses in when clicked. The site uses the normal system cursor, with no custom cursor or magnetic effects.
+- **Theme:** the toggle morphs between a sun and a moon. When the theme changes, colours cross-fade over 450ms.
+- **Hero:** the name's letters rise from behind a mask. This runs in CSS, so it plays before hydration.
+- **Reduced motion:** all of the above becomes plain opacity fades. There's no parallax, no stagger, no spring scrolling and no canvas animation.
+
+### Theme behaviour
+
+A blocking inline script in `app/layout.tsx` sets `data-theme` before first paint, so there's never a flash.
+It uses the saved choice if there is one, otherwise the OS `prefers-color-scheme` setting, otherwise dark.
+Until the visitor picks a theme, the site keeps following OS changes.
 
 ---
 
 ## Editing content
 
-**All copy lives in [`lib/content.ts`](lib/content.ts).** Every section reads from it:
+**All portfolio copy lives in [`lib/content.ts`](lib/content.ts):**
 
-| Export | Section |
+| Export | Drives |
 |---|---|
-| `site` | Name, role, hero summary, contact details, SEO description |
-| `nav` | Anchor navigation (the `id` must match the section's `id`) |
-| `about` | Lede, body paragraphs, stat tiles |
+| `site` | Name, role, hero summary, contact details, SEO |
+| `nav` | Navigation. Items with an `id` scroll to that section; items with an `href` (like Blog) go to their own route |
+| `about` | Lede, paragraphs, stat tiles (values like `"₹1.4Cr+"` count up automatically) |
 | `experience` | Roles, promotion path, highlights |
-| `projects` | Featured work cards |
-| `publications` | Citation-styled research list |
-| `skills` | Skill categories for the explorer |
-| `education` | Degree, school, grade, coursework |
+| `projects` | Stacked project cards |
+| `publications` | Citation list |
+| `skills` | Skill categories for the tabbed explorer |
+| `education` | Degree, grade, coursework |
 
-Stat values such as `"₹1.4Cr+"` or `"3,000+"` count up automatically. The counter animates the numeric part and
-keeps the prefix and suffix.
+### Writing blog posts
+
+Posts are Markdown files in [`content/blog/`](content/blog). The filename becomes the URL:
+`content/blog/my-post.md` is published at `/blog/my-post`.
+
+```md
+---
+title: My post title
+date: 2026-10-15
+summary: One sentence for the blog index and the meta description.
+tags: Agentic AI, Research
+---
+
+Normal Markdown from here: headings, lists, links, code blocks, quotes, tables.
+```
+
+- Copy `content/blog/_template.md` to start. Files beginning with `_` are ignored.
+- Posts are rendered to static HTML at build time, so they add no JavaScript.
+- New posts are added to `sitemap.xml` automatically.
 
 ### Structure
 
 ```
 app/
-  layout.tsx            fonts, metadata, JSON-LD, no-flash theme script
-  page.tsx              section order
-  globals.css           design tokens, themes, keyframes
-  opengraph-image.tsx   generated social card
-  robots.ts, sitemap.ts, icon.svg
+  layout.tsx            fonts, metadata, theme script, shared nav/footer
+  page.tsx              home page: section order
+  blog/page.tsx         blog index
+  blog/[slug]/page.tsx  blog post
+  globals.css           tokens, type scale, buttons, article (prose) styles
 components/
   sections/             Hero, About, Experience, Projects, Publications, Skills, Education, Contact, Footer
-  ui/                   Nav, ThemeToggle, Cursor, Magnetic, Reveal, ScrollProgress, NeuralField,
-                        ProjectStack, SkillExplorer, Counter, CopyEmail, LocalTime, ...
+  ui/                   Nav, ThemeToggle, ThemeProvider, SmoothAnchors, Parallax, Reveal, ScrollProgress,
+                        NeuralField, ProjectStack, SkillExplorer, Counter, CopyEmail, LocalTime, Arrow
+content/blog/           Markdown posts
 lib/
-  content.ts            ← edit this
+  content.ts            ← portfolio copy
+  blog.ts               Markdown loader
   motion.ts             spring and stagger presets
-  hooks.ts              media-query helpers
 ```
-
-### Common tweaks
-
-- **Accent colour:** change `--accent`, `--accent-soft`, `--field-accent` and `--selection` for both themes in `app/globals.css`.
-  Check contrast against the background (aim for ≥ 4.5:1).
-- **Fonts:** swap the `next/font/google` imports in `app/layout.tsx`. The CSS variable names stay the same.
-- **Default theme:** change the `'dark'` fallback in `themeScript` in `app/layout.tsx`.
-- **Domain:** change `site.url` in `lib/content.ts`. It feeds canonical URLs, Open Graph, robots and the sitemap.
 
 ---
 
 ## Deploying to Vercel
 
 1. Push this repo to GitHub.
-2. In Vercel, click **Add New → Project** and import the repo. The framework is detected as Next.js, and no settings or environment variables are needed.
+2. In Vercel, click **Add New → Project** and import the repo. It's detected as Next.js, and no settings or environment variables are needed.
 3. Click **Deploy**.
 4. To use the custom domain, go to **Project → Settings → Domains**, add `adithyareddy.online`, and create the DNS records Vercel shows.
 
-Or from the CLI:
+Or from the CLI: `npx vercel` for a preview, `npx vercel --prod` for production.
 
-```bash
-npm i -g vercel
-vercel        # preview
-vercel --prod # production
-```
-
-The whole page is statically prerendered, so it's served straight from Vercel's edge.
+Every route is prerendered as static HTML. To produce plain static files for any host, run `STATIC_EXPORT=1 npm run build`; the files land in `/out`.

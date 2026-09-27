@@ -61,7 +61,7 @@ function ProjectCard({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
         transition={{ type: "spring", stiffness: 110, damping: 20 }}
-        className="group relative overflow-hidden rounded-2xl border border-line bg-ink-raised"
+        className="group relative overflow-hidden rounded-2xl border border-line bg-surface-raised"
         aria-labelledby={`project-${i}`}
       >
         <div className="grid gap-10 p-6 sm:p-10 md:min-h-[62vh] md:grid-cols-12 md:p-14">
@@ -82,13 +82,13 @@ function ProjectCard({
 
           <div className="flex flex-col justify-end md:col-span-7">
             <p className="label">{p.kicker}</p>
-            <h3 id={`project-${i}`} className="mt-4 font-display text-display-md text-balance">
+            <h3 id={`project-${i}`} className="mt-4 font-display text-h3">
               {p.name}
             </h3>
-            <p className="mt-5 max-w-xl text-lg text-bone-soft text-pretty">{p.summary}</p>
+            <p className="mt-5 max-w-xl text-lg text-secondary text-pretty">{p.summary}</p>
             <ul className="mt-8 flex flex-col gap-3 border-t border-line pt-6">
               {p.points.map((pt) => (
-                <li key={pt} className="flex gap-3 text-sm leading-relaxed text-bone-soft sm:text-base">
+                <li key={pt} className="flex gap-3 text-sm leading-relaxed text-secondary sm:text-base">
                   <span aria-hidden className="mt-2.5 h-px w-3 shrink-0 bg-accent" />
                   {pt}
                 </li>
@@ -96,7 +96,7 @@ function ProjectCard({
             </ul>
             <ul className="mt-8 flex flex-wrap gap-2" aria-label="Focus areas">
               {p.tags.map((t) => (
-                <li key={t} className="label rounded-full bg-accent-soft px-3 py-1 text-bone-soft">
+                <li key={t} className="label rounded-full bg-accent-soft px-3 py-1 text-secondary">
                   {t}
                 </li>
               ))}
@@ -104,7 +104,7 @@ function ProjectCard({
           </div>
         </div>
         {stacked ? (
-          <m.div aria-hidden className="pointer-events-none absolute inset-0 bg-ink" style={{ opacity: dim }} />
+          <m.div aria-hidden className="pointer-events-none absolute inset-0 bg-surface" style={{ opacity: dim }} />
         ) : null}
       </m.article>
     </li>

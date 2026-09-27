@@ -16,10 +16,10 @@ export function Education() {
         <div className="md:col-span-9">
           <Reveal className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h2 id="education-title" className="font-display text-display-md">
+              <h2 id="education-title" className="font-display text-h3">
                 {education.degree}
               </h2>
-              <p className="mt-2 text-lg text-bone-soft">
+              <p className="mt-2 text-lg text-secondary">
                 {education.school} · {education.period}
               </p>
             </div>
@@ -30,7 +30,7 @@ export function Education() {
           </Reveal>
 
           <p className="label mt-12">Relevant coursework</p>
-          <RevealGroup as="ul" className="mt-4 flex flex-wrap gap-x-2 gap-y-1 text-lg text-bone-soft" stagger={0.04}>
+          <RevealGroup as="ul" className="mt-4 flex flex-wrap gap-x-2 gap-y-1 text-lg text-secondary" stagger={0.04}>
             {education.coursework.map((c, i) => (
               <RevealItem as="li" key={c}>
                 {c}
