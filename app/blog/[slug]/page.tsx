@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { formatDate, getPost, getPosts } from "@/lib/blog";
+import { formatDate, getAdjacent, getPost, getPosts, getRelated } from "@/lib/blog";
 import { site } from "@/lib/content";
 import { Reveal } from "@/components/ui/Reveal";
 import { Arrow } from "@/components/ui/Arrow";
+import { TableOfContents } from "@/components/blog/TableOfContents";
+import { CopyLink } from "@/components/blog/CopyLink";
+import { PostRow } from "@/components/blog/PostRow";
 
 type Params = { slug: string };
 
@@ -21,13 +24,22 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     title: post.title,
     description: post.summary,
     alternates: { canonical: `/blog/${post.slug}` },
-    openGraph: { type: "article", title: post.title, description: post.summary, publishedTime: post.date },
+    openGraph: {
+      type: "article",
+      title: post.title,
+      description: post.summary,
+      publishedTime: post.date,
+      authors: [site.name],
+      tags: post.tags,
+    },
   };
 }
 
 export default async function PostPage({ params }: { params: Promise<Params> }) {
   const post = getPost((await params).slug);
   if (!post) notFound();
+  const { newer, older } = getAdjacent(post.slug);
+  const related = getRelated(post.slug).filter((r) => r.slug !== newer?.slug && r.slug !== older?.slug);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -35,37 +47,103 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
     headline: post.title,
     description: post.summary,
     datePublished: post.date,
+    keywords: post.tags.join(", "),
     author: { "@type": "Person", name: site.name, url: site.url },
     url: `${site.url}/blog/${post.slug}`,
   };
 
   return (
     <main id="main" className="container-x pb-[var(--section-y)] pt-[calc(var(--nav-h)+clamp(3rem,2rem+4vw,6rem))]">
-      <article className="mx-auto max-w-[42rem]">
-        <Reveal>
-          <Link href="/blog" className="label group inline-flex items-center gap-2 hover:text-primary">
-            <Arrow direction="right" className="rotate-180" />
-            <span className="link-draw">All posts</span>
-          </Link>
-        </Reveal>
-        <Reveal delay={0.05} className="mt-10">
-          <p className="label">
-            <time dateTime={post.date}>{formatDate(post.date)}</time> · {post.readingMinutes} min read
-          </p>
-          <h1 className="mt-5 font-display text-h2 font-light">{post.title}</h1>
-          {post.summary ? <p className="mt-6 text-lede text-secondary text-pretty">{post.summary}</p> : null}
-          {post.tags.length ? (
-            <ul className="mt-6 flex flex-wrap gap-2" aria-label="Tags">
-              {post.tags.map((t) => (
-                <li key={t} className="label rounded-full bg-accent-soft px-3 py-1 text-secondary">
-                  {t}
-                </li>
-              ))}
-            </ul>
-          ) : null}
-        </Reveal>
-        <div className="prose mt-12 border-t border-line pt-10" dangerouslySetInnerHTML={{ __html: post.html }} />
+      <article>
+        {/* Header */}
+        <header className="mx-auto max-w-[52rem]">
+          <Reveal>
+            <Link href="/blog" className="label group inline-flex items-center gap-2 hover:text-primary">
+              <Arrow direction="right" className="rotate-180" />
+              <span className="link-draw">All posts</span>
+            </Link>
+          </Reveal>
+          <Reveal delay={0.05} className="mt-10">
+            <p className="label text-accent">{post.tags.join(" · ")}</p>
+            <h1 className="mt-5 font-display text-h2 font-light">{post.title}</h1>
+            {post.summary ? <p className="mt-6 max-w-[42rem] text-lede text-secondary text-pretty">{post.summary}</p> : null}
+            <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-y border-line py-4">
+              <p className="label tabular-nums">
+                {site.name} · <time dateTime={post.date}>{formatDate(post.date)}</time> · {post.readingMinutes} min read
+              </p>
+              <CopyLink />
+            </div>
+          </Reveal>
+        </header>
+
+        {/* Body + table of contents */}
+        <div className="mx-auto mt-12 grid max-w-[64rem] gap-12 lg:grid-cols-[12rem_minmax(0,42rem)] lg:gap-16">
+          <aside className="hidden lg:block">
+            <div className="sticky top-[calc(var(--nav-h)+2rem)]">
+              <TableOfContents items={post.toc} />
+            </div>
+          </aside>
+          <div className="prose min-w-0" dangerouslySetInnerHTML={{ __html: post.html }} />
+        </div>
+
+        {/* Author */}
+        <footer className="mx-auto mt-20 max-w-[52rem]">
+          <div className="flex flex-col gap-6 rounded-2xl border border-line bg-surface-raised p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+            <div className="flex items-center gap-4">
+              <span aria-hidden className="grid size-12 shrink-0 place-items-center rounded-full bg-accent font-display text-lg italic text-on-accent">
+                AR
+              </span>
+              <div>
+                <p className="font-medium">{site.name}</p>
+                <p className="text-sm text-secondary">Lead AI Engineer · Agentic AI &amp; LLM systems · {site.location}</p>
+              </div>
+            </div>
+            <Link href="/#contact" className="btn btn-primary group self-start sm:self-auto">
+              Get in touch <Arrow direction="right" />
+            </Link>
+          </div>
+        </footer>
       </article>
+
+      {/* Prev / next */}
+      {newer || older ? (
+        <nav aria-label="More posts" className="mx-auto mt-16 grid max-w-[52rem] gap-4 sm:grid-cols-2">
+          {older ? (
+            <Link href={`/blog/${older.slug}`} className="group rounded-2xl border border-line p-6 transition-[border-color,transform] duration-500 ease-[var(--ease-spring)] hover:-translate-y-1 hover:border-line-strong">
+              <p className="label inline-flex items-center gap-2">
+                <Arrow direction="right" className="rotate-180" /> Previous
+              </p>
+              <p className="mt-3 font-display text-xl leading-snug transition-colors group-hover:text-accent">{older.title}</p>
+            </Link>
+          ) : (
+            <span className="hidden sm:block" />
+          )}
+          {newer ? (
+            <Link href={`/blog/${newer.slug}`} className="group rounded-2xl border border-line p-6 text-right transition-[border-color,transform] duration-500 ease-[var(--ease-spring)] hover:-translate-y-1 hover:border-line-strong">
+              <p className="label inline-flex items-center gap-2">
+                Next <Arrow direction="right" />
+              </p>
+              <p className="mt-3 font-display text-xl leading-snug transition-colors group-hover:text-accent">{newer.title}</p>
+            </Link>
+          ) : null}
+        </nav>
+      ) : null}
+
+      {related.length ? (
+        <section aria-labelledby="related" className="mx-auto mt-20 max-w-[52rem]">
+          <h2 id="related" className="label">
+            Related reading
+          </h2>
+          <ol className="mt-4 border-t border-line">
+            {related.map((r) => (
+              <li key={r.slug} className="border-b border-line">
+                <PostRow post={r} dateLabel={formatDate(r.date, "short")} />
+              </li>
+            ))}
+          </ol>
+        </section>
+      ) : null}
+
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
     </main>
   );

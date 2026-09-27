@@ -397,3 +397,210 @@
 .prose img {
   border-radius: 0.75rem;
 }
+
+/* ---- Blog extras ------------------------------------------------ */
+.prose h2,
+.prose h3 {
+  position: relative;
+  scroll-margin-top: calc(var(--nav-h) + 1.5rem);
+}
+.prose .heading-anchor {
+  position: absolute;
+  left: -1.1em;
+  color: var(--text-muted);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.2s, color 0.2s;
+}
+.prose h2:hover .heading-anchor,
+.prose h3:hover .heading-anchor {
+  opacity: 1;
+}
+.prose .heading-anchor:hover {
+  color: var(--accent);
+}
+
+/* Figure strip: big numbers with captions */
+.prose .figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  border-block: 1px solid var(--line);
+  margin-block: 2.25em;
+}
+.prose .figures > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.25rem 1.25rem 1.25rem 0;
+}
+.prose .figures > div + div {
+  border-left: 1px solid var(--line);
+  padding-left: 1.25rem;
+}
+.prose .figures strong {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(2rem, 1.5rem + 1.6vw, 2.6rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.prose .figures span {
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+@media (max-width: 30rem) {
+  .prose .figures {
+    grid-template-columns: 1fr;
+  }
+  .prose .figures > div {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 1rem;
+  }
+  .prose .figures strong {
+    min-width: 6.5rem;
+  }
+  .prose .figures > div + div {
+    border-left: 0;
+    padding-left: 0;
+    border-top: 1px solid var(--line);
+  }
+}
+
+/* Timeline */
+.prose ol.timeline {
+  list-style: none;
+  padding-left: 0;
+  margin-block: 2em;
+  border-left: 1px solid var(--line-strong);
+}
+.prose ol.timeline li {
+  position: relative;
+  display: grid;
+  gap: 0.2rem;
+  padding: 0 0 1.75rem 1.75rem;
+}
+.prose ol.timeline li + li {
+  margin-top: 0;
+}
+.prose ol.timeline li::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 0.45em;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--accent);
+}
+.prose ol.timeline li:last-child::before {
+  background: var(--accent);
+}
+.prose ol.timeline time {
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.prose ol.timeline strong {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.25rem;
+  line-height: 1.3;
+}
+.prose ol.timeline span {
+  font-size: 1rem;
+}
+
+/* Callouts */
+.prose .callout {
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--accent);
+  background: var(--surface-raised);
+  border-radius: 0 0.75rem 0.75rem 0;
+  padding: 1.1rem 1.35rem;
+  font-size: 1.0625rem;
+}
+.prose .callout > * + * {
+  margin-top: 0.6em;
+}
+.prose .callout-title {
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.prose .callout-key {
+  background: var(--accent-soft);
+  border-color: transparent;
+  border-left-color: var(--accent);
+}
+.prose .callout-key p:not(.callout-title) {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  line-height: 1.45;
+  color: var(--text-primary);
+}
+.prose .callout-caution {
+  border-left-color: var(--text-muted);
+}
+
+/* Code blocks with a language label */
+.prose figure.code {
+  margin-block: 1.75em;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--surface-sunken);
+  overflow: hidden;
+}
+.prose figure.code figcaption {
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 0.6rem 1.25rem;
+  border-bottom: 1px solid var(--line);
+}
+.prose figure.code pre {
+  border: 0;
+  border-radius: 0;
+  margin: 0;
+}
+
+/* Syntax colours from the theme tokens, so both themes stay in palette */
+.hljs-comment,
+.hljs-quote {
+  color: var(--text-muted);
+  font-style: italic;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-built_in,
+.hljs-literal {
+  color: var(--accent);
+}
+.hljs-string,
+.hljs-attr,
+.hljs-template-tag {
+  color: var(--text-primary);
+}
+.hljs-number,
+.hljs-title,
+.hljs-title.function_,
+.hljs-type {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.hljs-params,
+.hljs-variable,
+.hljs-operator,
+.hljs-punctuation {
+  color: var(--text-secondary);
+}

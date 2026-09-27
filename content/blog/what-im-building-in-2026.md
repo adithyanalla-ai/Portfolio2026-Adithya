@@ -2,16 +2,23 @@
 title: What I'm building in 2026
 date: 2026-09-27
 summary: A map of the work on my desk right now — production agents, a fruit-harvesting robot, and the papers that keep it all honest.
-tags: Agentic AI, Research, Robotics
+tags: Agentic AI, Research
+featured: true
 ---
 
 This blog is where I'll write up the work behind the portfolio: what I built, why it's shaped the way it is, and what I'd change next time. Here is where things stand.
 
+<div class="figures">
+  <div><strong>5</strong><span>autonomous agent pipelines in production</span></div>
+  <div><strong>20+ hrs</strong><span>of staff time recovered every week</span></div>
+  <div><strong>3</strong><span>manuscripts in progress: IEEE, Scopus-track, book</span></div>
+</div>
+
 ## Agents that do real work
 
-At Eject Solutions I lead AI engineering. The agentic architecture I designed there became the production blueprint for new builds. Five autonomous agent pipelines now run in production and recover more than 20 hours of staff time every week.
+At Eject Solutions I lead AI engineering. The agentic architecture I designed there became the production blueprint for new builds.
 
-The pattern behind them is GBNI (Generative Brand Narrative Intelligence), a state-aware multimodal agent framework for emotionally adaptive brand communication. The framework is [published on SSRN](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6845958) (Abstract ID 6845958). I'm expanding it into a longer IEEE paper and a book manuscript.
+In my own research, GBNI (Generative Brand Narrative Intelligence) is a state-aware multimodal agent framework for emotionally adaptive brand communication. Its companion project, Autonomous Agency Workflows, runs five autonomous agent pipelines in production that recover more than 20 hours of staff time every week. The framework is [published on SSRN](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6845958) (Abstract ID 6845958). I'm expanding it into a 120+ page IEEE paper and a book manuscript. I've written a [shorter explainer on what "state-aware" means](/blog/gbni-state-aware-agents) if you want the idea without the paper.
 
 ## MITHRA
 

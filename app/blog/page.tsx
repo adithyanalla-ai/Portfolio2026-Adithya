@@ -1,17 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { formatDate, getPosts } from "@/lib/blog";
-import { RevealGroup, RevealItem, Reveal } from "@/components/ui/Reveal";
+import { Reveal } from "@/components/ui/Reveal";
 import { Arrow } from "@/components/ui/Arrow";
+import { BlogExplorer } from "@/components/blog/BlogExplorer";
 
 export const metadata: Metadata = {
   title: "Blog",
-  description: "Notes from Adithya Reddy on agentic AI, LLM systems, research and shipping ML in production.",
+  description: "Notes from Adithya Reddy on agentic AI, LLM systems, explainable ML, research and shipping AI inside a business.",
   alternates: { canonical: "/blog" },
 };
 
 export default function BlogIndex() {
   const posts = getPosts();
+  const featured = posts.find((p) => p.featured) ?? posts[0];
+  const topics = new Set(posts.flatMap((p) => p.tags)).size;
+  const dateLabels = Object.fromEntries(posts.map((p) => [p.slug, formatDate(p.date, "short")]));
 
   return (
     <main id="main" className="container-x pb-[var(--section-y)] pt-[calc(var(--nav-h)+clamp(3rem,2rem+5vw,7rem))]">
@@ -21,48 +25,73 @@ export default function BlogIndex() {
             <span aria-hidden className="h-px w-8 bg-line-strong" />
             Blog
           </p>
+          <p className="label mt-4 tabular-nums">
+            {posts.length} posts · {topics} topics
+          </p>
         </Reveal>
         <Reveal className="md:col-span-9" delay={0.05}>
           <h1 className="font-display text-display font-light">
             Field <em className="text-accent">notes</em>.
           </h1>
           <p className="mt-6 max-w-xl text-lede text-secondary text-pretty">
-            Write-ups on agentic systems, research and the work of shipping ML that a business relies on.
+            Write-ups on agentic systems, explainable ML, research, and the work of shipping AI that a business relies on.
           </p>
         </Reveal>
       </header>
 
-      {posts.length ? (
-        <RevealGroup as="ol" className="mt-16 border-t border-line md:mt-24 md:ml-[25%]">
-          {posts.map((post) => (
-            <RevealItem as="li" key={post.slug} className="border-b border-line">
-              <Link
-                href={`/blog/${post.slug}`}
-                className="group grid gap-3 py-10 transition-colors md:grid-cols-[10rem_1fr_auto] md:gap-8"
-              >
-                <time dateTime={post.date} className="label pt-2">
-                  {formatDate(post.date)}
+      {featured ? (
+        <Reveal className="mt-16 md:mt-24" amount={0.2}>
+          <Link
+            href={`/blog/${featured.slug}`}
+            className="group relative grid gap-8 overflow-hidden rounded-2xl border border-line bg-surface-raised p-6 transition-[border-color,transform] duration-500 ease-[var(--ease-spring)] hover:-translate-y-1 hover:border-line-strong sm:p-10 md:grid-cols-12 md:p-14"
+          >
+            <div className="flex flex-col justify-between gap-6 md:col-span-4">
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="label rounded-full bg-accent px-3 py-1 text-on-accent">Featured</span>
+                <time dateTime={featured.date} className="label">
+                  {formatDate(featured.date)}
                 </time>
-                <div>
-                  <h2 className="font-display text-h3 transition-colors duration-300 group-hover:text-accent">
-                    {post.title}
-                  </h2>
-                  {post.summary ? <p className="mt-3 max-w-2xl text-secondary text-pretty">{post.summary}</p> : null}
-                  <p className="label mt-4">
-                    {post.readingMinutes} min read
-                    {post.tags.length ? <> · {post.tags.join(" · ")}</> : null}
-                  </p>
-                </div>
-                <span className="hidden self-center text-xl text-muted transition-colors group-hover:text-accent md:block">
-                  <Arrow direction="right" />
+              </div>
+              <p className="hidden items-baseline gap-3 md:flex">
+                <span className="font-display text-[clamp(4.5rem,3rem+5vw,7.5rem)] font-light italic leading-none text-line-strong transition-colors duration-700 group-hover:text-accent">
+                  {featured.readingMinutes}
                 </span>
-              </Link>
-            </RevealItem>
-          ))}
-        </RevealGroup>
-      ) : (
-        <p className="mt-16 text-secondary md:ml-[25%]">The first post is on its way.</p>
-      )}
+                <span className="label">min read</span>
+              </p>
+            </div>
+            <div className="md:col-span-8">
+              <h2 className="font-display text-h2 font-light transition-colors duration-300 group-hover:text-accent">
+                {featured.title}
+              </h2>
+              <p className="mt-5 max-w-2xl text-lede text-secondary text-pretty">{featured.summary}</p>
+              <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-6">
+                <p className="label">
+                  <span className="md:hidden">{featured.readingMinutes} min read · </span>
+                  {featured.tags.join(" · ")}
+                </p>
+                <span className="inline-flex items-center gap-2 text-sm font-medium text-accent">
+                  Read the post <Arrow direction="right" />
+                </span>
+              </div>
+            </div>
+          </Link>
+        </Reveal>
+      ) : null}
+
+      {posts.length > 1 ? (
+        <section aria-labelledby="all-posts" className="mt-20 grid gap-10 md:mt-28 md:grid-cols-12">
+          <Reveal className="md:col-span-3">
+            <h2 id="all-posts" className="label">
+              All writing
+            </h2>
+          </Reveal>
+          <Reveal className="md:col-span-9" amount={0.05}>
+            <BlogExplorer posts={posts} featuredSlug={featured?.slug} dateLabels={dateLabels} />
+          </Reveal>
+        </section>
+      ) : null}
+
+      {posts.length === 0 ? <p className="mt-16 text-secondary">The first post is on its way.</p> : null}
     </main>
   );
 }

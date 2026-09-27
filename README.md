@@ -93,16 +93,35 @@ Posts are Markdown files in [`content/blog/`](content/blog). The filename become
 ---
 title: My post title
 date: 2026-10-15
-summary: One sentence for the blog index and the meta description.
+summary: One sentence for the blog index, the meta description and the social card.
 tags: Agentic AI, Research
+featured: true        # optional: pins the post as the big card at the top of /blog
 ---
 
-Normal Markdown from here: headings, lists, links, code blocks, quotes, tables.
+Normal Markdown from here: headings, lists, links, tables, quotes.
 ```
 
+Extras the blog understands:
+
+| Write | Get |
+|---|---|
+| `## Heading` / `### Heading` | An anchor link and an entry in the sticky "On this page" table of contents |
+| ```` ```python ```` fenced code | Syntax highlighting in theme colours, with a language label (python, sql, bash, typescript, json, yaml) |
+| `> [!NOTE] Title` (also `TIP`, `KEY`, `CAUTION`) | A callout box. `KEY` is the large pull-quote style |
+| `<div class="figures"><div><strong>40%</strong><span>caption</span></div>…</div>` | A strip of big numbers |
+| `<ol class="timeline"><li><time>Mar 2024</time><strong>Title</strong><span>Detail</span></li>…</ol>` | A vertical timeline |
+
+Each post automatically gets:
+- a reading time;
+- previous/next links and related posts (by shared tags);
+- a copy-link button;
+- a generated social image;
+- JSON-LD metadata and a sitemap entry.
+
+The three newest posts appear in the "Writing" section on the home page, and `/blog` has topic filters built from the tags.
+
 - Copy `content/blog/_template.md` to start. Files beginning with `_` are ignored.
-- Posts are rendered to static HTML at build time, so they add no JavaScript.
-- New posts are added to `sitemap.xml` automatically.
+- Posts render to static HTML at build time, so they add no JavaScript. Only the filter and table of contents are interactive.
 
 ### Structure
 
@@ -110,11 +129,12 @@ Normal Markdown from here: headings, lists, links, code blocks, quotes, tables.
 app/
   layout.tsx            fonts, metadata, theme script, shared nav/footer
   page.tsx              home page: section order
-  blog/page.tsx         blog index
-  blog/[slug]/page.tsx  blog post
+  blog/page.tsx         blog index: featured post + filterable list
+  blog/[slug]/          blog post page + generated social image
   globals.css           tokens, type scale, buttons, article (prose) styles
 components/
-  sections/             Hero, About, Experience, Projects, Publications, Skills, Education, Contact, Footer
+  sections/             Hero, About, Experience, Projects, Publications, Skills, Education, LatestWriting, Contact, Footer
+  blog/                 BlogExplorer (topic filter), TableOfContents, CopyLink, PostRow
   ui/                   Nav, ThemeToggle, ThemeProvider, SmoothAnchors, Parallax, Reveal, ScrollProgress,
                         NeuralField, ProjectStack, SkillExplorer, Counter, CopyEmail, LocalTime, Arrow
 content/blog/           Markdown posts

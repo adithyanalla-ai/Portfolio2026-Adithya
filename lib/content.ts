@@ -87,10 +87,10 @@ export const experience: Role[] = [
     highlights: [
       "Built LLM-powered automation pipelines that replaced repetitive manual workflows across client operations.",
       "Designed an agentic AI architecture that was adopted as the company's production blueprint for new builds.",
-      "Cut model and pipeline deployment time by 40% through standardized, reusable delivery patterns.",
+      "Made model and pipeline deployment 40% faster.",
       "Delivered INR 4L in cost reduction on an engagement with KL University.",
       "Ran the data side of a lead-generation campaign that produced 3,000+ qualified leads.",
-      "Reduced sprint delays by 35% by tightening analysis, scoping and delivery rituals.",
+      "Reduced sprint delays by 35%.",
       "Shipped Power BI dashboards that gave leadership a live read on pipeline and performance metrics.",
     ],
   },
