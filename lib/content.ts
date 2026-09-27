@@ -35,6 +35,15 @@ export const nav: NavItem[] = [
   { id: "contact", label: "Contact" },
 ];
 
+/** Home page check that also holds on static hosts serving `/index.html`. */
+export const isHomePath = (pathname: string) => pathname === "/" || pathname.endsWith("/index.html");
+
+/** Route match that tolerates static-host `.html` suffixes (`/blog.html`, `/blog/post.html`). */
+export const isOnRoute = (pathname: string, href: string) => {
+  const clean = pathname.replace(/\.html$/, "");
+  return clean === href || clean.endsWith(href) || clean.includes(`${href}/`);
+};
+
 /** Resolve a nav item to a link that works from any page. */
 export const navHref = (item: NavItem, onHome: boolean) =>
   item.href ?? (onHome ? `#${item.id}` : `/#${item.id}`);

@@ -3,6 +3,7 @@
 import { animate } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { isHomePath } from "@/lib/content";
 
 /**
  * Spring-driven anchor scrolling for every in-page link ("#id" or "/#id" on the home page).
@@ -24,7 +25,7 @@ export function SmoothAnchors() {
 
       let hash: string | null = null;
       if (href.startsWith("#")) hash = href;
-      else if (href.startsWith("/#") && pathname === "/") hash = href.slice(1);
+      else if (href.startsWith("/#") && isHomePath(pathname)) hash = href.slice(1);
       if (!hash) return;
 
       const id = decodeURIComponent(hash.slice(1));
@@ -50,7 +51,7 @@ export function SmoothAnchors() {
         });
       }
 
-      history.pushState(null, "", id === "top" ? pathname : `#${id}`);
+      history.pushState(null, "", id === "top" ? location.pathname : `#${id}`);
       if (target !== document.body) {
         if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
         target.focus({ preventScroll: true });

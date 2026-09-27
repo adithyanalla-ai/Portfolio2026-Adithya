@@ -4,7 +4,7 @@ import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { nav, navHref, site, type NavItem } from "@/lib/content";
+import { isHomePath, isOnRoute, nav, navHref, site, type NavItem } from "@/lib/content";
 import { container, fadeUp, spring } from "@/lib/motion";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -65,7 +65,7 @@ function NavLink({
 
 export function Nav() {
   const pathname = usePathname();
-  const onHome = pathname === "/";
+  const onHome = isHomePath(pathname);
   const activeSection = useActiveSection(sectionIds, onHome);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -73,7 +73,7 @@ export function Nav() {
   const reduce = useReducedMotion();
 
   const isCurrent = (item: NavItem) =>
-    item.href ? pathname.startsWith(item.href) : item.id === activeSection;
+    item.href ? isOnRoute(pathname, item.href) : item.id === activeSection;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);

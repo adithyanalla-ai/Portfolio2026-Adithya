@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { nav, navHref, site } from "@/lib/content";
+import { isHomePath, nav, navHref, site } from "@/lib/content";
 import { Arrow } from "@/components/ui/Arrow";
 
 export function Footer() {
-  const onHome = usePathname() === "/";
+  const onHome = isHomePath(usePathname());
   return (
     <footer className="border-t border-line">
       <div className="container-x flex flex-col gap-6 py-8 text-sm text-muted md:flex-row md:items-center md:justify-between">
