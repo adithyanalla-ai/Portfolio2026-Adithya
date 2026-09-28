@@ -1,5 +1,5 @@
 /**
- * Registered images, pre-resized to 800w and ≤1600w WebP (see README → Images).
+ * Registered images, pre-resized to 800w and ≤1600w WebP (see docs/DEVELOPMENT.md → Images).
  * Markdown references them by key — `![alt](fig:aglier-fig9 "Caption")` — and the
  * blog renders a responsive <img srcset> with fixed dimensions (no layout shift).
  */
