@@ -1,4 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { after } from "next/server";
+import { logChat } from "@/lib/chatLog";
 import { profileText } from "@/lib/profile";
 import { blogKnowledge } from "@/lib/blog";
 import { localAnswer } from "@/lib/localAnswer";
@@ -77,9 +79,14 @@ export async function POST(req: Request) {
   if (limited(ip)) return text(`That's a lot of questions! Please try again in a few minutes, or email me at ${site.email}.`, 429);
 
   const question = turns[turns.length - 1].content;
+  const page = req.headers.get("referer");
+  const log = (answer: string, mode: string, error?: string) =>
+    logChat({ question, answer, mode, page, turns: turns.length, error });
   // No key configured (or local preview): answer from the résumé data without an LLM.
   if (!process.env.ANTHROPIC_API_KEY) {
-    return new Response(localAnswer(question), {
+    const answer = localAnswer(question);
+    after(() => log(answer, "local"));
+    return new Response(answer, {
       headers: { "Content-Type": "text/plain; charset=utf-8", "X-Chat-Mode": "local", "Cache-Control": "no-store" },
     });
   }
@@ -132,21 +139,32 @@ export async function POST(req: Request) {
     const apiType = error instanceof Anthropic.APIError ? (error.error as { error?: { type?: string } } | undefined)?.error?.type : undefined;
     const reason = error instanceof Anthropic.APIError ? `${error.status ?? ""} ${apiType ?? "api_error"}`.trim() : "network error";
     console.error(`chat: falling back to offline answer (${reason})`, error instanceof Anthropic.APIError ? error.message : error);
-    return new Response(localAnswer(question), {
+    const answer = localAnswer(question);
+    after(() => log(answer, "fallback", reason));
+    return new Response(answer, {
       headers: { "Content-Type": "text/plain; charset=utf-8", "X-Chat-Mode": "fallback", "X-Chat-Error": reason, "Cache-Control": "no-store" },
     });
   }
 
   const encoder = new TextEncoder();
   const first = opened;
+  // Collect the streamed answer so the whole exchange can be logged once the stream ends.
+  let answerText = "";
+  let streamError: string | undefined;
+  let resolveDone!: () => void;
+  const finished = new Promise<void>((r) => (resolveDone = r));
   const body = new ReadableStream<Uint8Array>({
     async start(controller) {
       let sent = false;
+      const push = (s: string) => {
+        answerText += s;
+        controller.enqueue(encoder.encode(s));
+      };
       const emit = (event: unknown) => {
         const e = event as { type?: string; delta?: { type?: string; text?: string } };
         if (e.type === "content_block_delta" && e.delta?.type === "text_delta" && e.delta.text) {
           sent = true;
-          controller.enqueue(encoder.encode(e.delta.text));
+          push(e.delta.text);
         }
       };
       try {
@@ -158,7 +176,7 @@ export async function POST(req: Request) {
           for (let r = await it.next(); !r.done; r = await it.next()) emit(r.value);
           const final = await stream.finalMessage();
           if (final.stop_reason === "refusal" && !sent) {
-            controller.enqueue(encoder.encode(`I can't help with that one here. Ask me about my work, or email ${site.email}.`));
+            push(`I can't help with that one here. Ask me about my work, or email ${site.email}.`);
           }
           if (final.stop_reason !== "pause_turn" || continuation >= 2) break;
           messages = [...messages, { role: "assistant", content: final.content }];
@@ -166,11 +184,17 @@ export async function POST(req: Request) {
         }
       } catch (error) {
         console.error("chat: stream interrupted", error instanceof Anthropic.APIError ? `${error.status} ${error.message}` : error);
-        if (!sent) controller.enqueue(encoder.encode(localAnswer(question)));
+        streamError = error instanceof Anthropic.APIError ? `stream ${error.status ?? ""}`.trim() : "stream interrupted";
+        if (!sent) push(localAnswer(question));
       } finally {
         controller.close();
+        resolveDone();
       }
     },
+  });
+  after(async () => {
+    await finished;
+    await log(answerText, "ai", streamError);
   });
   return new Response(body, {
     headers: { "Content-Type": "text/plain; charset=utf-8", "X-Chat-Mode": "ai", "Cache-Control": "no-store" },

@@ -7,26 +7,27 @@ import { useEffect, useRef, useState } from "react";
 import { figures, figureSrc } from "@/lib/figures";
 import { Arrow } from "./Arrow";
 import type { Project } from "@/lib/content";
-import { useHydratedReducedMotion, useMediaQuery } from "@/lib/hooks";
+import { useHydratedReducedMotion } from "@/lib/hooks";
 
 /**
- * Sticky stacked-scroll: each project pins below the nav and the ones
- * beneath recede (scale + dim) as the next card slides over them.
- * Where pinning would hide content (phones, short laptops, landscape tablets) the
- * cards scroll normally but keep the same motion: each one recedes (scale + dim)
- * as its end leaves the screen. Reduced motion → a plain list.
+ * Sticky stacked-scroll on every screen size: each project pins and the ones beneath
+ * recede (scale + dim) as the next card slides over them.
+ *
+ * Cards shorter than the screen pin just below the nav (with a small stair-step offset).
+ * Cards taller than the screen pin by their *bottom* edge instead (a negative sticky top),
+ * so the whole card scrolls past before it holds and the next one covers it: nothing is
+ * ever hidden unread, whatever the viewport height, zoom level or card length.
+ * Reduced motion → a plain list.
  */
 export function ProjectStack({ projects }: { projects: Project[] }) {
   const ref = useRef<HTMLOListElement>(null);
   const reduce = useHydratedReducedMotion();
-  const wide = useMediaQuery("(min-width: 768px)");
-  const fits = useCardsFitViewport(ref, projects.length);
-  const windows = useOverlapWindows(ref, projects.length);
-  const stacked = wide && !reduce && fits;
+  const layout = useStackLayout(ref, projects.length);
+  const stacked = !reduce;
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
 
   return (
-    <ol ref={ref} className="relative flex flex-col gap-6 md:gap-[12vh]">
+    <ol ref={ref} className="relative flex flex-col gap-[8vh] md:gap-[12vh]">
       {projects.map((p, i) => (
         <ProjectCard
           key={p.name}
@@ -35,73 +36,53 @@ export function ProjectStack({ projects }: { projects: Project[] }) {
           n={projects.length}
           progress={scrollYProgress}
           stacked={stacked}
-          recede={!stacked && !reduce}
-          overlap={windows[i]}
+          top={layout.tops[i]}
+          bottomPinned={layout.bottomPinned[i]}
+          overlap={layout.windows[i]}
         />
       ))}
     </ol>
   );
 }
 
-/** True when the tallest card, pinned below the nav with its stack offset, fits in the viewport. */
-function useCardsFitViewport(ref: React.RefObject<HTMLOListElement | null>, n: number) {
-  const [fits, setFits] = useState(false);
-  useEffect(() => {
-    const list = ref.current;
-    if (!list) return;
-    const measure = () => {
-      const nav = document.querySelector("header")?.getBoundingClientRect().height ?? 68;
-      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-      // offsetHeight ignores the scale transform applied while stacking
-      const tallest = Math.max(...[...list.querySelectorAll("article")].map((a) => (a as HTMLElement).offsetHeight));
-      const topOffset = nav + 1.5 * rem + (n - 1) * 1.1 * rem;
-      setFits(tallest + topOffset + 16 <= window.innerHeight);
-    };
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(list);
-    window.addEventListener("resize", measure);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", measure);
-    };
-  }, [ref, n]);
-  return fits;
-}
+type StackLayout = { tops: number[]; bottomPinned: boolean[]; windows: ([number, number] | undefined)[] };
 
 /**
- * For each card, the section scroll progress (0–1, matching useScroll's "start start" → "end end")
- * at which the NEXT card reaches mid-screen and at which it reaches its pinned spot.
+ * Measures the cards and returns, per card: its sticky `top` (px), whether it pins by its
+ * bottom edge, and the section-progress window [next card reaches mid-screen, next card pins]
+ * during which it should recede.
  */
-function useOverlapWindows(ref: React.RefObject<HTMLOListElement | null>, n: number) {
-  const [windows, setWindows] = useState<([number, number] | undefined)[]>([]);
+function useStackLayout(ref: React.RefObject<HTMLOListElement | null>, n: number) {
+  const [layout, setLayout] = useState<StackLayout>({ tops: [], bottomPinned: [], windows: [] });
   useEffect(() => {
     const list = ref.current;
     if (!list) return;
     const measure = () => {
       const items = [...list.children] as HTMLElement[];
       const vh = window.innerHeight;
-      const range = list.offsetHeight - vh;
-      if (range <= 0) return;
       const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
       const nav = document.querySelector("header")?.getBoundingClientRect().height ?? 68;
+      // offsetHeight ignores the scale transform applied while stacking
+      const heights = items.map((el) => (el.querySelector("article") as HTMLElement | null)?.offsetHeight ?? el.offsetHeight);
+      const base = items.map((_, i) => nav + 1.5 * rem + i * 1.1 * rem);
+      const tops = heights.map((h, i) => Math.min(base[i], vh - h - 16));
+      const bottomPinned = tops.map((t, i) => t < base[i]);
+
+      const range = list.offsetHeight - vh;
       const clamp = (v: number) => Math.min(1, Math.max(0, v));
-      // Natural (un-stuck) position of each item: sum of previous heights + the list's row gap.
-      // offsetTop can't be used because sticky items report their shifted position.
+      // Natural (un-stuck) position of each item: previous heights + the list's row gap
+      // (offsetTop can't be used: sticky items report their shifted position).
       const gap = parseFloat(getComputedStyle(list).rowGap) || 0;
-      const tops: number[] = [];
-      items.forEach((el, i) => tops.push(i === 0 ? 0 : tops[i - 1] + items[i - 1].offsetHeight + gap));
-      setWindows(
-        items.map((_, i) => {
-          if (i === n - 1) return undefined;
-          const nextTop = tops[i + 1];
-          const pinAt = nav + 1.5 * rem + (i + 1) * 1.1 * rem;
-          // start receding once the next card's top reaches mid-screen, not the moment it peeks in
-          const enters = clamp((nextTop - vh * 0.55) / range);
-          const pins = clamp((nextTop - pinAt) / range);
-          return [enters, Math.max(enters + 0.001, pins)] as [number, number];
-        }),
-      );
+      const natural: number[] = [];
+      items.forEach((el, i) => natural.push(i === 0 ? 0 : natural[i - 1] + items[i - 1].offsetHeight + gap));
+      const windows = items.map((_, i) => {
+        if (i === n - 1 || range <= 0) return undefined;
+        const nextTop = natural[i + 1];
+        const enters = clamp((nextTop - vh * 0.55) / range);
+        const pins = clamp((nextTop - tops[i + 1]) / range);
+        return [enters, Math.max(enters + 0.001, pins)] as [number, number];
+      });
+      setLayout({ tops, bottomPinned, windows });
     };
     measure();
     const ro = new ResizeObserver(measure);
@@ -112,7 +93,7 @@ function useOverlapWindows(ref: React.RefObject<HTMLOListElement | null>, n: num
       window.removeEventListener("resize", measure);
     };
   }, [ref, n]);
-  return windows;
+  return layout;
 }
 
 function ProjectCard({
@@ -121,7 +102,8 @@ function ProjectCard({
   n,
   progress,
   stacked,
-  recede,
+  top,
+  bottomPinned,
   overlap,
 }: {
   project: Project;
@@ -129,15 +111,12 @@ function ProjectCard({
   n: number;
   progress: MotionValue<number>;
   stacked: boolean;
-  recede: boolean;
+  /** Sticky top in px (negative for cards taller than the screen, which pin by their bottom). */
+  top?: number;
+  bottomPinned?: boolean;
   /** Scroll-progress window in which the next card slides over this one: [enters screen, pins]. */
   overlap?: [number, number];
 }) {
-  const itemRef = useRef<HTMLLIElement>(null);
-  // Unpinned layouts: 0 when the card's end is a third of the way up the screen, 1 once it has left the top.
-  const { scrollYProgress: leave } = useScroll({ target: itemRef, offset: ["end 0.35", "end start"] });
-  const leaveScale = useTransform(leave, [0, 1], [1, 0.94]);
-  const leaveDim = useTransform(leave, [0, 1], [0, 0.45]);
   const start = i / n;
   // Recede only while the next card is actually sliding over this one, so the card you're
   // reading stays at full size and brightness while pinned. Fallback before measurement: equal slots.
@@ -152,17 +131,15 @@ function ProjectCard({
 
   return (
     <li
-      ref={itemRef}
       className={stacked ? "sticky" : undefined}
-      style={stacked ? { top: `calc(var(--nav-h) + 1.5rem + ${i * 1.1}rem)` } : undefined}
+      // Before measurement (first paint) fall back to the stair-step below the nav.
+      style={stacked ? { top: top !== undefined ? `${Math.round(top)}px` : `calc(var(--nav-h) + 1.5rem + ${i * 1.1}rem)` } : undefined}
     >
       <m.article
         style={
           stacked
-            ? { scale, transformOrigin: "50% 0%" }
-            : recede
-              ? { scale: leaveScale, transformOrigin: "50% 100%" }
-              : undefined
+            ? { scale, transformOrigin: bottomPinned ? "50% 100%" : "50% 0%" }
+            : undefined
         }
         initial={{ opacity: 0, y: 32 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -279,12 +256,8 @@ function ProjectCard({
             </div>
           </div>
         </div>
-        {stacked || recede ? (
-          <m.div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 bg-surface"
-            style={{ opacity: stacked ? dim : leaveDim }}
-          />
+        {stacked ? (
+          <m.div aria-hidden className="pointer-events-none absolute inset-0 bg-surface" style={{ opacity: dim }} />
         ) : null}
       </m.article>
     </li>

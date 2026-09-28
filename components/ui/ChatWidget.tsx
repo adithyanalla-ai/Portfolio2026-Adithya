@@ -270,7 +270,7 @@ export function ChatWidget() {
                 </button>
               </div>
               <p className="mt-2 px-1 text-[0.6875rem] leading-snug text-muted">
-                AI-generated answers based on my résumé; they can be imperfect. For anything important, email {site.email}.
+                AI-generated answers based on my résumé; they can be imperfect. Chats are saved so I can follow up. For anything important, email {site.email}.
               </p>
             </form>
           </m.div>

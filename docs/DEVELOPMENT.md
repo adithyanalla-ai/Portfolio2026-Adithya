@@ -183,6 +183,7 @@ The floating assistant answers visitors on your behalf from your profile. It use
 - **Model:** Claude Opus 5, streamed, with server-side refusal fallbacks.
 - **Guardrails:** the prompt tells it to use only facts from the profile, to say when it doesn't know, and never to overstate statuses such as papers under review.
 - **Turn it on:** add an environment variable `ANTHROPIC_API_KEY` in Vercel (**Project → Settings → Environment Variables**), then redeploy. Without a key, the chat still works using offline answers matched from your résumé data (`lib/localAnswer.ts`).
+- **Chat log:** every exchange (question, answer, mode, page) is sent to Formspree (`lib/chatLog.ts`, default form `https://formspree.io/f/mwlpakoj`) so you get it by email. Point it at another form with `FORMSPREE_CHAT_ENDPOINT`. No IP address is sent, and the chat tells visitors conversations are saved. Formspree's free plan caps monthly submissions, so upgrade the form if traffic grows.
 - **Rate limit:** 20 questions per 10 minutes per visitor, per server instance. Input is capped at 1,200 characters per message and the last 10 turns.
 - **Static export:** `*.live.ts` routes are excluded, and the chat uses the offline answers.
 
