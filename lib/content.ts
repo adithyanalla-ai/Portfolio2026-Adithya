@@ -141,15 +141,16 @@ export const projects: Project[] = [
   {
     index: "02",
     name: "Aglier",
-    kicker: "AI-integrated tree-climbing fruit-harvesting robot",
+    kicker: "Force-adaptive, lizard-inspired tree-climbing harvester",
     summary:
-      "A robot that climbs trees and harvests fruit, with perception and decision-making handled onboard by AI.",
+      "A robot that climbs trees and harvests fruit, deciding through a tiered edge–cloud architecture with an asynchronous narrative layer on top.",
     points: [
-      "Sole inventor — drafting the patent specification.",
+      "Paper submitted to IEEE Transactions on Robotics (Regular Paper, September 2026).",
+      "Sole inventor, drafting the patent specification.",
       "Carries an onboard GBNI subsystem for state-aware reasoning.",
     ],
     tags: ["Robotics", "Computer Vision", "Embedded AI"],
-    meta: "Patent in drafting",
+    meta: "Submitted · IEEE T-RO",
     logo: "/images/aglier/logo",
     images: ["aglier-fig9", "aglier-fig14", "aglier-fig3", "aglier-fig5"],
     href: "/blog/aglier-ai-tree-climbing-fruit-harvesting-robot",
@@ -207,6 +208,14 @@ export type Publication = {
 };
 
 export const publications: Publication[] = [
+  {
+    title:
+      "Aglier: A Force-Adaptive, Lizard-Inspired Tree-Climbing Harvester with a Tiered Edge-Cloud Decision Architecture and an Asynchronous Narrative Layer",
+    venue: "IEEE Transactions on Robotics",
+    date: "Submitted Sept 2026",
+    id: "Manuscript 26-1805",
+    kind: "Under review · Regular paper",
+  },
   {
     title:
       "Generative Brand Narrative Intelligence: A State-Aware Multimodal Agent Framework for Emotionally Adaptive Brand Communication",

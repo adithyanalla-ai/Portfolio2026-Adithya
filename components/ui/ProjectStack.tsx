@@ -21,6 +21,7 @@ export function ProjectStack({ projects }: { projects: Project[] }) {
   const reduce = useReducedMotion();
   const wide = useMediaQuery("(min-width: 768px)");
   const fits = useCardsFitViewport(ref, projects.length);
+  const windows = useOverlapWindows(ref, projects.length);
   const stacked = wide && !reduce && fits;
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
 
@@ -35,6 +36,7 @@ export function ProjectStack({ projects }: { projects: Project[] }) {
           progress={scrollYProgress}
           stacked={stacked}
           recede={!stacked && !reduce}
+          overlap={windows[i]}
         />
       ))}
     </ol>
@@ -67,6 +69,52 @@ function useCardsFitViewport(ref: React.RefObject<HTMLOListElement | null>, n: n
   return fits;
 }
 
+/**
+ * For each card, the section scroll progress (0–1, matching useScroll's "start start" → "end end")
+ * at which the NEXT card reaches mid-screen and at which it reaches its pinned spot.
+ */
+function useOverlapWindows(ref: React.RefObject<HTMLOListElement | null>, n: number) {
+  const [windows, setWindows] = useState<([number, number] | undefined)[]>([]);
+  useEffect(() => {
+    const list = ref.current;
+    if (!list) return;
+    const measure = () => {
+      const items = [...list.children] as HTMLElement[];
+      const vh = window.innerHeight;
+      const range = list.offsetHeight - vh;
+      if (range <= 0) return;
+      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+      const nav = document.querySelector("header")?.getBoundingClientRect().height ?? 68;
+      const clamp = (v: number) => Math.min(1, Math.max(0, v));
+      // Natural (un-stuck) position of each item: sum of previous heights + the list's row gap.
+      // offsetTop can't be used because sticky items report their shifted position.
+      const gap = parseFloat(getComputedStyle(list).rowGap) || 0;
+      const tops: number[] = [];
+      items.forEach((el, i) => tops.push(i === 0 ? 0 : tops[i - 1] + items[i - 1].offsetHeight + gap));
+      setWindows(
+        items.map((_, i) => {
+          if (i === n - 1) return undefined;
+          const nextTop = tops[i + 1];
+          const pinAt = nav + 1.5 * rem + (i + 1) * 1.1 * rem;
+          // start receding once the next card's top reaches mid-screen, not the moment it peeks in
+          const enters = clamp((nextTop - vh * 0.55) / range);
+          const pins = clamp((nextTop - pinAt) / range);
+          return [enters, Math.max(enters + 0.001, pins)] as [number, number];
+        }),
+      );
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(list);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [ref, n]);
+  return windows;
+}
+
 function ProjectCard({
   project: p,
   i,
@@ -74,6 +122,7 @@ function ProjectCard({
   progress,
   stacked,
   recede,
+  overlap,
 }: {
   project: Project;
   i: number;
@@ -81,6 +130,8 @@ function ProjectCard({
   progress: MotionValue<number>;
   stacked: boolean;
   recede: boolean;
+  /** Scroll-progress window in which the next card slides over this one: [enters screen, pins]. */
+  overlap?: [number, number];
 }) {
   const itemRef = useRef<HTMLLIElement>(null);
   // Unpinned layouts: 0 when the card's end is a third of the way up the screen, 1 once it has left the top.
@@ -88,12 +139,16 @@ function ProjectCard({
   const leaveScale = useTransform(leave, [0, 1], [1, 0.94]);
   const leaveDim = useTransform(leave, [0, 1], [0, 0.45]);
   const start = i / n;
-  const scale = useTransform(progress, [start, 1], [1, 1 - (n - 1 - i) * 0.035]);
+  // Recede only while the next card is actually sliding over this one, so the card you're
+  // reading stays at full size and brightness while pinned. Fallback before measurement: equal slots.
+  const [from, to] = overlap ?? [Math.min(1, start + 0.5 / n), Math.min(1, start + 1 / n)];
+  const last = i === n - 1;
+  const scale = useTransform(progress, [from, Math.max(from + 0.001, 1)], [1, 1 - (n - 1 - i) * 0.035]);
   const figs = (p.images ?? []).map((k) => figures[k]).filter(Boolean);
   // A logo takes the main spot and every figure becomes a thumbnail; otherwise the first figure leads.
   const main = p.logo ? undefined : figs[0];
   const thumbs = p.logo ? figs : figs.slice(1);
-  const dim = useTransform(progress, [start, Math.min(1, start + 1 / n)], [0, i === n - 1 ? 0 : 0.5]);
+  const dim = useTransform(progress, [from, Math.max(from + 0.001, to)], [0, last ? 0 : 0.5]);
 
   return (
     <li

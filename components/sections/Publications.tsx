@@ -16,7 +16,7 @@ export function Publications() {
             On the <em className="text-accent">record</em>.
           </>
         }
-        aside="Peer-reviewed and preprint work. Further manuscripts — an IEEE paper, a Scopus-track journal submission and a book — are in preparation."
+        aside="Peer-reviewed, preprint and submitted work. The Aglier paper is with IEEE Transactions on Robotics; a GBNI IEEE paper, a MITHRA Scopus-track manuscript and a book are in preparation."
       />
 
       <RevealGroup as="ol" className="border-t border-line md:ml-[25%]">
