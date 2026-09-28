@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { formatDate, getAdjacent, getPost, getPosts, getRelated } from "@/lib/blog";
 import { site } from "@/lib/content";
+import { figures, figureSrc } from "@/lib/figures";
+import { jsonLd } from "@/lib/jsonld";
 import { Reveal } from "@/components/ui/Reveal";
 import { Arrow } from "@/components/ui/Arrow";
 import { TableOfContents } from "@/components/blog/TableOfContents";
@@ -22,16 +25,21 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   if (!post) return {};
   return {
     title: post.title,
-    description: post.summary,
+    description: post.description,
+    keywords: [...post.keywords, ...post.tags],
+    authors: [{ name: site.name, url: site.url }],
     alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
       type: "article",
       title: post.title,
-      description: post.summary,
+      description: post.description,
+      url: `/blog/${post.slug}`,
       publishedTime: post.date,
+      modifiedTime: post.updated ?? post.date,
       authors: [site.name],
       tags: post.tags,
     },
+    twitter: { card: "summary_large_image", title: post.title, description: post.description },
   };
 }
 
@@ -41,15 +49,50 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
   const { newer, older } = getAdjacent(post.slug);
   const related = getRelated(post.slug).filter((r) => r.slug !== newer?.slug && r.slug !== older?.slug);
 
-  const jsonLd = {
+  const url = `${site.url}/blog/${post.slug}`;
+  const hero = post.image ? figures[post.image] : undefined;
+  const author = { "@type": "Person", name: site.name, url: site.url, jobTitle: "Lead AI Engineer" };
+  const structured = {
     "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: post.title,
-    description: post.summary,
-    datePublished: post.date,
-    keywords: post.tags.join(", "),
-    author: { "@type": "Person", name: site.name, url: site.url },
-    url: `${site.url}/blog/${post.slug}`,
+    "@graph": [
+      {
+        "@type": "BlogPosting",
+        "@id": `${url}#article`,
+        headline: post.title,
+        description: post.description,
+        datePublished: post.date,
+        dateModified: post.updated ?? post.date,
+        wordCount: post.wordCount,
+        keywords: [...post.keywords, ...post.tags].join(", "),
+        articleSection: post.tags[0],
+        inLanguage: "en",
+        mainEntityOfPage: url,
+        url,
+        image: hero ? `${site.url}${figureSrc(hero, 1600)}` : `${url}/opengraph-image`,
+        author,
+        publisher: author,
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: site.url },
+          { "@type": "ListItem", position: 2, name: "Blog", item: `${site.url}/blog` },
+          { "@type": "ListItem", position: 3, name: post.title, item: url },
+        ],
+      },
+      ...(post.faq.length
+        ? [
+            {
+              "@type": "FAQPage",
+              mainEntity: post.faq.map((f) => ({
+                "@type": "Question",
+                name: f.question,
+                acceptedAnswer: { "@type": "Answer", text: f.answer },
+              })),
+            },
+          ]
+        : []),
+    ],
   };
 
   return (
@@ -58,10 +101,25 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
         {/* Header */}
         <header className="mx-auto max-w-[52rem]">
           <Reveal>
-            <Link href="/blog" className="label group inline-flex items-center gap-2 hover:text-primary">
-              <Arrow direction="right" className="rotate-180" />
-              <span className="link-draw">All posts</span>
-            </Link>
+            <nav aria-label="Breadcrumb">
+              <ol className="label flex flex-wrap items-center gap-2">
+                <li>
+                  <Link href="/" className="link-draw hover:text-primary">
+                    Home
+                  </Link>
+                </li>
+                <li aria-hidden>/</li>
+                <li>
+                  <Link href="/blog" className="link-draw hover:text-primary">
+                    Blog
+                  </Link>
+                </li>
+                <li aria-hidden>/</li>
+                <li aria-current="page" className="max-w-[40ch] truncate text-secondary">
+                  {post.title}
+                </li>
+              </ol>
+            </nav>
           </Reveal>
           <Reveal delay={0.05} className="mt-10">
             <p className="label text-accent">{post.tags.join(" · ")}</p>
@@ -69,12 +127,35 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
             {post.summary ? <p className="mt-6 max-w-[42rem] text-lede text-secondary text-pretty">{post.summary}</p> : null}
             <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-y border-line py-4">
               <p className="label tabular-nums">
-                {site.name} · <time dateTime={post.date}>{formatDate(post.date)}</time> · {post.readingMinutes} min read
+                {site.name} · <time dateTime={post.date}>{formatDate(post.date)}</time>
+                {post.updated ? (
+                  <>
+                    {" "}· Updated <time dateTime={post.updated}>{formatDate(post.updated)}</time>
+                  </>
+                ) : null}{" "}
+                · {post.readingMinutes} min read
               </p>
               <CopyLink />
             </div>
           </Reveal>
         </header>
+
+        {hero ? (
+          <div className="mx-auto mt-12 max-w-[52rem]">
+            <figure>
+              <Image
+                src={figureSrc(hero, 1600)}
+                width={hero.width}
+                height={hero.height}
+                alt={hero.alt}
+                sizes="(min-width: 900px) 52rem, 100vw"
+                loading="eager"
+                fetchPriority="high"
+                className="mx-auto h-auto max-h-[70vh] w-auto rounded-2xl border border-line bg-white object-contain"
+              />
+            </figure>
+          </div>
+        ) : null}
 
         {/* Body + table of contents */}
         <div className="mx-auto mt-12 grid max-w-[64rem] gap-12 lg:grid-cols-[12rem_minmax(0,42rem)] lg:gap-16">
@@ -144,7 +225,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
         </section>
       ) : null}
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(structured)} />
     </main>
   );
 }

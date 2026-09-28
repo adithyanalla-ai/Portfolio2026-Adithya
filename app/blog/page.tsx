@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { formatDate, getPosts } from "@/lib/blog";
+import { site } from "@/lib/content";
+import { jsonLd } from "@/lib/jsonld";
 import { Reveal } from "@/components/ui/Reveal";
 import { Arrow } from "@/components/ui/Arrow";
 import { BlogExplorer } from "@/components/blog/BlogExplorer";
 
 export const metadata: Metadata = {
-  title: "Blog",
-  description: "Notes from Adithya Reddy on agentic AI, LLM systems, explainable ML, research and shipping AI inside a business.",
-  alternates: { canonical: "/blog" },
+  title: "Blog: agentic AI, explainable ML and robotics",
+  description:
+    "Adithya Reddy's blog on agentic AI, LLM systems, explainable machine learning, AI robotics and measuring AI in business outcomes.",
+  alternates: { canonical: "/blog", types: { "application/rss+xml": "/blog/rss.xml" } },
 };
 
 export default function BlogIndex() {
@@ -16,6 +19,20 @@ export default function BlogIndex() {
   const featured = posts.find((p) => p.featured) ?? posts[0];
   const topics = new Set(posts.flatMap((p) => p.tags)).size;
   const dateLabels = Object.fromEntries(posts.map((p) => [p.slug, formatDate(p.date, "short")]));
+  const structured = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: `${site.name}: Field notes`,
+    url: `${site.url}/blog`,
+    author: { "@type": "Person", name: site.name, url: site.url },
+    blogPost: posts.map((p) => ({
+      "@type": "BlogPosting",
+      headline: p.title,
+      url: `${site.url}/blog/${p.slug}`,
+      datePublished: p.date,
+      description: p.description,
+    })),
+  };
 
   return (
     <main id="main" className="container-x pb-[var(--section-y)] pt-[calc(var(--nav-h)+clamp(3rem,2rem+5vw,7rem))]">
@@ -92,6 +109,12 @@ export default function BlogIndex() {
       ) : null}
 
       {posts.length === 0 ? <p className="mt-16 text-secondary">The first post is on its way.</p> : null}
+      <p className="mt-16 md:ml-[25%]">
+        <a href="/blog/rss.xml" className="label link-draw hover:text-primary">
+          Subscribe via RSS
+        </a>
+      </p>
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(structured)} />
     </main>
   );
 }

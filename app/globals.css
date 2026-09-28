@@ -604,3 +604,158 @@
 .hljs-punctuation {
   color: var(--text-secondary);
 }
+
+/* ---- Figures (patent drawings are white paper: framed on purpose in both themes) ---- */
+.prose figure.figure {
+  margin-block: 2.25em;
+}
+.prose .figure-link {
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: #fff;
+  text-decoration: none;
+  transition: border-color 0.3s, transform 0.5s var(--ease-spring);
+}
+.prose .figure-link:hover {
+  border-color: var(--line-strong);
+  transform: translateY(-2px);
+}
+.prose .figure-link img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+}
+.prose figure.figure figcaption,
+.prose .chart-caption {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* ---- Math (MathML from KaTeX; the browser typesets it) ---- */
+.prose .math-block {
+  margin-block: 1.75em;
+  padding: 1.1rem 1.25rem;
+  overflow-x: auto;
+  border-radius: 0.75rem;
+  background: var(--surface-sunken);
+  border: 1px solid var(--line);
+  color: var(--text-primary);
+  font-size: 1.2rem;
+}
+.prose .math-block math {
+  display: block;
+  margin-inline: auto;
+}
+.prose math {
+  font-size: 1.08em;
+  color: var(--text-primary);
+}
+
+/* ---- Charts (SVG from lib/charts.ts, coloured by tokens) ---- */
+.prose figure.chart {
+  margin-block: 2.25em;
+  padding: 1.25rem 1.25rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--surface-raised);
+}
+.prose .chart-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+.chart-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.chart-grid {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+.chart-axis,
+.chart-rule {
+  stroke: var(--line-strong);
+  stroke-width: 1;
+}
+.chart-tick {
+  fill: var(--text-muted);
+  font-size: 12px;
+  font-family: var(--font-sans);
+}
+.chart-label {
+  fill: var(--text-secondary);
+  font-size: 14px;
+  font-family: var(--font-sans);
+}
+.chart-value {
+  fill: var(--text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+}
+.chart-bar {
+  fill: var(--accent);
+  transition: opacity 0.2s;
+}
+.chart-row-total .chart-bar {
+  fill: var(--text-secondary);
+}
+.chart-row-total .chart-label {
+  fill: var(--text-primary);
+  font-weight: 600;
+}
+.chart-hit {
+  fill: transparent;
+}
+.chart-row:hover .chart-hit {
+  fill: var(--accent-soft);
+}
+.chart-row:hover .chart-bar {
+  opacity: 0.85;
+}
+.chart-line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.chart-guide {
+  stroke: var(--line-strong);
+  stroke-width: 1;
+}
+.chart-dot {
+  fill: var(--accent);
+  stroke: var(--surface-raised);
+  stroke-width: 2;
+}
+.chart-point:hover .chart-dot {
+  r: 7;
+}
+.prose .chart-table {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+}
+.prose .chart-table summary {
+  cursor: pointer;
+  color: var(--text-muted);
+  width: fit-content;
+}
+.prose .chart-table summary:hover {
+  color: var(--text-primary);
+}
+.prose .chart-table table {
+  display: table;
+  margin-top: 0.75rem;
+  width: 100%;
+  font-variant-numeric: tabular-nums;
+}

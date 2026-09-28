@@ -116,6 +116,10 @@ export type Project = {
   points: string[];
   tags: string[];
   meta?: string;
+  /** Keys from lib/figures.ts; the first is the card's main image, the rest are thumbnails. */
+  images?: string[];
+  /** Deeper write-up (usually a blog post). */
+  href?: string;
 };
 
 export const projects: Project[] = [
@@ -144,6 +148,8 @@ export const projects: Project[] = [
     ],
     tags: ["Robotics", "Computer Vision", "Embedded AI"],
     meta: "Patent in drafting",
+    images: ["aglier-fig9", "aglier-fig14", "aglier-fig3", "aglier-fig5"],
+    href: "/blog/aglier-ai-tree-climbing-fruit-harvesting-robot",
   },
   {
     index: "03",
@@ -158,6 +164,7 @@ export const projects: Project[] = [
     ],
     tags: ["Multi-agent", "Multimodal", "LLMs", "Production"],
     meta: "SSRN · 6845958",
+    href: "/blog/gbni-state-aware-agents",
   },
   {
     index: "04",
@@ -168,6 +175,7 @@ export const projects: Project[] = [
     points: ["3,000+ qualified leads generated.", "INR 1.4Cr+ in revenue facilitated."],
     tags: ["Python", "SQL", "Data Engineering"],
     meta: "₹1.4Cr+ facilitated",
+    href: "/blog/anatomy-of-a-lead-generation-pipeline",
   },
   {
     index: "05",
@@ -182,6 +190,7 @@ export const projects: Project[] = [
     ],
     tags: ["scikit-learn", "SHAP", "Streamlit"],
     meta: "Peer-reviewed",
+    href: "/blog/explaining-every-prediction-diabetes-risk",
   },
 ];
 

@@ -1,12 +1,14 @@
 ---
-title: What I'm building in 2026
+title: What I'm building in 2026: agentic AI, a harvesting robot and three manuscripts
 date: 2026-09-27
-summary: A map of the work on my desk right now — production agents, a fruit-harvesting robot, and the papers that keep it all honest.
-tags: Agentic AI, Research
-featured: true
+summary: A map of my current work: production AI agents, the GBNI framework, the Aglier fruit-harvesting robot, the MITHRA cybercrime platform, and the papers behind them.
+description: Adithya Reddy's 2026 work: production agentic AI, the GBNI agent framework, the Aglier fruit-harvesting robot and the MITHRA cybercrime platform.
+keywords: agentic AI projects, AI research 2026, fruit harvesting robot, cybercrime intelligence platform, GBNI framework, AI engineer portfolio
+tags: Agentic AI, Research, Robotics
+image: aglier-fig9
 ---
 
-This blog is where I'll write up the work behind the portfolio: what I built, why it's shaped the way it is, and what I'd change next time. Here is where things stand.
+This blog documents the work behind my portfolio: what I built, why it's shaped that way, and what I'd change. Here is where everything stands.
 
 <div class="figures">
   <div><strong>5</strong><span>autonomous agent pipelines in production</span></div>
@@ -14,22 +16,34 @@ This blog is where I'll write up the work behind the portfolio: what I built, wh
   <div><strong>3</strong><span>manuscripts in progress: IEEE, Scopus-track, book</span></div>
 </div>
 
-## Agents that do real work
+## Agentic AI in production
 
 At Eject Solutions I lead AI engineering. The agentic architecture I designed there became the production blueprint for new builds.
 
-In my own research, GBNI (Generative Brand Narrative Intelligence) is a state-aware multimodal agent framework for emotionally adaptive brand communication. Its companion project, Autonomous Agency Workflows, runs five autonomous agent pipelines in production that recover more than 20 hours of staff time every week. The framework is [published on SSRN](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6845958) (Abstract ID 6845958). I'm expanding it into a 120+ page IEEE paper and a book manuscript. I've written a [shorter explainer on what "state-aware" means](/blog/gbni-state-aware-agents) if you want the idea without the paper.
+In my research, **GBNI** (Generative Brand Narrative Intelligence) is a state-aware multimodal agent framework for emotionally adaptive brand communication, [published on SSRN](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6845958) (Abstract ID 6845958). Its companion project, Autonomous Agency Workflows, runs five autonomous agent pipelines in production that recover more than 20 hours of staff time every week. I'm expanding the paper into a 120+ page IEEE paper and a book. The plain-language version is in [GBNI explained](/blog/gbni-state-aware-agents).
 
-## MITHRA
+## Aglier: an AI fruit-harvesting robot
 
-MITHRA is a self-directed R&D project: a rapid-response and intelligence platform for cybercrime. I build it with Claude Code- and Codex-assisted engineering workflows, and I'm preparing the manuscript for a Scopus-indexed journal.
+Aglier climbs fruit trees and harvests ripe fruit. It grips the trunk with four clamps, identifies fruit with an AI camera and depth sensor, and picks with an articulated arm into an onboard basket. It carries an onboard GBNI subsystem: batch records from its harvest log can feed an asynchronous narrative tier that never touches the real-time control loop. I'm the sole inventor and I'm drafting the patent specification.
 
-## Aglier
+![Annotated view of the Aglier robot](fig:aglier-fig9 "Aglier, annotated: clamps, AI camera module, articulated arm, gripper and collection basket.")
 
-Aglier is an AI-integrated robot that climbs trees to harvest fruit. It carries an onboard GBNI subsystem for state-aware reasoning. I'm the sole inventor and I'm currently drafting the patent specification.
+The full breakdown, with claw geometry, cycle-time maths and all four patent figures, is in [Aglier: inside an AI tree-climbing fruit-harvesting robot](/blog/aglier-ai-tree-climbing-fruit-harvesting-robot).
 
-## What to expect here
+## MITHRA: cybercrime rapid response
 
-Posts on these projects as they reach milestones I can talk about, plus notes on the day-to-day work of shipping ML and LLM systems that a business actually relies on.
+MITHRA is a self-directed R&D project: a rapid-response and intelligence platform for cybercrime. I build it with Claude Code- and Codex-assisted engineering, and I'm preparing its manuscript for a Scopus-indexed journal.
 
-If any of this overlaps with what you're working on, [get in touch](/#contact).
+## What to expect on this blog
+
+Deep dives on these projects as they reach milestones I can share, and practical notes on shipping ML and LLM systems a business relies on. If your work overlaps, [get in touch](/#contact).
+
+## Frequently asked questions
+
+### What projects is Adithya Reddy working on?
+
+Production agentic AI at Eject Solutions; GBNI, a state-aware multimodal agent framework; Aglier, an AI tree-climbing fruit-harvesting robot; and MITHRA, a cybercrime rapid-response and intelligence platform.
+
+### Which research papers are in progress?
+
+A 120+ page IEEE paper and a book manuscript expanding the GBNI framework, and a MITHRA manuscript targeting a Scopus-indexed journal. The GBNI framework is already published on SSRN (Abstract ID 6845958).

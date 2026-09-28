@@ -1,24 +1,26 @@
 ---
-title: Twenty months from freelancer to lead AI engineer
+title: From freelancer to lead AI engineer in twenty months
 date: 2026-09-20
-summary: The path from a freelance role to leading AI engineering at Eject Solutions, and what the numbers along the way taught me.
+summary: The path from a freelance role to Lead AI Engineer at Eject Solutions between March 2024 and November 2025, the results behind each step, and three lessons from it.
+description: A career path from freelance AI engineer to Lead AI Engineer in 20 months: promotions, measurable results and lessons for AI engineers.
+keywords: lead AI engineer, AI engineer career path, AI career growth, freelance AI engineer, business analyst to AI engineer, agentic AI architecture
 tags: Career, Business
 ---
 
-In March 2024 I joined Eject Solutions as a freelance AI and data engineer. In November 2025 I became its Lead AI Engineer. This is the path between those two points, told through the work.
+In March 2024 I joined Eject Solutions as a freelance AI and data engineer. In November 2025 I became its Lead AI Engineer. That is twenty months, from the first day as a freelancer to leading the function. This is the path, told through the work.
 
-## The path
+## The career timeline
 
 <ol class="timeline">
-  <li><time>Mar 2023</time><strong>Marketing Analytics Analyst, INT360 Design Studio</strong><span>Automation, dashboards, A/B testing and cohort analysis. My first year of turning data into weekly decisions.</span></li>
-  <li><time>Mar 2024</time><strong>Freelance AI &amp; Data Engineer, Eject Solutions</strong><span>Joined Eject as a freelancer, working on AI and data engineering.</span></li>
+  <li><time>Mar 2023</time><strong>Marketing Analytics Analyst, INT360 Design Studio</strong><span>Automation, dashboards, A/B testing and cohort analysis: a year of turning data into weekly decisions.</span></li>
+  <li><time>Mar 2024</time><strong>Freelance AI &amp; Data Engineer, Eject Solutions</strong><span>Joined Eject as a freelancer on AI and data engineering.</span></li>
   <li><time>Then</time><strong>Business Analyst &amp; AI Engineer</strong><span>A dual role: understanding the business problem, and building the system that solves it.</span></li>
   <li><time>Nov 2025</time><strong>Lead AI Engineer</strong><span>Leading AI engineering, with an agentic architecture now used as the company's production blueprint.</span></li>
 </ol>
 
-## The work that moved the needle
+## The results behind each promotion
 
-Titles follow results. These are the ones I'm proudest of from this stretch:
+Titles follow results. These are the ones I'm proudest of from this period:
 
 <div class="figures">
   <div><strong>40%</strong><span>faster model and pipeline deployment</span></div>
@@ -27,19 +29,33 @@ Titles follow results. These are the ones I'm proudest of from this stretch:
   <div><strong>3,000+</strong><span>qualified leads from one campaign</span></div>
 </div>
 
-Alongside those: LLM-powered automation pipelines that took over repetitive manual workflows, and Power BI dashboards that gave leadership a live read on the business.
+Alongside them: LLM-powered automation pipelines that took over repetitive manual workflows, and Power BI dashboards that gave leadership a live view of the business.
 
-## What I took from it
+## Three lessons for AI engineers
 
-**Speak in the numbers leadership already tracks.** A model's F1 score rarely reaches a board meeting. Revenue, cost and hours do. The work that got noticed was the work I could describe in those terms.
+**1. Report in the numbers leadership already tracks.** A model's F1 score rarely reaches a board meeting. Revenue, cost and hours do. The work that got noticed was work I could describe in those units.
 
-**The analyst role wasn't a detour.** Being a business analyst and an engineer at the same time meant I could sit with C-suite leaders to decide what to build, then go and build it. That loop is short, and short loops are fast.
+**2. The analyst role accelerates engineering.** As business analyst and engineer at once, I could sit with C-suite leaders to decide what to build, then build it. That loop is short, and short loops ship faster.
 
-**Architecture outlives features.** The single most leveraged thing I built wasn't a pipeline. It was the agentic architecture that became the blueprint for everything after it.
+**3. Architecture outlives features.** My most leveraged contribution wasn't a pipeline. It was the agentic architecture that became the blueprint for every build after it.
 
-> [!KEY] If I had to compress it
-> Solve the business problem first, measure it in the business's own units, and build the thing others can reuse.
+> [!KEY] The short version
+> Solve the business problem first, measure it in the business's units, and build what others can reuse.
 
-## What's next
+## What comes next
 
-Leading the team means the questions get bigger: which systems to build, not just how. In parallel I'm carrying the research forward, from [GBNI](/blog/gbni-state-aware-agents) to MITHRA and Aglier. I wrote about all three in [What I'm building in 2026](/blog/what-im-building-in-2026).
+Leading the team changes the questions from *how* to build to *which* systems to build. In parallel I'm advancing the research: [GBNI](/blog/gbni-state-aware-agents), MITHRA and [Aglier](/blog/aglier-ai-tree-climbing-fruit-harvesting-robot). The overview is in [What I'm building in 2026](/blog/what-im-building-in-2026).
+
+## Frequently asked questions
+
+### How long did it take to go from freelancer to Lead AI Engineer?
+
+Twenty months: from joining Eject Solutions as a freelance AI and data engineer in March 2024 to becoming Lead AI Engineer in November 2025, via a combined Business Analyst and AI Engineer role.
+
+### What results led to the promotions?
+
+40% faster model and pipeline deployment, 35% fewer sprint delays, a ₹4 lakh cost reduction on an engagement with KL University, a campaign that produced 3,000+ qualified leads, and an agentic architecture adopted as the production blueprint.
+
+### Does business analysis help an AI engineering career?
+
+Yes. Understanding the business decision lets an engineer choose what to build, define success in business terms and communicate results to leadership, which shortens the path from idea to adopted system.

@@ -93,8 +93,12 @@ Posts are Markdown files in [`content/blog/`](content/blog). The filename become
 ---
 title: My post title
 date: 2026-10-15
-summary: One sentence for the blog index, the meta description and the social card.
+summary: One sentence for the blog index and the social card.
+description: Meta description for search results (optional; ≤160 characters, falls back to summary).
+keywords: phrase one, phrase two        # optional: extra search phrases
 tags: Agentic AI, Research
+image: aglier-fig9    # optional: a figure key; shown as the hero and used in structured data
+updated: 2026-10-20   # optional: shown as "Updated" and used as dateModified
 featured: true        # optional: pins the post as the big card at the top of /blog
 ---
 
@@ -106,6 +110,10 @@ Extras the blog understands:
 | Write | Get |
 |---|---|
 | `## Heading` / `### Heading` | An anchor link and an entry in the sticky "On this page" table of contents |
+| `![alt](fig:aglier-fig3 "Caption")` | A responsive figure (800w/1600w WebP, fixed size, lazy-loaded) that opens full size on click |
+| `$r = L\sin(\theta/2)$` and `$$ … $$` | Inline and display maths, rendered at build time to MathML (no fonts or JavaScript) |
+| ```` ```chart ```` with a JSON spec | A build-time SVG chart in theme colours, with hover titles and a data table. See `lib/charts.ts` for the `range` and `curve` types |
+| `## Frequently asked questions` with `### Question?` entries | A visible FAQ, plus FAQPage structured data for search engines |
 | ```` ```python ```` fenced code | Syntax highlighting in theme colours, with a language label (python, sql, bash, typescript, json, yaml) |
 | `> [!NOTE] Title` (also `TIP`, `KEY`, `CAUTION`) | A callout box. `KEY` is the large pull-quote style |
 | `<div class="figures"><div><strong>40%</strong><span>caption</span></div>…</div>` | A strip of big numbers |
@@ -116,7 +124,23 @@ Each post automatically gets:
 - previous/next links and related posts (by shared tags);
 - a copy-link button;
 - a generated social image;
-- JSON-LD metadata and a sitemap entry.
+- visible breadcrumbs;
+- structured data (BlogPosting, BreadcrumbList, and FAQPage when there's an FAQ);
+- a sitemap entry (with its image) and an entry in the RSS feed at `/blog/rss.xml`.
+
+### Images
+
+Images live in `public/images/` as two pre-resized WebP files (`name-800.webp` and `name-1600.webp`).
+Register each image in [`lib/figures.ts`](lib/figures.ts) with its size and descriptive alt text. A figure can then be used:
+- in posts, as `![alt](fig:key "Caption")`;
+- as a post's hero, with `image: key`;
+- on a project card, via `images: [...]` in `lib/content.ts`. The first image is the main one; the rest become thumbnails.
+
+To add one, resize it with sharp (installed with Next):
+
+```bash
+node -e "const s=require('sharp');[800,1600].forEach(w=>s('in.png').resize({width:w,withoutEnlargement:true}).webp({quality:80}).toFile('public/images/x/name-'+w+'.webp'))"
+```
 
 The three newest posts appear in the "Writing" section on the home page, and `/blog` has topic filters built from the tags.
 
@@ -131,6 +155,7 @@ app/
   page.tsx              home page: section order
   blog/page.tsx         blog index: featured post + filterable list
   blog/[slug]/          blog post page + generated social image
+  blog/rss.xml/         RSS feed
   globals.css           tokens, type scale, buttons, article (prose) styles
 components/
   sections/             Hero, About, Experience, Projects, Publications, Skills, Education, LatestWriting, Contact, Footer
@@ -140,7 +165,11 @@ components/
 content/blog/           Markdown posts
 lib/
   content.ts            ← portfolio copy
-  blog.ts               Markdown loader
+  blog.ts               Markdown loader (maths, figures, charts, FAQ, table of contents)
+  charts.ts             build-time SVG charts
+  figures.ts            image registry
+  jsonld.ts             safe JSON-LD serialisation
+public/images/          pre-resized figures (e.g. Aglier patent drawings)
   motion.ts             spring and stagger presets
 ```
 
