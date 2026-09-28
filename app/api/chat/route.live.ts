@@ -72,35 +72,62 @@ export async function POST(req: Request) {
   }
 
   const client = new Anthropic();
+  const params = {
+    model: "claude-opus-5",
+    max_tokens: 1024, // deliberately short chat answers
+    output_config: { effort: "low" as const }, // quick Q&A over a fixed profile
+    system: [{ type: "text" as const, text: SYSTEM, cache_control: { type: "ephemeral" as const } }],
+    messages: turns,
+  };
+  // Server-side refusal fallbacks are optional: if the account rejects the beta, retry plainly.
+  const open = async (withFallbacks: boolean) => {
+    const stream = withFallbacks
+      ? client.beta.messages.stream({ ...params, betas: ["server-side-fallback-2026-07-01"], fallbacks: "default" })
+      : client.beta.messages.stream(params);
+    const it = stream[Symbol.asyncIterator]();
+    const first = await it.next(); // surfaces auth/model/billing errors before we commit to a 200 stream
+    return { stream, it, first };
+  };
+
+  let opened: Awaited<ReturnType<typeof open>>;
+  try {
+    try {
+      opened = await open(true);
+    } catch (error) {
+      if (error instanceof Anthropic.BadRequestError) opened = await open(false);
+      else throw error;
+    }
+  } catch (error) {
+    // e.g. "401 authentication_error", "403 permission_error", "404 not_found_error", "429 rate_limit_error"
+    const apiType = error instanceof Anthropic.APIError ? (error.error as { error?: { type?: string } } | undefined)?.error?.type : undefined;
+    const reason = error instanceof Anthropic.APIError ? `${error.status ?? ""} ${apiType ?? "api_error"}`.trim() : "network error";
+    console.error(`chat: falling back to offline answer (${reason})`, error instanceof Anthropic.APIError ? error.message : error);
+    return new Response(localAnswer(question), {
+      headers: { "Content-Type": "text/plain; charset=utf-8", "X-Chat-Mode": "fallback", "X-Chat-Error": reason, "Cache-Control": "no-store" },
+    });
+  }
+
   const encoder = new TextEncoder();
+  const { stream, it, first } = opened;
   const body = new ReadableStream<Uint8Array>({
     async start(controller) {
       let sent = false;
-      try {
-        const stream = client.beta.messages.stream({
-          model: "claude-opus-5",
-          max_tokens: 1024, // deliberately short chat answers
-          betas: ["server-side-fallback-2026-07-01"],
-          fallbacks: "default", // re-run on a fallback model if a safety classifier declines
-          output_config: { effort: "low" }, // quick Q&A over a fixed profile
-          system: [{ type: "text", text: SYSTEM, cache_control: { type: "ephemeral" } }],
-          messages: turns,
-        });
-        for await (const event of stream) {
-          if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
-            sent = true;
-            controller.enqueue(encoder.encode(event.delta.text));
-          }
+      const emit = (event: unknown) => {
+        const e = event as { type?: string; delta?: { type?: string; text?: string } };
+        if (e.type === "content_block_delta" && e.delta?.type === "text_delta" && e.delta.text) {
+          sent = true;
+          controller.enqueue(encoder.encode(e.delta.text));
         }
+      };
+      try {
+        if (!first.done) emit(first.value);
+        for (let r = await it.next(); !r.done; r = await it.next()) emit(r.value);
         const final = await stream.finalMessage();
         if (final.stop_reason === "refusal" && !sent) {
           controller.enqueue(encoder.encode(`I can't help with that one here. Ask me about my work, or email ${site.email}.`));
         }
       } catch (error) {
-        if (error instanceof Anthropic.RateLimitError) console.error("chat: rate limited by API");
-        else if (error instanceof Anthropic.APIError) console.error(`chat: API error ${error.status}`);
-        else console.error("chat: unexpected error", error);
-        // Degrade gracefully to the offline answer rather than showing an error.
+        console.error("chat: stream interrupted", error instanceof Anthropic.APIError ? `${error.status} ${error.message}` : error);
         if (!sent) controller.enqueue(encoder.encode(localAnswer(question)));
       } finally {
         controller.close();
@@ -110,4 +137,12 @@ export async function POST(req: Request) {
   return new Response(body, {
     headers: { "Content-Type": "text/plain; charset=utf-8", "X-Chat-Mode": "ai", "Cache-Control": "no-store" },
   });
+}
+
+/** Health check: tells you whether the deployment can see the API key (never reveals it). */
+export function GET() {
+  return Response.json(
+    { ok: true, aiEnabled: Boolean(process.env.ANTHROPIC_API_KEY), model: "claude-opus-5" },
+    { headers: { "Cache-Control": "no-store" } },
+  );
 }

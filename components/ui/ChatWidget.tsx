@@ -6,7 +6,7 @@ import { site } from "@/lib/content";
 import { localAnswer } from "@/lib/localAnswer";
 import { spring } from "@/lib/motion";
 
-type Msg = { role: "user" | "assistant"; content: string };
+type Msg = { role: "user" | "assistant"; content: string; note?: string };
 
 const SUGGESTIONS = [
   "What do you do at Eject Solutions?",
@@ -69,21 +69,28 @@ export function ChatWidget() {
       setBusy(true);
       const history: Msg[] = [...msgs, { role: "user", content: q }];
       setMsgs([...history, { role: "assistant", content: "" }]);
-      const write = (text: string) =>
+      const write = (text: string, note?: string) =>
         setMsgs((cur) => {
           const next = cur.slice();
-          next[next.length - 1] = { role: "assistant", content: text };
+          next[next.length - 1] = { role: "assistant", content: text, note };
           return next;
         });
+      const offlineNote = (mode: string | null, reason: string | null) =>
+        mode === "local"
+          ? "Offline answer · AI key not set on this deployment"
+          : mode === "fallback"
+            ? `Offline answer · AI unavailable${reason ? ` (${reason})` : ""}`
+            : undefined;
       try {
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           // skip the greeting; the server trims to the last 10 turns
-          body: JSON.stringify({ messages: history.slice(1) }),
+          body: JSON.stringify({ messages: history.slice(1).map(({ role, content }) => ({ role, content })) }),
         });
+        const note = offlineNote(res.headers.get("X-Chat-Mode"), res.headers.get("X-Chat-Error"));
         if (!res.ok || !res.body) {
-          write(res.status === 429 ? await res.text() : localAnswer(q));
+          write(res.status === 429 ? await res.text() : localAnswer(q), res.status === 429 ? undefined : `Offline answer · server returned ${res.status}`);
         } else {
           const reader = res.body.getReader();
           const decoder = new TextDecoder();
@@ -92,12 +99,12 @@ export function ChatWidget() {
             const { done, value } = await reader.read();
             if (done) break;
             text += decoder.decode(value, { stream: true });
-            write(text);
+            write(text, note);
           }
-          if (!text.trim()) write(localAnswer(q));
+          if (!text.trim()) write(localAnswer(q), "Offline answer · empty AI reply");
         }
       } catch {
-        write(localAnswer(q)); // offline / static hosting
+        write(localAnswer(q), "Offline answer · couldn't reach the AI service"); // offline / static hosting
       } finally {
         setBusy(false);
       }
@@ -144,7 +151,7 @@ export function ChatWidget() {
 
             <div ref={listRef} className="flex-1 space-y-3 overflow-y-auto overscroll-contain px-5 py-4" aria-live="polite">
               {msgs.map((msg, i) => (
-                <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                <div key={i} className={`flex flex-col ${msg.role === "user" ? "items-end" : "items-start"}`}>
                   <p
                     className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
                       msg.role === "user" ? "rounded-br-md bg-accent text-on-accent" : "rounded-bl-md bg-surface-sunken text-primary"
@@ -158,6 +165,7 @@ export function ChatWidget() {
                       </span>
                     )}
                   </p>
+                  {msg.note ? <span className="mt-1 px-1 text-[0.6875rem] text-muted">{msg.note}</span> : null}
                 </div>
               ))}
               {msgs.length === 1 ? (
