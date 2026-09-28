@@ -38,22 +38,30 @@ export function ProjectStack({ projects }: { projects: Project[] }) {
           stacked={stacked}
           top={layout.tops[i]}
           bottomPinned={layout.bottomPinned[i]}
+          minHeight={layout.minHeights[i]}
           overlap={layout.windows[i]}
+          nextOverlap={layout.windows[i + 1]}
         />
       ))}
     </ol>
   );
 }
 
-type StackLayout = { tops: number[]; bottomPinned: boolean[]; windows: ([number, number] | undefined)[] };
+type StackLayout = {
+  tops: number[];
+  bottomPinned: boolean[];
+  minHeights: number[];
+  windows: ([number, number] | undefined)[];
+};
 
 /**
  * Measures the cards and returns, per card: its sticky `top` (px), whether it pins by its
- * bottom edge, and the section-progress window [next card reaches mid-screen, next card pins]
- * during which it should recede.
+ * bottom edge, a min-height so it fully covers every card pinned beneath it (a tall,
+ * bottom-pinned card must not peek out below a shorter card stacked over it), and the
+ * section-progress window [next card reaches mid-screen, next card pins] in which it recedes.
  */
 function useStackLayout(ref: React.RefObject<HTMLOListElement | null>, n: number) {
-  const [layout, setLayout] = useState<StackLayout>({ tops: [], bottomPinned: [], windows: [] });
+  const [layout, setLayout] = useState<StackLayout>({ tops: [], bottomPinned: [], minHeights: [], windows: [] });
   useEffect(() => {
     const list = ref.current;
     if (!list) return;
@@ -62,11 +70,26 @@ function useStackLayout(ref: React.RefObject<HTMLOListElement | null>, n: number
       const vh = window.innerHeight;
       const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
       const nav = document.querySelector("header")?.getBoundingClientRect().height ?? 68;
-      // offsetHeight ignores the scale transform applied while stacking
-      const heights = items.map((el) => (el.querySelector("article") as HTMLElement | null)?.offsetHeight ?? el.offsetHeight);
+      // Natural content height: the card's inner grid (unaffected by our min-height and by
+      // the scale transform) plus the article's 1px borders.
+      const heights = items.map((el) => {
+        const inner = el.querySelector("article")?.firstElementChild as HTMLElement | null;
+        return inner ? inner.offsetHeight + 2 : el.offsetHeight;
+      });
       const base = items.map((_, i) => nav + 1.5 * rem + i * 1.1 * rem);
       const tops = heights.map((h, i) => Math.min(base[i], vh - h - 16));
       const bottomPinned = tops.map((t, i) => t < base[i]);
+
+      // Each card reaches at least as low as the lowest pinned card beneath it.
+      const minHeights: number[] = [];
+      const effective: number[] = [];
+      let lowest = -Infinity;
+      heights.forEach((h, i) => {
+        const need = Math.ceil(lowest - tops[i]) + 1;
+        minHeights.push(need > h ? need : 0);
+        effective.push(Math.max(h, minHeights[i]));
+        lowest = Math.max(lowest, tops[i] + effective[i]);
+      });
 
       const range = list.offsetHeight - vh;
       const clamp = (v: number) => Math.min(1, Math.max(0, v));
@@ -74,7 +97,7 @@ function useStackLayout(ref: React.RefObject<HTMLOListElement | null>, n: number
       // (offsetTop can't be used: sticky items report their shifted position).
       const gap = parseFloat(getComputedStyle(list).rowGap) || 0;
       const natural: number[] = [];
-      items.forEach((el, i) => natural.push(i === 0 ? 0 : natural[i - 1] + items[i - 1].offsetHeight + gap));
+      effective.forEach((_, i) => natural.push(i === 0 ? 0 : natural[i - 1] + effective[i - 1] + gap));
       const windows = items.map((_, i) => {
         if (i === n - 1 || range <= 0) return undefined;
         const nextTop = natural[i + 1];
@@ -82,7 +105,11 @@ function useStackLayout(ref: React.RefObject<HTMLOListElement | null>, n: number
         const pins = clamp((nextTop - tops[i + 1]) / range);
         return [enters, Math.max(enters + 0.001, pins)] as [number, number];
       });
-      setLayout({ tops, bottomPinned, windows });
+      setLayout((prev) =>
+        JSON.stringify(prev) === JSON.stringify({ tops, bottomPinned, minHeights, windows })
+          ? prev
+          : { tops, bottomPinned, minHeights, windows },
+      );
     };
     measure();
     const ro = new ResizeObserver(measure);
@@ -104,7 +131,9 @@ function ProjectCard({
   stacked,
   top,
   bottomPinned,
+  minHeight,
   overlap,
+  nextOverlap,
 }: {
   project: Project;
   i: number;
@@ -114,8 +143,12 @@ function ProjectCard({
   /** Sticky top in px (negative for cards taller than the screen, which pin by their bottom). */
   top?: number;
   bottomPinned?: boolean;
+  /** Min height (px) so the card covers the cards pinned beneath it. */
+  minHeight?: number;
   /** Scroll-progress window in which the next card slides over this one: [enters screen, pins]. */
   overlap?: [number, number];
+  /** The next card's window: while the card after next slides in, this one fades further back. */
+  nextOverlap?: [number, number];
 }) {
   const start = i / n;
   // Recede only while the next card is actually sliding over this one, so the card you're
@@ -127,7 +160,10 @@ function ProjectCard({
   // A logo takes the main spot and every figure becomes a thumbnail; otherwise the first figure leads.
   const main = p.logo ? undefined : figs[0];
   const thumbs = p.logo ? figs : figs.slice(1);
-  const dim = useTransform(progress, [from, Math.max(from + 0.001, to)], [0, last ? 0 : 0.5]);
+  // Half-dim while the next card slides over; nearly hidden once it is two cards deep, so only
+  // clean edges show in the stair-step above the active card.
+  const deepEnd = Math.min(1, Math.max(to + 0.002, nextOverlap?.[1] ?? 1));
+  const dim = useTransform(progress, [from, Math.max(from + 0.001, to), deepEnd], last ? [0, 0, 0] : [0, 0.5, 0.9]);
 
   return (
     <li
@@ -138,14 +174,18 @@ function ProjectCard({
       <m.article
         style={
           stacked
-            ? { scale, transformOrigin: bottomPinned ? "50% 100%" : "50% 0%" }
+            ? {
+                scale,
+                transformOrigin: bottomPinned ? "50% 100%" : "50% 0%",
+                minHeight: minHeight ? `${minHeight}px` : undefined,
+              }
             : undefined
         }
         initial={{ opacity: 0, y: 32 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
         transition={{ type: "spring", stiffness: 110, damping: 20 }}
-        className="group relative overflow-hidden rounded-2xl border border-line bg-surface-raised"
+        className="group relative flex flex-col justify-center overflow-hidden rounded-2xl border border-line bg-surface-raised"
         aria-labelledby={`project-${i}`}
       >
         <div className="grid gap-10 p-6 sm:p-10 md:min-h-[62vh] md:grid-cols-12 md:p-14">
