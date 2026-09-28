@@ -45,7 +45,7 @@ export function Publications() {
                   href={pub.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="label mt-6 inline-flex items-center gap-2 text-secondary hover:text-accent"
+                  className="tap label mt-6 inline-flex items-center gap-2 text-secondary hover:text-accent"
                 >
                   <span className="link-draw">View source</span>
                   <Arrow />

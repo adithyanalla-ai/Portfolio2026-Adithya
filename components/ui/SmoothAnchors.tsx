@@ -33,7 +33,7 @@ export function SmoothAnchors() {
       if (!target) return;
       e.preventDefault();
 
-      const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) * 16 || 68;
+      const navH = document.querySelector("header")?.getBoundingClientRect().height ?? 68;
       const top = target === document.body ? 0 : target.getBoundingClientRect().top + window.scrollY - navH;
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 

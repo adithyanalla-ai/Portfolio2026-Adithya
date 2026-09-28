@@ -13,6 +13,8 @@ export type Figure = {
   /** Width of the largest variant file (≤1600) */
   maxWidth: number;
   alt: string;
+  /** Shown under the image when it's used as a post's hero */
+  caption?: string;
 };
 
 export const figures: Record<string, Figure> = {
@@ -21,6 +23,7 @@ export const figures: Record<string, Figure> = {
     width: 1227,
     height: 1282,
     maxWidth: 1227,
+    caption: "FIG. 9: Annotated view of the robot (Cam Bot). Four clamps hold the trunk; the arm, gripper and basket do the picking.",
     alt: "Annotated patent drawing of the Aglier tree-climbing fruit-harvesting robot clamped to a trunk with four clamps, showing the AI camera module, articulated arm, gripper, collection basket, battery pack and communication module.",
   },
   "aglier-fig14": {

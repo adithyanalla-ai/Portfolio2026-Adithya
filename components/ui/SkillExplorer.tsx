@@ -51,7 +51,7 @@ export function SkillExplorer({ groups }: { groups: SkillGroup[] }) {
               aria-controls={`panel-${g.id}`}
               tabIndex={selected ? 0 : -1}
               onClick={() => setActive(i)}
-              className={`group flex shrink-0 items-baseline gap-4 whitespace-nowrap rounded-full border px-4 py-2 text-left transition-colors duration-300 md:whitespace-normal md:rounded-none md:border-0 md:border-b md:border-line md:px-0 md:py-5 ${
+              className={`tap group flex shrink-0 items-baseline gap-4 whitespace-nowrap rounded-full border px-4 py-2 text-left transition-colors duration-300 md:whitespace-normal md:rounded-none md:border-0 md:border-b md:border-line md:px-0 md:py-5 ${
                 selected
                   ? "border-accent text-primary"
                   : "border-line text-muted hover:text-primary"

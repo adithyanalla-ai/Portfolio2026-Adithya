@@ -43,20 +43,20 @@ export function Contact() {
               </a>
             </div>
             <CopyEmail email={site.email} />
-            <dl className="mt-4 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">
-              <dt className="label pt-0.5">Email</dt>
+            <dl className="mt-4 grid grid-cols-[auto_1fr] items-center gap-x-6 gap-y-2 text-sm">
+              <dt className="label">Email</dt>
               <dd>
-                <a href={`mailto:${site.email}`} className="link-draw">
+                <a href={`mailto:${site.email}`} className="tap link-draw">
                   {site.email}
                 </a>
               </dd>
-              <dt className="label pt-0.5">Phone</dt>
+              <dt className="label">Phone</dt>
               <dd>
-                <a href={site.phoneHref} className="link-draw">
+                <a href={site.phoneHref} className="tap link-draw">
                   {site.phone}
                 </a>
               </dd>
-              <dt className="label pt-0.5">Based</dt>
+              <dt className="label">Based</dt>
               <dd>{site.location}</dd>
             </dl>
           </div>

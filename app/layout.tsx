@@ -64,6 +64,8 @@ export const viewport: Viewport = {
   ],
   width: "device-width",
   initialScale: 1,
+  // Lets the page use the full screen on notched phones; safe-area insets keep content clear.
+  viewportFit: "cover",
 };
 
 // Runs before first paint: stored choice → OS preference → dark. Prevents any theme flash.

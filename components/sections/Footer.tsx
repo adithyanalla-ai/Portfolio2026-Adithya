@@ -9,7 +9,7 @@ export function Footer() {
   const onHome = isHomePath(usePathname());
   return (
     <footer className="border-t border-line">
-      <div className="container-x flex flex-col gap-6 py-8 text-sm text-muted md:flex-row md:items-center md:justify-between">
+      <div className="container-x flex flex-col gap-6 pt-8 pb-[max(2rem,env(safe-area-inset-bottom))] text-sm text-muted md:flex-row md:items-center md:justify-between">
         <p>
           © {new Date().getFullYear()} {site.name}. Designed &amp; built in {site.location.split(",")[0]}.
         </p>
@@ -20,11 +20,11 @@ export function Footer() {
               return (
                 <li key={n.id}>
                   {href.startsWith("#") ? (
-                    <a href={href} className="link-draw hover:text-primary">
+                    <a href={href} className="tap link-draw hover:text-primary">
                       {n.label}
                     </a>
                   ) : (
-                    <Link href={href} className="link-draw hover:text-primary">
+                    <Link href={href} className="tap link-draw hover:text-primary">
                       {n.label}
                     </Link>
                   )}
@@ -32,7 +32,7 @@ export function Footer() {
               );
             })}
             <li>
-              <a href={onHome ? "#top" : "#main"} className="group inline-flex items-center gap-1 hover:text-primary">
+              <a href={onHome ? "#top" : "#main"} className="tap group inline-flex items-center gap-1 hover:text-primary">
                 <span className="link-draw">Back to top</span>
                 <Arrow className="-rotate-45" />
               </a>

@@ -47,7 +47,8 @@ let uid = 0;
 function frame(title: string, caption: string | undefined, svg: string, table: string, id: string) {
   return `<figure class="chart" aria-labelledby="${id}-t">
 <figcaption id="${id}-t" class="chart-title">${esc(title)}</figcaption>
-${svg}
+<div class="chart-scroll" tabindex="0" role="region" aria-label="${esc(title)} (scrolls sideways on small screens)">${svg}</div>
+<p class="chart-scroll-hint" aria-hidden="true">Swipe sideways to see the whole chart, or open the table below.</p>
 ${caption ? `<p class="chart-caption">${esc(caption)}</p>` : ""}
 <details class="chart-table"><summary>View the data as a table</summary>${table}</details>
 </figure>\n`;

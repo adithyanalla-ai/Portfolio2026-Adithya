@@ -15,7 +15,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
       onClick={toggle}
       aria-label={`Switch to ${dark ? "light" : "dark"} theme`}
       aria-pressed={!dark}
-      className={`group relative grid size-10 place-items-center rounded-full text-primary transition-colors hover:bg-accent-soft ${className}`}
+      className={`group relative grid size-11 place-items-center rounded-full text-primary transition-colors hover:bg-accent-soft ${className}`}
       data-cursor="hover"
     >
       <m.svg

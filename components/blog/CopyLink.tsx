@@ -25,7 +25,7 @@ export function CopyLink() {
     <button
       type="button"
       onClick={copy}
-      className="label inline-flex items-center gap-2 rounded-full border border-line px-3.5 py-2 transition-[color,border-color,transform] duration-300 hover:-translate-y-px hover:border-line-strong hover:text-primary active:translate-y-0 active:scale-[0.97]"
+      className="tap label inline-flex items-center gap-2 rounded-full border border-line px-3.5 py-2 transition-[color,border-color,transform] duration-300 hover:-translate-y-px hover:border-line-strong hover:text-primary active:translate-y-0 active:scale-[0.97]"
     >
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
         {state === "copied" ? (

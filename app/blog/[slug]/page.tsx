@@ -6,7 +6,6 @@ import { formatDate, getAdjacent, getPost, getPosts, getRelated } from "@/lib/bl
 import { site } from "@/lib/content";
 import { figures, figureSrc } from "@/lib/figures";
 import { jsonLd } from "@/lib/jsonld";
-import { Reveal } from "@/components/ui/Reveal";
 import { Arrow } from "@/components/ui/Arrow";
 import { TableOfContents } from "@/components/blog/TableOfContents";
 import { CopyLink } from "@/components/blog/CopyLink";
@@ -100,17 +99,17 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
       <article>
         {/* Header */}
         <header className="mx-auto max-w-[52rem]">
-          <Reveal>
+          <div className="anim-fade-up">
             <nav aria-label="Breadcrumb">
               <ol className="label flex flex-wrap items-center gap-2">
                 <li>
-                  <Link href="/" className="link-draw hover:text-primary">
+                  <Link href="/" className="tap link-draw hover:text-primary">
                     Home
                   </Link>
                 </li>
                 <li aria-hidden>/</li>
                 <li>
-                  <Link href="/blog" className="link-draw hover:text-primary">
+                  <Link href="/blog" className="tap link-draw hover:text-primary">
                     Blog
                   </Link>
                 </li>
@@ -120,8 +119,9 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
                 </li>
               </ol>
             </nav>
-          </Reveal>
-          <Reveal delay={0.05} className="mt-10">
+          </div>
+          {/* CSS entrance (not JS-driven) so the title and summary paint before hydration: protects LCP. */}
+          <div className="anim-fade-up-lcp mt-10" style={{ "--d": "80ms" } as React.CSSProperties}>
             <p className="label text-accent">{post.tags.join(" · ")}</p>
             <h1 className="mt-5 font-display text-h2 font-light">{post.title}</h1>
             {post.summary ? <p className="mt-6 max-w-[42rem] text-lede text-secondary text-pretty">{post.summary}</p> : null}
@@ -137,7 +137,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
               </p>
               <CopyLink />
             </div>
-          </Reveal>
+          </div>
         </header>
 
         {hero ? (
@@ -150,9 +150,14 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
                 alt={hero.alt}
                 sizes="(min-width: 900px) 52rem, 100vw"
                 loading="eager"
-                fetchPriority="high"
-                className="mx-auto h-auto max-h-[70vh] w-auto rounded-2xl border border-line bg-white object-contain"
+                className="mx-auto block h-auto w-full rounded-2xl border border-line bg-white"
+                // Width-driven sizing: the aspect ratio reserves the height before load (no layout shift),
+                // capped so a tall figure never exceeds 70% of the screen height.
+                style={{ maxWidth: `min(100%, calc(70svh * ${(hero.width / hero.height).toFixed(4)}))` }}
               />
+              {hero.caption ? (
+                <figcaption className="mx-auto mt-3 max-w-[42rem] text-center text-sm text-muted text-pretty">{hero.caption}</figcaption>
+              ) : null}
             </figure>
           </div>
         ) : null}

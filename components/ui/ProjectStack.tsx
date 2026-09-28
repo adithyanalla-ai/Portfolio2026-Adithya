@@ -3,7 +3,7 @@
 import { m, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { figures, figureSrc } from "@/lib/figures";
 import { Arrow } from "./Arrow";
 import type { Project } from "@/lib/content";
@@ -12,13 +12,16 @@ import { useMediaQuery } from "@/lib/hooks";
 /**
  * Sticky stacked-scroll: each project pins below the nav and the ones
  * beneath recede (scale + dim) as the next card slides over them.
- * Mobile / reduced motion → a plain vertical list.
+ * Falls back to a plain vertical list on phones, with reduced motion, and on any
+ * screen too short to show a whole card while pinned (short laptops, landscape
+ * tablets) — so no card's content is ever covered by the next one.
  */
 export function ProjectStack({ projects }: { projects: Project[] }) {
   const ref = useRef<HTMLOListElement>(null);
   const reduce = useReducedMotion();
   const wide = useMediaQuery("(min-width: 768px)");
-  const stacked = wide && !reduce;
+  const fits = useCardsFitViewport(ref, projects.length);
+  const stacked = wide && !reduce && fits;
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
 
   return (
@@ -35,6 +38,32 @@ export function ProjectStack({ projects }: { projects: Project[] }) {
       ))}
     </ol>
   );
+}
+
+/** True when the tallest card, pinned below the nav with its stack offset, fits in the viewport. */
+function useCardsFitViewport(ref: React.RefObject<HTMLOListElement | null>, n: number) {
+  const [fits, setFits] = useState(false);
+  useEffect(() => {
+    const list = ref.current;
+    if (!list) return;
+    const measure = () => {
+      const nav = document.querySelector("header")?.getBoundingClientRect().height ?? 68;
+      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+      // offsetHeight ignores the scale transform applied while stacking
+      const tallest = Math.max(...[...list.querySelectorAll("article")].map((a) => (a as HTMLElement).offsetHeight));
+      const topOffset = nav + 1.5 * rem + (n - 1) * 1.1 * rem;
+      setFits(tallest + topOffset + 16 <= window.innerHeight);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(list);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [ref, n]);
+  return fits;
 }
 
 function ProjectCard({
@@ -58,7 +87,7 @@ function ProjectCard({
 
   return (
     <li
-      className="md:sticky"
+      className={stacked ? "sticky" : undefined}
       style={stacked ? { top: `calc(var(--nav-h) + 1.5rem + ${i * 1.1}rem)` } : undefined}
     >
       <m.article
@@ -148,7 +177,7 @@ function ProjectCard({
                 ))}
               </ul>
               {p.href ? (
-                <Link href={p.href} className="group/link inline-flex items-center gap-2 text-sm font-medium text-accent hover:text-accent-hover">
+                <Link href={p.href} className="tap group/link inline-flex items-center gap-2 text-sm font-medium text-accent hover:text-accent-hover">
                   <span className="link-draw">Read the write-up</span>
                   <span className="transition-transform duration-500 ease-[var(--ease-spring)] group-hover/link:translate-x-0.5">
                     <Arrow direction="right" />

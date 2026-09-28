@@ -96,7 +96,9 @@
 :root {
   --gutter: clamp(1rem, 0.5rem + 2.5vw, 3rem);
   --section-y: clamp(6rem, 4rem + 8vw, 10rem);
-  --nav-h: 4.25rem;
+  --nav-bar: 4.25rem;
+  /* Total header height, including the notch/status-bar inset on phones. */
+  --nav-h: calc(var(--nav-bar) + env(safe-area-inset-top, 0px));
 }
 
 @layer base {
@@ -107,6 +109,10 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     scroll-padding-top: var(--nav-h);
+    /* Stop iOS/Android inflating text on rotation; user zoom still works. */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
@@ -166,6 +172,8 @@
     padding: 0.8rem 1.5rem;
     font-size: 0.9375rem;
     font-weight: 500;
+    white-space: nowrap;
+    min-height: 2.75rem; /* 44px: comfortable touch target */
     transition:
       transform 420ms var(--ease-spring),
       background-color 250ms ease,
@@ -173,8 +181,10 @@
       color 250ms ease,
       box-shadow 420ms var(--ease-spring);
   }
-  .btn:hover {
-    transform: translateY(-2px);
+  @media (hover: hover) {
+    .btn:hover {
+      transform: translateY(-2px);
+    }
   }
   .btn:active {
     transform: translateY(0) scale(0.97);
@@ -184,25 +194,43 @@
     background: var(--accent);
     color: var(--on-accent);
   }
-  .btn-primary:hover {
-    background: var(--accent-hover);
-    box-shadow: 0 10px 24px -12px var(--accent);
+  @media (hover: hover) {
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      box-shadow: 0 10px 24px -12px var(--accent);
+    }
   }
   .btn-ghost {
     border: 1px solid var(--line-strong);
     color: var(--text-primary);
   }
-  .btn-ghost:hover {
-    border-color: var(--text-primary);
+  @media (hover: hover) {
+    .btn-ghost:hover {
+      border-color: var(--text-primary);
+    }
+  }
+
+  /* Standalone text links: grow to a 44px touch target on touch screens without changing the look. */
+  @media (pointer: coarse) {
+    .tap {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.75rem;
+    }
+    /* keep the drawn underline hugging the text, not the bottom of the taller box */
+    .tap.link-draw {
+      background-position: 0 calc(50% + 0.72em);
+    }
   }
 }
 
 @layer utilities {
   .container-x {
     width: 100%;
-    max-width: 88rem;
+    max-width: var(--container, 88rem);
     margin-inline: auto;
-    padding-inline: var(--gutter);
+    padding-left: max(var(--gutter), env(safe-area-inset-left, 0px));
+    padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
   }
 
   .section-y {
@@ -419,6 +447,11 @@
 .prose .heading-anchor:hover {
   color: var(--accent);
 }
+@media (hover: none) {
+  .prose .heading-anchor {
+    display: none;
+  }
+}
 
 /* Figure strip: big numbers with captions */
 .prose .figures {
@@ -618,9 +651,11 @@
   text-decoration: none;
   transition: border-color 0.3s, transform 0.5s var(--ease-spring);
 }
-.prose .figure-link:hover {
-  border-color: var(--line-strong);
-  transform: translateY(-2px);
+@media (hover: hover) {
+  .prose .figure-link:hover {
+    border-color: var(--line-strong);
+    transform: translateY(-2px);
+  }
 }
 .prose .figure-link img {
   display: block;
@@ -758,4 +793,123 @@
   margin-top: 0.75rem;
   width: 100%;
   font-variant-numeric: tabular-nums;
+}
+
+/* Charts keep a readable minimum width on small phones and scroll inside their own box. */
+.chart-scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+.chart-scroll .chart-svg {
+  min-width: 36rem;
+}
+.chart-scroll-hint {
+  display: none;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+@media (max-width: 36rem) {
+  .chart-scroll-hint {
+    display: block;
+  }
+}
+
+/* ---- Large screens: scale the rem-based system up so 1440p/4K/TV isn't a small island ---- */
+@media (min-width: 1800px) {
+  html {
+    font-size: 106.25%; /* 17px */
+  }
+  :root {
+    --container: 96rem;
+  }
+}
+@media (min-width: 2300px) {
+  html {
+    font-size: 118.75%; /* 19px */
+  }
+  :root {
+    --container: 100rem;
+  }
+}
+
+/* ---- Short landscape phones: less vertical padding between sections ---- */
+@media (max-height: 520px) and (orientation: landscape) {
+  :root {
+    --section-y: 4.5rem;
+  }
+}
+
+/* ---- Windows High Contrast / forced colours ---- */
+@media (forced-colors: active) {
+  .btn {
+    border: 1px solid ButtonText;
+  }
+  .chart-bar,
+  .chart-dot {
+    fill: CanvasText;
+  }
+  .chart-line {
+    stroke: CanvasText;
+  }
+  :focus-visible {
+    outline-color: Highlight;
+  }
+}
+
+/* ---- Print: clean, ink-friendly pages with visible link targets ---- */
+@media print {
+  :root,
+  [data-theme="dark"],
+  [data-theme="light"] {
+    --surface: #fff;
+    --surface-raised: #fff;
+    --surface-sunken: #f4f4f4;
+    --text-primary: #000;
+    --text-secondary: #222;
+    --text-muted: #444;
+    --line: #ccc;
+    --line-strong: #999;
+    --accent: #000;
+    --accent-soft: #eee;
+    --on-accent: #fff;
+    color-scheme: light;
+  }
+  header,
+  footer,
+  canvas,
+  .btn,
+  nav[aria-label="On this page"],
+  .chart-table summary,
+  .chart-scroll-hint,
+  .heading-anchor {
+    display: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  [style*="opacity"] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  #work li {
+    position: static !important;
+  }
+  .prose a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #444;
+  }
+  .prose figure,
+  .prose pre,
+  .chart,
+  table {
+    break-inside: avoid;
+  }
+  .chart-scroll .chart-svg {
+    min-width: 0;
+  }
 }

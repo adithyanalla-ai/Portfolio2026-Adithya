@@ -13,7 +13,6 @@ Aglier is a robot that climbs a fruit tree, finds ripe fruit with an onboard cam
 
 This article covers what the robot is made of, how it holds onto a trunk, how long one pick takes, and where AI fits in. The numbers are the representative ranges in the drawings. They show how the design is reasoned, not field-test results.
 
-![Annotated view of the Aglier robot](fig:aglier-fig9 "FIG. 9: Annotated view of the robot (Cam Bot). Four clamps hold the trunk; the arm, gripper and basket do the picking.")
 
 ## What the robot is made of
 

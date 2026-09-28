@@ -110,7 +110,7 @@ export default function BlogIndex() {
 
       {posts.length === 0 ? <p className="mt-16 text-secondary">The first post is on its way.</p> : null}
       <p className="mt-16 md:ml-[25%]">
-        <a href="/blog/rss.xml" className="label link-draw hover:text-primary">
+        <a href="/blog/rss.xml" className="tap label link-draw hover:text-primary">
           Subscribe via RSS
         </a>
       </p>

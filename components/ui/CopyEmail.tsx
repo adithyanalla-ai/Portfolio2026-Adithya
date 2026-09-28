@@ -26,7 +26,7 @@ export function CopyEmail({ email, className = "" }: { email: string; className?
     <button
       type="button"
       onClick={copy}
-      className={`label inline-flex items-center gap-2 rounded-full border border-line px-4 py-2.5 text-secondary transition-colors hover:border-line-strong hover:text-primary ${className}`}
+      className={`tap label inline-flex items-center gap-2 rounded-full border border-line px-4 py-2.5 text-secondary transition-colors hover:border-line-strong hover:text-primary ${className}`}
     >
       <span className="relative inline-grid h-4 overflow-hidden">
         <AnimatePresence mode="popLayout" initial={false}>

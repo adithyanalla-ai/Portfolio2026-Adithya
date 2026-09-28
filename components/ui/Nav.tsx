@@ -99,15 +99,22 @@ export function Nav() {
     };
   }, [open]);
 
+  useEffect(() => {
+    const mql = window.matchMedia("(min-width: 1024px)");
+    const onChange = () => mql.matches && setOpen(false);
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
+
   const close = () => setOpen(false);
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-500 ${
+      className={`fixed inset-x-0 top-0 z-50 pt-[env(safe-area-inset-top)] transition-[background-color,border-color,backdrop-filter] duration-500 ${
         scrolled && !open ? "border-b border-line bg-surface/80 backdrop-blur-md" : "border-b border-transparent"
       }`}
     >
-      <nav aria-label="Primary" className="container-x flex h-[var(--nav-h)] items-center justify-between">
+      <nav aria-label="Primary" className="container-x flex h-[var(--nav-bar)] items-center justify-between gap-4">
         {onHome ? (
           <a href="#top" className="group flex items-baseline gap-2" onClick={close}>
             <Logo />
@@ -118,7 +125,7 @@ export function Nav() {
           </Link>
         )}
 
-        <ul className="hidden items-center gap-1 md:flex">
+        <ul className="hidden items-center gap-1 lg:flex">
           {nav.map((item) => {
             const current = isCurrent(item);
             return (
@@ -149,7 +156,7 @@ export function Nav() {
           <button
             ref={menuButton}
             type="button"
-            className="grid size-10 place-items-center rounded-full transition-colors hover:bg-accent-soft md:hidden"
+            className="grid size-11 place-items-center rounded-full transition-colors hover:bg-accent-soft lg:hidden"
             aria-expanded={open}
             aria-controls="mobile-menu"
             aria-label={open ? "Close menu" : "Open menu"}
@@ -176,7 +183,7 @@ export function Nav() {
           <m.div
             id="mobile-menu"
             key="menu"
-            className="fixed inset-0 top-[var(--nav-h)] z-40 flex flex-col justify-between bg-surface px-[var(--gutter)] pb-10 pt-8 md:hidden"
+            className="fixed inset-0 top-[var(--nav-h)] z-40 flex flex-col justify-between gap-8 overflow-y-auto overscroll-contain bg-surface px-[max(var(--gutter),env(safe-area-inset-left))] pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-6 lg:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -190,7 +197,7 @@ export function Nav() {
                     onHome={onHome}
                     current={isCurrent(item)}
                     onClick={close}
-                    className="flex items-baseline justify-between border-b border-line py-4"
+                    className="flex min-h-12 items-center justify-between border-b border-line py-3 [@media(max-height:480px)]:py-2"
                   >
                     <span className="font-display text-h3">{item.label}</span>
                     {isCurrent(item) ? <span aria-hidden className="size-1.5 rounded-full bg-accent" /> : null}

@@ -90,17 +90,17 @@ export function Hero() {
         >
           <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-secondary">
             <li>
-              <a href={`mailto:${site.email}`} className="link-draw hover:text-primary">
+              <a href={`mailto:${site.email}`} className="tap link-draw hover:text-primary">
                 {site.email}
               </a>
             </li>
             <li>
-              <a href={site.linkedin} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-1 hover:text-primary">
+              <a href={site.linkedin} target="_blank" rel="noopener noreferrer" className="tap group inline-flex items-center gap-1 hover:text-primary">
                 <span className="link-draw">LinkedIn</span> <Arrow />
               </a>
             </li>
             <li>
-              <a href={site.url} className="group inline-flex items-center gap-1 hover:text-primary">
+              <a href={site.url} className="tap group inline-flex items-center gap-1 hover:text-primary">
                 <span className="link-draw">{site.siteLabel}</span> <Arrow />
               </a>
             </li>
