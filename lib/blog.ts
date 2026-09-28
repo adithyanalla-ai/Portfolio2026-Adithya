@@ -12,6 +12,7 @@ import yaml from "highlight.js/lib/languages/yaml";
 import katex from "katex";
 import { renderChart } from "./charts";
 import { figures, figureSrc, figureSrcSet } from "./figures";
+import { site } from "./content";
 
 hljs.registerLanguage("python", python);
 hljs.registerLanguage("sql", sql);
@@ -301,3 +302,25 @@ export const formatDate = (iso: string, style: "long" | "short" = "long") =>
     year: "numeric",
     timeZone: "UTC",
   });
+
+/** Plain-text digest of every post (title, summary, body, FAQs) for the AI chat's knowledge. */
+export function blogKnowledge(): string {
+  return all()
+    .map((p) => {
+      const body = p.html
+        .replace(/<(script|style|svg)[\s\S]*?<\/\1>/g, " ")
+        .replace(/<math[\s\S]*?<\/math>/g, " [formula] ")
+        .replace(/<\/(p|h2|h3|li|tr|figcaption)>/g, "\n")
+        .replace(/<[^>]+>/g, " ")
+        .replace(/&amp;/g, "&")
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">")
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/[ \t]+/g, " ")
+        .replace(/\n\s+/g, "\n")
+        .trim();
+      return `### ${p.title} (${p.date}) — ${site.url}/blog/${p.slug}\n${p.summary}\n${body}`;
+    })
+    .join("\n\n");
+}

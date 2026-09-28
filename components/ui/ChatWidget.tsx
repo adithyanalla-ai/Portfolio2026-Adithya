@@ -16,6 +16,53 @@ const SUGGESTIONS = [
   "How can I contact you?",
 ];
 
+
+/** Minimal, safe rich text for assistant replies: "- " bullets, **bold**, links and emails (React nodes, no HTML). */
+function inline(text: string, key: string) {
+  const parts = text.split(/(\*\*[^*]+\*\*|https?:\/\/[^\s)]+|[\w.+-]+@[\w-]+\.[\w.]+)/g);
+  return parts.map((part, i) => {
+    if (!part) return null;
+    if (part.startsWith("**") && part.endsWith("**")) return <strong key={`${key}-${i}`} className="font-semibold">{part.slice(2, -2)}</strong>;
+    if (/^https?:\/\//.test(part)) {
+      const clean = part.replace(/[.,;:]+$/, "");
+      return (
+        <a key={`${key}-${i}`} href={clean} target="_blank" rel="noopener noreferrer" className="underline decoration-accent underline-offset-2">
+          {clean.replace(/^https?:\/\/(www\.)?/, "")}
+        </a>
+      );
+    }
+    if (/^[\w.+-]+@[\w-]+\.[\w.]+$/.test(part)) {
+      const clean = part.replace(/[.,;:]+$/, "");
+      return <a key={`${key}-${i}`} href={`mailto:${clean}`} className="underline decoration-accent underline-offset-2">{clean}</a>;
+    }
+    return part;
+  });
+}
+
+function RichText({ text }: { text: string }) {
+  const blocks: React.ReactNode[] = [];
+  let list: string[] = [];
+  const flush = (k: number) => {
+    if (!list.length) return;
+    blocks.push(
+      <ul key={`ul-${k}`} className="my-1 list-disc space-y-1 pl-4 marker:text-accent">
+        {list.map((li, j) => <li key={j}>{inline(li, `li-${k}-${j}`)}</li>)}
+      </ul>,
+    );
+    list = [];
+  };
+  text.split("\n").forEach((line, k) => {
+    const m = line.match(/^\s*[-*•]\s+(.*)$/);
+    if (m) list.push(m[1]);
+    else {
+      flush(k);
+      if (line.trim()) blocks.push(<p key={`p-${k}`}>{inline(line, `p-${k}`)}</p>);
+    }
+  });
+  flush(-1);
+  return <div className="space-y-2">{blocks}</div>;
+}
+
 /** Event other components can dispatch to open the chat: window.dispatchEvent(new Event("open-chat")) */
 export const OPEN_CHAT_EVENT = "open-chat";
 
@@ -125,7 +172,7 @@ export function ChatWidget() {
             exit={{ opacity: 0, y: 16, scale: 0.98 }}
             transition={spring.snappy}
             style={{ transformOrigin: "100% 100%" }}
-            className="fixed inset-x-3 bottom-[calc(5.25rem+env(safe-area-inset-bottom))] z-[65] flex max-h-[min(38rem,calc(100svh-7.5rem))] flex-col overflow-hidden rounded-2xl border border-line-strong bg-surface-raised shadow-2xl sm:inset-x-auto sm:right-6 sm:w-[24rem]"
+            className="fixed inset-x-3 bottom-[calc(5.25rem+env(safe-area-inset-bottom))] z-[65] flex max-h-[min(38rem,calc(100svh-7.5rem))] flex-col overflow-hidden rounded-2xl border border-line-strong bg-surface-raised shadow-2xl sm:inset-x-auto sm:right-6 sm:w-[27rem]"
           >
             <header className="flex items-center justify-between gap-3 border-b border-line px-5 py-4">
               <div className="flex items-center gap-3">
@@ -152,19 +199,19 @@ export function ChatWidget() {
             <div ref={listRef} className="flex-1 space-y-3 overflow-y-auto overscroll-contain px-5 py-4" aria-live="polite">
               {msgs.map((msg, i) => (
                 <div key={i} className={`flex flex-col ${msg.role === "user" ? "items-end" : "items-start"}`}>
-                  <p
-                    className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
-                      msg.role === "user" ? "rounded-br-md bg-accent text-on-accent" : "rounded-bl-md bg-surface-sunken text-primary"
+                  <div
+                    className={`max-w-[88%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
+                      msg.role === "user" ? "whitespace-pre-wrap rounded-br-md bg-accent text-on-accent" : "rounded-bl-md bg-surface-sunken text-primary"
                     }`}
                   >
-                    {msg.content || (
+                    {msg.content ? (msg.role === "assistant" ? <RichText text={msg.content} /> : msg.content) : (
                       <span className="inline-flex gap-1" aria-label="Thinking">
                         {[0, 1, 2].map((d) => (
                           <span key={d} className="size-1.5 animate-bounce rounded-full bg-muted" style={{ animationDelay: `${d * 120}ms` }} />
                         ))}
                       </span>
                     )}
-                  </p>
+                  </div>
                   {msg.note ? <span className="mt-1 px-1 text-[0.6875rem] text-muted">{msg.note}</span> : null}
                 </div>
               ))}
