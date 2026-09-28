@@ -24,7 +24,9 @@ export function ProjectStack({ projects }: { projects: Project[] }) {
   const reduce = useHydratedReducedMotion();
   const layout = useStackLayout(ref, projects.length);
   const stacked = !reduce;
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
+  // Page scroll in px. (A target-relative progress would go stale: useScroll measures the list
+  // once, but the list keeps growing as images load and cover heights are applied.)
+  const { scrollY } = useScroll();
 
   return (
     <ol ref={ref} className="relative flex flex-col gap-[8vh] md:gap-[12vh]">
@@ -34,7 +36,8 @@ export function ProjectStack({ projects }: { projects: Project[] }) {
           project={p}
           i={i}
           n={projects.length}
-          progress={scrollYProgress}
+          scrollY={scrollY}
+          end={layout.end}
           stacked={stacked}
           top={layout.tops[i]}
           bottomPinned={layout.bottomPinned[i]}
@@ -52,13 +55,15 @@ type StackLayout = {
   bottomPinned: boolean[];
   minHeights: number[];
   windows: ([number, number] | undefined)[];
+  /** Page scroll (px) at which the list's end reaches the bottom of the screen. */
+  end?: number;
 };
 
 /**
  * Measures the cards and returns, per card: its sticky `top` (px), whether it pins by its
  * bottom edge, a min-height so it fully covers every card pinned beneath it (a tall,
  * bottom-pinned card must not peek out below a shorter card stacked over it), and the
- * section-progress window [next card reaches mid-screen, next card pins] in which it recedes.
+ * page-scroll window (px) [next card reaches mid-screen, next card pins] in which it recedes.
  */
 function useStackLayout(ref: React.RefObject<HTMLOListElement | null>, n: number) {
   const [layout, setLayout] = useState<StackLayout>({ tops: [], bottomPinned: [], minHeights: [], windows: [] });
@@ -91,29 +96,28 @@ function useStackLayout(ref: React.RefObject<HTMLOListElement | null>, n: number
         lowest = Math.max(lowest, tops[i] + effective[i]);
       });
 
-      const range = list.offsetHeight - vh;
-      const clamp = (v: number) => Math.min(1, Math.max(0, v));
-      // Natural (un-stuck) position of each item: previous heights + the list's row gap
-      // (offsetTop can't be used: sticky items report their shifted position).
+      // Natural (un-stuck) page position of each item: the list's top + previous heights + the
+      // row gap (offsetTop can't be used: sticky items report their shifted position).
+      const listTop = list.getBoundingClientRect().top + window.scrollY;
       const gap = parseFloat(getComputedStyle(list).rowGap) || 0;
       const natural: number[] = [];
-      effective.forEach((_, i) => natural.push(i === 0 ? 0 : natural[i - 1] + effective[i - 1] + gap));
+      effective.forEach((_, i) => natural.push(i === 0 ? listTop : natural[i - 1] + effective[i - 1] + gap));
+      const end = natural[n - 1] + effective[n - 1] - vh; // page scroll where the list's end meets the screen's
+      // In page-scroll px: card i+1's top reaches 55% of the screen → card i+1 pins.
       const windows = items.map((_, i) => {
-        if (i === n - 1 || range <= 0) return undefined;
-        const nextTop = natural[i + 1];
-        const enters = clamp((nextTop - vh * 0.55) / range);
-        const pins = clamp((nextTop - tops[i + 1]) / range);
-        return [enters, Math.max(enters + 0.001, pins)] as [number, number];
+        if (i === n - 1) return undefined;
+        const enters = Math.round(natural[i + 1] - vh * 0.55);
+        const pins = Math.round(natural[i + 1] - tops[i + 1]);
+        return [enters, Math.max(enters + 1, pins)] as [number, number];
       });
-      setLayout((prev) =>
-        JSON.stringify(prev) === JSON.stringify({ tops, bottomPinned, minHeights, windows })
-          ? prev
-          : { tops, bottomPinned, minHeights, windows },
-      );
+      const next = { tops, bottomPinned, minHeights, windows, end: Math.round(end) };
+      setLayout((prev) => (JSON.stringify(prev) === JSON.stringify(next) ? prev : next));
     };
     measure();
+    // Re-measure when the cards or anything above them change size (images loading, fonts, resize).
     const ro = new ResizeObserver(measure);
     ro.observe(list);
+    ro.observe(document.body);
     window.addEventListener("resize", measure);
     return () => {
       ro.disconnect();
@@ -127,7 +131,8 @@ function ProjectCard({
   project: p,
   i,
   n,
-  progress,
+  scrollY,
+  end,
   stacked,
   top,
   bottomPinned,
@@ -138,32 +143,34 @@ function ProjectCard({
   project: Project;
   i: number;
   n: number;
-  progress: MotionValue<number>;
+  scrollY: MotionValue<number>;
+  /** Page scroll (px) at which the list ends. */
+  end?: number;
   stacked: boolean;
   /** Sticky top in px (negative for cards taller than the screen, which pin by their bottom). */
   top?: number;
   bottomPinned?: boolean;
   /** Min height (px) so the card covers the cards pinned beneath it. */
   minHeight?: number;
-  /** Scroll-progress window in which the next card slides over this one: [enters screen, pins]. */
+  /** Page-scroll window (px) in which the next card slides over this one: [enters screen, pins]. */
   overlap?: [number, number];
   /** The next card's window: while the card after next slides in, this one fades further back. */
   nextOverlap?: [number, number];
 }) {
-  const start = i / n;
   // Recede only while the next card is actually sliding over this one, so the card you're
-  // reading stays at full size and brightness while pinned. Fallback before measurement: equal slots.
-  const [from, to] = overlap ?? [Math.min(1, start + 0.5 / n), Math.min(1, start + 1 / n)];
+  // reading stays at full size and brightness while pinned. Before measurement: no effect.
+  const [from, to] = overlap ?? [1e9, 1e9 + 1];
   const last = i === n - 1;
-  const scale = useTransform(progress, [from, Math.max(from + 0.001, 1)], [1, 1 - (n - 1 - i) * 0.035]);
+  const scale = useTransform(scrollY, [from, Math.max(from + 1, end ?? from + 1)], [1, 1 - (n - 1 - i) * 0.035]);
   const figs = (p.images ?? []).map((k) => figures[k]).filter(Boolean);
   // A logo takes the main spot and every figure becomes a thumbnail; otherwise the first figure leads.
   const main = p.logo ? undefined : figs[0];
   const thumbs = p.logo ? figs : figs.slice(1);
   // Half-dim while the next card slides over; nearly hidden once it is two cards deep, so only
   // clean edges show in the stair-step above the active card.
-  const deepEnd = Math.min(1, Math.max(to + 0.002, nextOverlap?.[1] ?? 1));
-  const dim = useTransform(progress, [from, Math.max(from + 0.001, to), deepEnd], last ? [0, 0, 0] : [0, 0.5, 0.9]);
+  const deepEnd = Math.max(to + 1, nextOverlap?.[1] ?? end ?? to + 1);
+  // A bottom-pinned (tall) card shows real content, not just an edge, above the next card: fade it further.
+  const dim = useTransform(scrollY, [from, to, deepEnd], last ? [0, 0, 0] : [0, bottomPinned ? 0.85 : 0.5, 0.9]);
 
   return (
     <li
