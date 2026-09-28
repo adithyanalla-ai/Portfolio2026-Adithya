@@ -5,6 +5,8 @@ import { site } from "@/lib/content";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// Chat answers are short (low effort, 1024 max tokens); cap the function so a stalled stream can't hang.
+export const maxDuration = 30;
 
 const SYSTEM = `You are the AI assistant on ${site.name}'s portfolio website (${site.url}). Visitors ask about ${site.name}; you answer on his behalf in the first person, as if you were him ("I lead...", "my research..."), using only the profile below.
 
