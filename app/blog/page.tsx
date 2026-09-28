@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { formatDate, getPosts } from "@/lib/blog";
 import { site } from "@/lib/content";
@@ -69,12 +70,24 @@ export default function BlogIndex() {
                   {formatDate(featured.date)}
                 </time>
               </div>
+              {featured.icon ? (
+                <Image
+                  src={`${featured.icon}-512.webp`}
+                  width={512}
+                  height={512}
+                  alt=""
+                  sizes="(min-width: 768px) 12rem, 7rem"
+                  unoptimized
+                  className="w-28 rounded-3xl border border-line bg-[#fefefe] p-3 transition-[scale] duration-700 ease-[var(--ease-spring)] group-hover:scale-[1.03] md:w-48 md:p-5"
+                />
+              ) : (
               <p className="hidden items-baseline gap-3 md:flex">
                 <span className="font-display text-[clamp(4.5rem,3rem+5vw,7.5rem)] font-light italic leading-none text-line-strong transition-colors duration-700 group-hover:text-accent">
                   {featured.readingMinutes}
                 </span>
                 <span className="label">min read</span>
               </p>
+              )}
             </div>
             <div className="md:col-span-8">
               <h2 className="font-display text-h2 font-light transition-colors duration-300 group-hover:text-accent">
@@ -83,7 +96,7 @@ export default function BlogIndex() {
               <p className="mt-5 max-w-2xl text-lede text-secondary text-pretty">{featured.summary}</p>
               <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-6">
                 <p className="label">
-                  <span className="md:hidden">{featured.readingMinutes} min read · </span>
+                  <span className={featured.icon ? undefined : "md:hidden"}>{featured.readingMinutes} min read · </span>
                   {featured.tags.join(" · ")}
                 </p>
                 <span className="inline-flex items-center gap-2 text-sm font-medium text-accent">

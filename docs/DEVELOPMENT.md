@@ -98,6 +98,7 @@ description: Meta description for search results (optional; ≤160 characters, f
 keywords: phrase one, phrase two        # optional: extra search phrases
 tags: Agentic AI, Research
 image: aglier-fig9    # optional: a figure key; shown as the hero and used in structured data
+icon: /images/aglier/logo   # optional: square mark (-256/-512.webp + -256.png); shown in the header, featured card and social image
 updated: 2026-10-20   # optional: shown as "Updated" and used as dateModified
 featured: true        # optional: pins the post as the big card at the top of /blog
 ---
@@ -134,7 +135,7 @@ Images live in `public/images/` as two pre-resized WebP files (`name-800.webp` a
 Register each image in [`lib/figures.ts`](lib/figures.ts) with its size and descriptive alt text. A figure can then be used:
 - in posts, as `![alt](fig:key "Caption")`;
 - as a post's hero, with `image: key`;
-- on a project card, via `images: [...]` in `lib/content.ts`. The first image is the main one; the rest become thumbnails.
+- on a project card, via `images: [...]` in `lib/content.ts`. The first image is the main one and the rest become thumbnails, unless the project sets `logo:`, in which case the logo is the main visual and every figure is a thumbnail.
 
 To add one, resize it with sharp (installed with Next):
 

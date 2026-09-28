@@ -116,7 +116,9 @@ export type Project = {
   points: string[];
   tags: string[];
   meta?: string;
-  /** Keys from lib/figures.ts; the first is the card's main image, the rest are thumbnails. */
+  /** Project mark, as a path without the `-256/-512.webp` suffix. Shown as the card's main visual. */
+  logo?: string;
+  /** Keys from lib/figures.ts. With a logo they're all thumbnails; otherwise the first is the main image. */
   images?: string[];
   /** Deeper write-up (usually a blog post). */
   href?: string;
@@ -148,6 +150,7 @@ export const projects: Project[] = [
     ],
     tags: ["Robotics", "Computer Vision", "Embedded AI"],
     meta: "Patent in drafting",
+    logo: "/images/aglier/logo",
     images: ["aglier-fig9", "aglier-fig14", "aglier-fig3", "aglier-fig5"],
     href: "/blog/aglier-ai-tree-climbing-fruit-harvesting-robot",
   },

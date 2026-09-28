@@ -89,8 +89,10 @@ function ProjectCard({
   const leaveDim = useTransform(leave, [0, 1], [0, 0.45]);
   const start = i / n;
   const scale = useTransform(progress, [start, 1], [1, 1 - (n - 1 - i) * 0.035]);
-  const main = p.images?.[0] ? figures[p.images[0]] : undefined;
-  const thumbs = (p.images ?? []).slice(1).map((k) => figures[k]).filter(Boolean);
+  const figs = (p.images ?? []).map((k) => figures[k]).filter(Boolean);
+  // A logo takes the main spot and every figure becomes a thumbnail; otherwise the first figure leads.
+  const main = p.logo ? undefined : figs[0];
+  const thumbs = p.logo ? figs : figs.slice(1);
   const dim = useTransform(progress, [start, Math.min(1, start + 1 / n)], [0, i === n - 1 ? 0 : 0.5]);
 
   return (
@@ -122,7 +124,23 @@ function ProjectCard({
                 <span className="label rounded-full border border-line px-3 py-1">{p.meta}</span>
               ) : null}
             </div>
-            {main ? (
+            {p.logo ? (
+              <Link
+                href={p.href ?? "#work"}
+                className="group/logo mx-auto flex w-full max-w-[18rem] items-center justify-center rounded-3xl border border-line bg-[#fefefe] p-6 transition-[border-color,translate,scale] duration-500 ease-[var(--ease-spring)] hover:-translate-y-0.5 hover:border-line-strong active:scale-[0.985] active:duration-150 md:max-w-[20rem] md:p-8"
+                aria-label={`${p.name}: read the write-up`}
+              >
+                <Image
+                  src={`${p.logo}-512.webp`}
+                  width={512}
+                  height={512}
+                  alt={`${p.name} logo: a friendly robot rising from two green leaves`}
+                  sizes="(min-width: 768px) 20rem, 18rem"
+                  unoptimized
+                  className="h-auto w-full transition-[scale] duration-700 ease-[var(--ease-spring)] group-hover/logo:scale-[1.03]"
+                />
+              </Link>
+            ) : main ? (
               <a
                 href={figureSrc(main, 1600)}
                 className="block overflow-hidden rounded-xl border border-line bg-white transition-[border-color,translate,scale] duration-500 ease-[var(--ease-spring)] hover:-translate-y-0.5 hover:border-line-strong active:scale-[0.985] active:duration-150"
@@ -162,7 +180,10 @@ function ProjectCard({
               ))}
             </ul>
             {thumbs.length ? (
-              <ul className="mt-6 grid grid-cols-3 gap-2" aria-label={`More ${p.name} figures`}>
+              <ul
+                className={`mt-6 grid gap-2 ${thumbs.length >= 4 ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-3"}`}
+                aria-label={`${p.name} patent figures`}
+              >
                 {thumbs.map((f) => (
                   <li key={f.base}>
                     <a

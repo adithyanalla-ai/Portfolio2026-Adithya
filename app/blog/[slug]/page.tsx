@@ -67,7 +67,10 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
         inLanguage: "en",
         mainEntityOfPage: url,
         url,
-        image: hero ? `${site.url}${figureSrc(hero, 1600)}` : `${url}/opengraph-image`,
+        image: [
+          hero ? `${site.url}${figureSrc(hero, 1600)}` : `${url}/opengraph-image`,
+          ...(post.icon ? [`${site.url}${post.icon}-512.webp`] : []),
+        ],
         author,
         publisher: author,
       },
@@ -122,7 +125,21 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
           </div>
           {/* CSS entrance (not JS-driven) so the title and summary paint before hydration: protects LCP. */}
           <div className="anim-fade-up-lcp mt-10" style={{ "--d": "80ms" } as React.CSSProperties}>
-            <p className="label text-accent">{post.tags.join(" · ")}</p>
+            <div className="flex items-center gap-4">
+              {post.icon ? (
+                <Image
+                  src={`${post.icon}-256.webp`}
+                  width={256}
+                  height={256}
+                  alt=""
+                  sizes="3.5rem"
+                  loading="eager"
+                  unoptimized
+                  className="size-14 shrink-0 rounded-2xl border border-line bg-[#fefefe] p-1.5"
+                />
+              ) : null}
+              <p className="label text-accent">{post.tags.join(" · ")}</p>
+            </div>
             <h1 className="mt-5 font-display text-h2 font-light">{post.title}</h1>
             {post.summary ? <p className="mt-6 max-w-[42rem] text-lede text-secondary text-pretty">{post.summary}</p> : null}
             <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-y border-line py-4">

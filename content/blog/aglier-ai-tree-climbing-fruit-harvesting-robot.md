@@ -6,6 +6,7 @@ description: Aglier is an AI tree-climbing fruit-harvesting robot. See its compo
 keywords: fruit harvesting robot, tree climbing robot, agricultural robotics, harvesting automation, robotic gripper, claw geometry, harvest cycle time, GBNI
 tags: Robotics, Research, Agentic AI
 image: aglier-fig9
+icon: /images/aglier/logo
 featured: true
 ---
 
