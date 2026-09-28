@@ -7,6 +7,7 @@ import { Skills } from "@/components/sections/Skills";
 import { Education } from "@/components/sections/Education";
 import { LatestWriting } from "@/components/sections/LatestWriting";
 import { Contact } from "@/components/sections/Contact";
+import { Arcade } from "@/components/sections/Arcade";
 
 export default function Home() {
   return (
@@ -20,6 +21,7 @@ export default function Home() {
       <Education />
       <LatestWriting />
       <Contact />
+      <Arcade />
     </main>
   );
 }

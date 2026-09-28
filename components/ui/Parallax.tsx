@@ -1,6 +1,7 @@
 "use client";
 
-import { m, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { m, useScroll, useTransform } from "framer-motion";
+import { useHydratedReducedMotion } from "@/lib/hooks";
 
 /**
  * Scroll-linked depth. `speed` is how far the layer drifts relative to the page:
@@ -20,7 +21,7 @@ export function Parallax({
   fade?: boolean;
   className?: string;
 }) {
-  const reduce = useReducedMotion();
+  const reduce = useHydratedReducedMotion();
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, range], [0, range * speed]);
   const opacity = useTransform(scrollY, [0, range * 0.7], [1, 0]);

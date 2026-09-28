@@ -176,6 +176,20 @@ public/images/          pre-resized figures (e.g. Aglier patent drawings)
 
 ---
 
+## AI chat ("Ask my AI")
+
+The floating assistant answers visitors on your behalf from your profile. It uses `app/api/chat/route.live.ts`, and `lib/profile.ts` builds its knowledge from `lib/content.ts`, so keep content.ts up to date.
+
+- **Model:** Claude Opus 5, streamed, with server-side refusal fallbacks.
+- **Guardrails:** the prompt tells it to use only facts from the profile, to say when it doesn't know, and never to overstate statuses such as papers under review.
+- **Turn it on:** add an environment variable `ANTHROPIC_API_KEY` in Vercel (**Project → Settings → Environment Variables**), then redeploy. Without a key, the chat still works using offline answers matched from your résumé data (`lib/localAnswer.ts`).
+- **Rate limit:** 20 questions per 10 minutes per visitor, per server instance. Input is capped at 1,200 characters per message and the last 10 turns.
+- **Static export:** `*.live.ts` routes are excluded, and the chat uses the offline answers.
+
+## Game
+
+`components/ui/PacmanGame.tsx` is a self-contained canvas Pac-Man. It's lazy-loaded by `ArcadeLoader` when the Play section nears the screen. To change the maze, edit the `MAZE` strings.
+
 ## Deploying to Vercel
 
 1. Push this repo to GitHub.

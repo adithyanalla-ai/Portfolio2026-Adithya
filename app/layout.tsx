@@ -8,6 +8,7 @@ import { Nav } from "@/components/ui/Nav";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { SmoothAnchors } from "@/components/ui/SmoothAnchors";
 import { Footer } from "@/components/sections/Footer";
+import { ChatWidget } from "@/components/ui/ChatWidget";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -112,6 +113,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
           <Footer />
           <SmoothAnchors />
+          <ChatWidget />
         </Providers>
       </body>
     </html>

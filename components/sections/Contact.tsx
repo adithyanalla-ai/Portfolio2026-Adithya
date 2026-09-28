@@ -1,6 +1,7 @@
 import { site } from "@/lib/content";
 import { Reveal } from "@/components/ui/Reveal";
 import { CopyEmail } from "@/components/ui/CopyEmail";
+import { AskAIButton } from "@/components/ui/AskAIButton";
 import { Arrow } from "@/components/ui/Arrow";
 
 export function Contact() {
@@ -42,7 +43,10 @@ export function Contact() {
                 <span className="sr-only">(opens in a new tab)</span>
               </a>
             </div>
-            <CopyEmail email={site.email} />
+            <div className="flex flex-wrap items-center gap-3">
+              <CopyEmail email={site.email} />
+              <AskAIButton />
+            </div>
             <dl className="mt-4 grid grid-cols-[auto_1fr] items-center gap-x-6 gap-y-2 text-sm">
               <dt className="label">Email</dt>
               <dd>

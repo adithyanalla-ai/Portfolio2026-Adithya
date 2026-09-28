@@ -13,3 +13,13 @@ export function useMediaQuery(query: string) {
   }, [query]);
   return matches;
 }
+
+/**
+ * prefers-reduced-motion, but always `false` on the server and the first client render.
+ * Use it wherever the answer changes what gets *rendered* (not just animation values):
+ * framer's useReducedMotion reads the media query synchronously on the client, which makes
+ * the first client render differ from the server HTML and triggers a hydration error (#418).
+ */
+export function useHydratedReducedMotion() {
+  return useMediaQuery("(prefers-reduced-motion: reduce)");
+}

@@ -1,13 +1,13 @@
 "use client";
 
-import { m, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
+import { m, useScroll, useTransform, type MotionValue } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { figures, figureSrc } from "@/lib/figures";
 import { Arrow } from "./Arrow";
 import type { Project } from "@/lib/content";
-import { useMediaQuery } from "@/lib/hooks";
+import { useHydratedReducedMotion, useMediaQuery } from "@/lib/hooks";
 
 /**
  * Sticky stacked-scroll: each project pins below the nav and the ones
@@ -18,7 +18,7 @@ import { useMediaQuery } from "@/lib/hooks";
  */
 export function ProjectStack({ projects }: { projects: Project[] }) {
   const ref = useRef<HTMLOListElement>(null);
-  const reduce = useReducedMotion();
+  const reduce = useHydratedReducedMotion();
   const wide = useMediaQuery("(min-width: 768px)");
   const fits = useCardsFitViewport(ref, projects.length);
   const windows = useOverlapWindows(ref, projects.length);
