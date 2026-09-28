@@ -60,7 +60,7 @@ export default function BlogIndex() {
         <Reveal className="mt-16 md:mt-24" amount={0.2}>
           <Link
             href={`/blog/${featured.slug}`}
-            className="group relative grid gap-8 overflow-hidden rounded-2xl border border-line bg-surface-raised p-6 transition-[border-color,transform] duration-500 ease-[var(--ease-spring)] hover:-translate-y-1 hover:border-line-strong sm:p-10 md:grid-cols-12 md:p-14"
+            className="group relative grid gap-8 overflow-hidden rounded-2xl border border-line bg-surface-raised p-6 transition-[border-color,translate,scale] duration-500 ease-[var(--ease-spring)] hover:-translate-y-1 hover:border-line-strong active:scale-[0.985] active:duration-150 sm:p-10 md:grid-cols-12 md:p-14"
           >
             <div className="flex flex-col justify-between gap-6 md:col-span-4">
               <div className="flex flex-wrap items-center gap-3">

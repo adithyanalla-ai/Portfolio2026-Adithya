@@ -31,7 +31,7 @@ export function BlogExplorer({
   const visible = tag ? posts.filter((p) => p.tags.includes(tag)) : posts.filter((p) => p.slug !== featuredSlug);
 
   const chip = (active: boolean) =>
-    `tap label rounded-full border px-3.5 py-2 transition-[color,border-color,background-color,transform] duration-300 hover:-translate-y-px active:translate-y-0 active:scale-[0.97] ${
+    `tap label rounded-full border px-3.5 py-2 transition-[color,border-color,background-color,translate,scale] duration-300 hover:-translate-y-px active:translate-y-0 active:scale-[0.97] ${
       active ? "border-accent bg-accent-soft text-primary" : "border-line hover:border-line-strong hover:text-primary"
     }`;
 

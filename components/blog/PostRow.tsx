@@ -7,7 +7,7 @@ export function PostRow({ post, dateLabel }: { post: PostMeta; dateLabel: string
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group grid gap-3 py-9 md:grid-cols-[9rem_1fr_auto] md:gap-10"
+      className="group grid gap-3 py-9 transition-opacity duration-150 active:opacity-70 md:grid-cols-[9rem_1fr_auto] md:gap-10"
     >
       <time dateTime={post.date} className="label pt-1.5">
         {dateLabel}

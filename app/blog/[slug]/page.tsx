@@ -195,7 +195,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
       {newer || older ? (
         <nav aria-label="More posts" className="mx-auto mt-16 grid max-w-[52rem] gap-4 sm:grid-cols-2">
           {older ? (
-            <Link href={`/blog/${older.slug}`} className="group rounded-2xl border border-line p-6 transition-[border-color,transform] duration-500 ease-[var(--ease-spring)] hover:-translate-y-1 hover:border-line-strong">
+            <Link href={`/blog/${older.slug}`} className="group rounded-2xl border border-line p-6 transition-[border-color,translate,scale] duration-500 ease-[var(--ease-spring)] hover:-translate-y-1 hover:border-line-strong active:scale-[0.985] active:duration-150">
               <p className="label inline-flex items-center gap-2">
                 <Arrow direction="right" className="rotate-180" /> Previous
               </p>
@@ -205,7 +205,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
             <span className="hidden sm:block" />
           )}
           {newer ? (
-            <Link href={`/blog/${newer.slug}`} className="group rounded-2xl border border-line p-6 text-right transition-[border-color,transform] duration-500 ease-[var(--ease-spring)] hover:-translate-y-1 hover:border-line-strong">
+            <Link href={`/blog/${newer.slug}`} className="group rounded-2xl border border-line p-6 text-right transition-[border-color,translate,scale] duration-500 ease-[var(--ease-spring)] hover:-translate-y-1 hover:border-line-strong active:scale-[0.985] active:duration-150">
               <p className="label inline-flex items-center gap-2">
                 Next <Arrow direction="right" />
               </p>

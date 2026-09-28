@@ -12,9 +12,9 @@ import { useMediaQuery } from "@/lib/hooks";
 /**
  * Sticky stacked-scroll: each project pins below the nav and the ones
  * beneath recede (scale + dim) as the next card slides over them.
- * Falls back to a plain vertical list on phones, with reduced motion, and on any
- * screen too short to show a whole card while pinned (short laptops, landscape
- * tablets) — so no card's content is ever covered by the next one.
+ * Where pinning would hide content (phones, short laptops, landscape tablets) the
+ * cards scroll normally but keep the same motion: each one recedes (scale + dim)
+ * as its end leaves the screen. Reduced motion → a plain list.
  */
 export function ProjectStack({ projects }: { projects: Project[] }) {
   const ref = useRef<HTMLOListElement>(null);
@@ -34,6 +34,7 @@ export function ProjectStack({ projects }: { projects: Project[] }) {
           n={projects.length}
           progress={scrollYProgress}
           stacked={stacked}
+          recede={!stacked && !reduce}
         />
       ))}
     </ol>
@@ -72,13 +73,20 @@ function ProjectCard({
   n,
   progress,
   stacked,
+  recede,
 }: {
   project: Project;
   i: number;
   n: number;
   progress: MotionValue<number>;
   stacked: boolean;
+  recede: boolean;
 }) {
+  const itemRef = useRef<HTMLLIElement>(null);
+  // Unpinned layouts: 0 when the card's end is a third of the way up the screen, 1 once it has left the top.
+  const { scrollYProgress: leave } = useScroll({ target: itemRef, offset: ["end 0.35", "end start"] });
+  const leaveScale = useTransform(leave, [0, 1], [1, 0.94]);
+  const leaveDim = useTransform(leave, [0, 1], [0, 0.45]);
   const start = i / n;
   const scale = useTransform(progress, [start, 1], [1, 1 - (n - 1 - i) * 0.035]);
   const main = p.images?.[0] ? figures[p.images[0]] : undefined;
@@ -87,11 +95,18 @@ function ProjectCard({
 
   return (
     <li
+      ref={itemRef}
       className={stacked ? "sticky" : undefined}
       style={stacked ? { top: `calc(var(--nav-h) + 1.5rem + ${i * 1.1}rem)` } : undefined}
     >
       <m.article
-        style={stacked ? { scale, transformOrigin: "50% 0%" } : undefined}
+        style={
+          stacked
+            ? { scale, transformOrigin: "50% 0%" }
+            : recede
+              ? { scale: leaveScale, transformOrigin: "50% 100%" }
+              : undefined
+        }
         initial={{ opacity: 0, y: 32 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
@@ -110,7 +125,7 @@ function ProjectCard({
             {main ? (
               <a
                 href={figureSrc(main, 1600)}
-                className="block overflow-hidden rounded-xl border border-line bg-white transition-[border-color,transform] duration-500 ease-[var(--ease-spring)] hover:-translate-y-0.5 hover:border-line-strong"
+                className="block overflow-hidden rounded-xl border border-line bg-white transition-[border-color,translate,scale] duration-500 ease-[var(--ease-spring)] hover:-translate-y-0.5 hover:border-line-strong active:scale-[0.985] active:duration-150"
                 aria-label={`Open full-size image: ${main.alt}`}
               >
                 <Image
@@ -152,7 +167,7 @@ function ProjectCard({
                   <li key={f.base}>
                     <a
                       href={figureSrc(f, 1600)}
-                      className="block overflow-hidden rounded-lg border border-line bg-white transition-[border-color,transform] duration-500 ease-[var(--ease-spring)] hover:-translate-y-0.5 hover:border-line-strong"
+                      className="block overflow-hidden rounded-lg border border-line bg-white transition-[border-color,translate,scale] duration-500 ease-[var(--ease-spring)] hover:-translate-y-0.5 hover:border-line-strong"
                       aria-label={`Open full-size image: ${f.alt}`}
                     >
                       <Image
@@ -188,8 +203,12 @@ function ProjectCard({
             </div>
           </div>
         </div>
-        {stacked ? (
-          <m.div aria-hidden className="pointer-events-none absolute inset-0 bg-surface" style={{ opacity: dim }} />
+        {stacked || recede ? (
+          <m.div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-surface"
+            style={{ opacity: stacked ? dim : leaveDim }}
+          />
         ) : null}
       </m.article>
     </li>

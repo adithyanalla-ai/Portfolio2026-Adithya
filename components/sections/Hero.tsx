@@ -106,7 +106,7 @@ export function Hero() {
             </li>
           </ul>
           <div className="flex items-center gap-6">
-            <a href="#about" className="label group hidden items-center gap-3 hover:text-primary md:inline-flex">
+            <a href="#about" className="tap label group inline-flex items-center gap-3 hover:text-primary">
               <span aria-hidden className="relative block h-8 w-px overflow-hidden bg-line">
                 <span className="anim-scroll-cue absolute inset-0 bg-accent" />
               </span>

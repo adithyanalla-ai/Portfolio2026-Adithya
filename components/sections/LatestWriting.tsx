@@ -27,7 +27,7 @@ export function LatestWriting() {
           <RevealItem as="li" key={post.slug} className="flex">
             <Link
               href={`/blog/${post.slug}`}
-              className="group flex w-full flex-col justify-between gap-10 rounded-2xl border border-line bg-surface-raised p-6 transition-[border-color,transform] duration-500 ease-[var(--ease-spring)] hover:-translate-y-1 hover:border-line-strong sm:p-8"
+              className="group flex w-full flex-col justify-between gap-10 rounded-2xl border border-line bg-surface-raised p-6 transition-[border-color,translate,scale] duration-500 ease-[var(--ease-spring)] hover:-translate-y-1 hover:border-line-strong active:scale-[0.985] active:duration-150 sm:p-8"
             >
               <div>
                 <p className="label">

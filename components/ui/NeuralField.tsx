@@ -5,7 +5,9 @@ import { useEffect, useRef } from "react";
 /**
  * "Neural field" — a quiet grid of points drifting on a cheap sine flow.
  * Points near the pointer are gently pushed aside and warm up to the accent
- * colour — a ripple, not a particle web.
+ * colour — a ripple, not a particle web. On touch screens the same ripple
+ * follows your finger, and drifts on its own between touches so phones see
+ * the same living field desktop visitors get under the cursor.
  *
  * Cost control: 2D canvas, DPR capped at 1.5, rects not arcs, rAF paused
  * off-screen / in background tabs, single static frame for reduced motion.
@@ -21,9 +23,11 @@ export function NeuralField({ className = "" }: { className?: string }) {
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const fine = window.matchMedia("(pointer: fine)").matches;
-    // Touch devices get no pointer interaction, so a calmer 30fps drift is plenty.
-    const frameInterval = fine ? 0 : 1000 / 30;
+    const frameInterval = 0; // full frame rate everywhere, same motion on phones and desktops
     let last = 0;
+    // Touch devices: the ripple wanders on its own until a finger takes over, then resumes after a pause.
+    let lastTouch = -Infinity;
+    const IDLE_AFTER_TOUCH = 2500;
     let ready = false;
 
     let w = 0;
@@ -55,16 +59,29 @@ export function NeuralField({ className = "" }: { className?: string }) {
       canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       gap = w < 640 ? 32 : 30;
+      RADIUS = w < 640 ? 130 : 170; // same proportion of the screen on phones
+      R2 = RADIUS * RADIUS;
       cols = Math.ceil(w / gap) + 1;
       rows = Math.ceil(h / gap) + 1;
     };
 
-    const RADIUS = 170;
-    const R2 = RADIUS * RADIUS;
+    let RADIUS = 170;
+    let R2 = RADIUS * RADIUS;
 
     const draw = (t: number) => {
       ctx.clearRect(0, 0, w, h);
       const time = t * 0.00018;
+
+      if (!fine && t - lastTouch > IDLE_AFTER_TOUCH) {
+        // slow Lissajous drift through the right-hand side of the hero
+        pointer.tx = w * (0.62 + 0.26 * Math.sin(t * 0.00031));
+        pointer.ty = h * (0.42 + 0.22 * Math.sin(t * 0.00047 + 1.3));
+        if (!pointer.active) {
+          pointer.x = pointer.tx;
+          pointer.y = pointer.ty;
+          pointer.active = true;
+        }
+      }
 
       // ease pointer toward target for a soft, springy feel
       pointer.x += (pointer.tx - pointer.x) * 0.12;
@@ -165,7 +182,24 @@ export function NeuralField({ className = "" }: { className?: string }) {
       }
       pointer.active = pointer.ty > 0 && pointer.ty < r.height;
     };
-    if (fine && !reduce) window.addEventListener("pointermove", onMove, { passive: true });
+    const onTouch = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      if (!touch) return;
+      const r = canvas.getBoundingClientRect();
+      const y = touch.clientY - r.top;
+      if (y < 0 || y > r.height) return;
+      lastTouch = performance.now();
+      pointer.tx = touch.clientX - r.left;
+      pointer.ty = y;
+      pointer.active = true;
+    };
+    if (!reduce) {
+      if (fine) window.addEventListener("pointermove", onMove, { passive: true });
+      else {
+        window.addEventListener("touchstart", onTouch, { passive: true });
+        window.addEventListener("touchmove", onTouch, { passive: true });
+      }
+    }
 
     // Don't compete with hydration / LCP: begin animating once the main thread is idle.
     const ric = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 1200));
@@ -186,6 +220,8 @@ export function NeuralField({ className = "" }: { className?: string }) {
       mo.disconnect();
       document.removeEventListener("visibilitychange", onVis);
       window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("touchstart", onTouch);
+      window.removeEventListener("touchmove", onTouch);
     };
   }, []);
 
