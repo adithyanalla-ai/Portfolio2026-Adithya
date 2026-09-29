@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { figures, figureSrc } from "@/lib/figures";
 import { Arrow } from "./Arrow";
+import { LeadPipeline } from "./LeadPipeline";
 import type { Project } from "@/lib/content";
 import { useHydratedReducedMotion } from "@/lib/hooks";
 
@@ -163,7 +164,7 @@ function ProjectCard({
   const last = i === n - 1;
   const scale = useTransform(scrollY, [from, Math.max(from + 1, end ?? from + 1)], [1, 1 - (n - 1 - i) * 0.035]);
   const figs = (p.images ?? []).map((k) => figures[k]).filter(Boolean);
-  // A logo takes the main spot and every figure becomes a thumbnail; otherwise the first figure leads.
+  // A diagram or logo takes the main spot and every figure becomes a thumbnail; otherwise the first figure leads.
   const main = p.logo ? undefined : figs[0];
   const thumbs = p.logo ? figs : figs.slice(1);
   // Half-dim while the next card slides over; nearly hidden once it is two cards deep, so only
@@ -203,7 +204,9 @@ function ProjectCard({
                 <span className="label rounded-full border border-line px-3 py-1">{p.meta}</span>
               ) : null}
             </div>
-            {p.logo ? (
+            {p.diagram === "lead-pipeline" ? (
+              <LeadPipeline className="mx-auto w-full max-w-[20rem]" />
+            ) : p.logo ? (
               <Link
                 href={p.href ?? "#work"}
                 className="group/logo mx-auto flex w-full max-w-[18rem] items-center justify-center rounded-3xl border border-line bg-[#fefefe] p-6 transition-[border-color,translate,scale] duration-500 ease-[var(--ease-spring)] hover:-translate-y-0.5 hover:border-line-strong active:scale-[0.985] active:duration-150 md:max-w-[20rem] md:p-8"

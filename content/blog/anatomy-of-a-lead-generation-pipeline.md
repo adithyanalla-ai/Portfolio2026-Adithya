@@ -5,6 +5,7 @@ summary: The five stages behind a Python and SQL pipeline that produced 3,000+ q
 description: The five stages of a lead generation data pipeline in Python and SQL: collect, clean, deduplicate, qualify, hand off. With funnel maths.
 keywords: lead generation pipeline, data pipeline Python SQL, lead qualification, deduplication SQL, sales funnel conversion, data engineering, B2B lead generation
 tags: Data Engineering, Business
+diagram: lead-pipeline
 ---
 
 Lead generation sounds like a sales problem. Underneath, it's a data problem: turning a large, messy pool of contacts into a short, trustworthy list a sales team will call.
@@ -15,6 +16,8 @@ I built a Python and SQL pipeline for exactly that.
   <div><strong>3,000+</strong><span>qualified leads generated</span></div>
   <div><strong>₹1.4Cr+</strong><span>revenue facilitated</span></div>
 </div>
+
+The diagram above is its architecture. Four channels (Meta lead ads, Google Ads, LinkedIn, and website, CRM and event forms) feed one connector layer. Python cleans the rows, Python and SQL de-duplicate them into a single golden record per lead, SQL scores each one, and a `campaign_performance` report shows which campaigns bring leads worth calling. Every stage writes its own table (`raw_leads`, `clean_leads`, `golden_leads`, `lead_scores`), so any number in the report can be traced back to the rows behind it.
 
 This post walks through the stages of a pipeline like it. The stages are standard. The results come from being disciplined at each one.
 
@@ -30,7 +33,7 @@ Yield multiplies, so a weak stage anywhere caps the whole pipeline. Raising one 
 
 ## Stage 1: collect into one table
 
-Leads arrive from many sources in many formats. Land them all in one table with a consistent schema, and record each lead's source. Without source tracking, you can't tell later which channels earn their cost.
+Leads arrive from many sources in many formats. Land them all in one table with a consistent schema, and record each lead's source. In my pipeline a single module, `connectors.py`, does this for every channel, so adding a new source means writing one connector, not changing the pipeline. Without source tracking, you can't tell later which channels earn their cost.
 
 ## Stage 2: clean and standardise fields
 

@@ -10,6 +10,7 @@ import { Arrow } from "@/components/ui/Arrow";
 import { TableOfContents } from "@/components/blog/TableOfContents";
 import { CopyLink } from "@/components/blog/CopyLink";
 import { PostRow } from "@/components/blog/PostRow";
+import { LeadPipeline } from "@/components/ui/LeadPipeline";
 
 type Params = { slug: string };
 
@@ -157,7 +158,11 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
           </div>
         </header>
 
-        {hero ? (
+        {post.diagram === "lead-pipeline" ? (
+          <div className="mx-auto mt-12 max-w-[52rem] rounded-2xl border border-line bg-surface-raised px-5 py-8 sm:py-10">
+            <LeadPipeline className="mx-auto w-full max-w-[22rem]" />
+          </div>
+        ) : hero ? (
           <div className="mx-auto mt-12 max-w-[52rem]">
             <figure>
               <Image

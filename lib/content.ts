@@ -122,6 +122,8 @@ export type Project = {
   images?: string[];
   /** Deeper write-up (usually a blog post). */
   href?: string;
+  /** Animated diagram shown as the card's main visual. */
+  diagram?: "lead-pipeline";
 };
 
 export const projects: Project[] = [
@@ -173,12 +175,18 @@ export const projects: Project[] = [
   {
     index: "04",
     name: "Lead Generation Data Pipeline",
-    kicker: "Python + SQL pipeline behind a revenue engine",
+    kicker: "Four ad channels in, one scored lead list out",
     summary:
-      "An end-to-end data pipeline for sourcing, cleaning and qualifying leads at campaign scale.",
-    points: ["3,000+ qualified leads generated.", "INR 1.4Cr+ in revenue facilitated."],
-    tags: ["Python", "SQL", "Data Engineering"],
+      "A Python + SQL pipeline that pulls leads from every campaign channel, cleans and de-duplicates them into one golden record per person, scores them, and reports which campaigns bring leads worth calling.",
+    points: [
+      "One connector layer (connectors.py) lands Meta lead ads, Google Ads, LinkedIn and website, CRM and event forms in a single raw table.",
+      "Python cleaning plus Python + SQL de-duplication build one golden record per lead before SQL scoring.",
+      "Scores roll up into a campaign_performance report that compares channels on lead quality, not just volume.",
+      "3,000+ qualified leads generated and ₹1.4Cr+ in revenue facilitated.",
+    ],
+    tags: ["Python", "SQL", "Data Engineering", "Lead Scoring"],
     meta: "₹1.4Cr+ facilitated",
+    diagram: "lead-pipeline",
     href: "/blog/anatomy-of-a-lead-generation-pipeline",
   },
   {

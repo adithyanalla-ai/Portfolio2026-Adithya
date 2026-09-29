@@ -34,6 +34,7 @@ hljs.registerLanguage("yaml", yaml);
  *   updated: 2026-10-01       (optional — dateModified)
  *   image: aglier-fig9        (optional — a key from lib/figures.ts, used as the hero + in JSON-LD)
  *   icon: /images/aglier/logo (optional — square mark with -256/-512.webp + -256.png variants)
+ *   diagram: lead-pipeline    (optional — animated diagram shown as the hero instead of an image)
  *   featured: true            (optional — pins the post to the top of /blog)
  *   ---
  *
@@ -64,6 +65,7 @@ export type PostMeta = {
   keywords: string[];
   image?: string;
   icon?: string;
+  diagram?: "lead-pipeline";
   featured: boolean;
   readingMinutes: number;
   wordCount: number;
@@ -239,6 +241,7 @@ function parse(file: string): Post {
     keywords: list(meta.keywords),
     image: meta.image,
     icon: meta.icon,
+    diagram: meta.diagram === "lead-pipeline" ? "lead-pipeline" : undefined,
     featured: meta.featured === "true",
     readingMinutes: Math.max(1, Math.round(words / 230)),
     wordCount: words,
