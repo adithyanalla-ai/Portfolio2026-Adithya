@@ -164,12 +164,13 @@ export const projects: Project[] = [
     summary:
       "Generative Brand Narrative Intelligence — an agent framework that reads context and emotional state to adapt how a brand speaks.",
     points: [
-      "Published on SSRN (Abstract ID: 6845958).",
+      "GBNI v2 on SSRN (Abstract ID: 7531958): consistency governance, causal self-optimisation and multi-tenant support on top of the EABN framework.",
+      "Builds on the original GBNI paper on SSRN (Abstract ID: 6845958).",
       "Expanding into a 120+ page IEEE paper and a full book manuscript.",
       "5 autonomous agent pipelines in production, recovering 20+ hours every week.",
     ],
     tags: ["Multi-agent", "Multimodal", "LLMs", "Production"],
-    meta: "SSRN · 6845958",
+    meta: "SSRN · 7531958",
     href: "/blog/gbni-state-aware-agents",
   },
   {
@@ -226,12 +227,21 @@ export const publications: Publication[] = [
   },
   {
     title:
-      "Generative Brand Narrative Intelligence: A State-Aware Multimodal Agent Framework for Emotionally Adaptive Brand Communication",
+      "Generative Brand Narrative Intelligence v2: Consistency-Governed, Causally Self-Optimizing, and Multi-Tenant Extension of the Emotionally Adaptive Brand Narrative (EABN) Framework",
     venue: "SSRN",
-    date: "Preprint",
+    date: "Sept 2026",
+    id: "Abstract ID: 7531958",
+    href: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7531958",
+    kind: "Working paper · GBNI v2",
+  },
+  {
+    title:
+      "Generative Brand Narrative Intelligence: A State-aware Multimodal Agent Framework for Autonomous Emotionally Adaptive Brand Communication",
+    venue: "SSRN",
+    date: "May 2026",
     id: "Abstract ID: 6845958",
     href: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6845958",
-    kind: "Working paper",
+    kind: "Working paper · GBNI v1",
   },
   {
     title: "Diabetes Data Analysis and Machine Learning Based Prediction Model on Streamlit Web App",

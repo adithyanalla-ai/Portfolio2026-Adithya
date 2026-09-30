@@ -1,6 +1,7 @@
 ---
 title: GBNI explained: state-aware multimodal AI agents for brand communication
 date: 2026-09-15
+updated: 2026-09-30
 summary: Generative Brand Narrative Intelligence, my state-aware multimodal agent framework, explained in plain language, from stateless prompts to agents that remember.
 description: What GBNI (Generative Brand Narrative Intelligence) is: a state-aware multimodal AI agent framework for emotionally adaptive brand communication.
 keywords: state-aware AI agents, multimodal agent framework, agentic AI, brand communication AI, Generative Brand Narrative Intelligence, GBNI, stateful LLM agents
@@ -57,7 +58,7 @@ The design rule is strict: that tier **never controls the real-time harvest cycl
 
 ## What comes next for GBNI
 
-The SSRN paper is the first step. I'm expanding it into a 120+ page IEEE paper and a book manuscript, covering the framework in the depth a short paper can't.
+The SSRN paper is the first step. The second is already out: **GBNI v2** ([SSRN Abstract ID 7531958](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7531958), September 2026) extends the Emotionally Adaptive Brand Narrative (EABN) framework to be consistency-governed, causally self-optimising and multi-tenant. I'm expanding it into a 120+ page IEEE paper and a book manuscript, covering the framework in the depth a short paper can't.
 
 > [!TIP] Read the source
 > Start with the [SSRN abstract](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6845958) for the formal definitions. If you work on stateful or multimodal agents, [let's compare notes](/#contact).
@@ -66,7 +67,7 @@ The SSRN paper is the first step. I'm expanding it into a 120+ page IEEE paper a
 
 ### What is GBNI?
 
-GBNI (Generative Brand Narrative Intelligence) is a state-aware multimodal AI agent framework for emotionally adaptive brand communication, developed by Adithya Reddy and published on SSRN under Abstract ID 6845958.
+GBNI (Generative Brand Narrative Intelligence) is a state-aware multimodal AI agent framework for emotionally adaptive brand communication, developed by Adithya Reddy and published on SSRN under Abstract ID 6845958. Its v2 extension (consistency-governed, causally self-optimising and multi-tenant) is on SSRN under Abstract ID 7531958.
 
 ### What is a state-aware AI agent?
 

@@ -45,4 +45,4 @@ Production agentic AI at Eject Solutions; GBNI, a state-aware multimodal agent f
 
 ### Which research papers are submitted or in progress?
 
-The Aglier paper is under review at IEEE Transactions on Robotics (submitted September 2026). In preparation: a 120+ page IEEE paper and a book manuscript expanding the GBNI framework, and a MITHRA manuscript targeting a Scopus-indexed journal. The GBNI framework is already published on SSRN (Abstract ID 6845958).
+The Aglier paper is under review at IEEE Transactions on Robotics (submitted September 2026). In preparation: a 120+ page IEEE paper and a book manuscript expanding the GBNI framework, and a MITHRA manuscript targeting a Scopus-indexed journal. The GBNI framework is already published on SSRN (Abstract ID 6845958), and its v2 extension followed in September 2026 (Abstract ID 7531958).
