@@ -3,7 +3,7 @@ title: Aglier: inside an AI tree-climbing fruit-harvesting robot
 date: 2026-09-28
 summary: How Aglier climbs a trunk, decides which fruit is ripe and picks it in five timed stages, with the claw geometry and cycle-time maths behind the design.
 description: Aglier is an AI tree-climbing fruit-harvesting robot. See its components, claw-closure geometry, five-stage harvest cycle and the maths behind them.
-keywords: fruit harvesting robot, tree climbing robot, IEEE Transactions on Robotics, lizard-inspired climbing robot, edge-cloud robotics, agricultural robotics, harvesting automation, robotic gripper, claw geometry, harvest cycle time, GBNI
+keywords: fruit harvesting robot, tree climbing robot, lizard-inspired climbing robot, edge-cloud robotics, agricultural robotics, harvesting automation, robotic gripper, claw geometry, harvest cycle time, GBNI
 tags: Robotics, Research, Agentic AI
 image: aglier-fig9
 icon: /images/aglier/logo
@@ -11,9 +11,6 @@ featured: true
 ---
 
 Aglier is a robot that climbs a fruit tree, finds ripe fruit with an onboard camera, picks it and drops it into a basket it carries. I am its sole inventor and I'm drafting the patent specification. The figures in this post come from that specification.
-
-> [!NOTE] Paper submitted to IEEE Transactions on Robotics
-> The full research paper, *Aglier: A Force-Adaptive, Lizard-Inspired Tree-Climbing Harvester with a Tiered Edge-Cloud Decision Architecture and an Asynchronous Narrative Layer*, was submitted to *IEEE Transactions on Robotics* as a Regular Paper in September 2026 and is under review. This article is the accessible overview.
 
 This article covers what the robot is made of, how it holds onto a trunk, how long one pick takes, and where AI fits in. The numbers are the representative ranges in the drawings. They show how the design is reasoned, not field-test results.
 
@@ -166,10 +163,6 @@ The specification's representative ranges add up to about 3.7 to 11.9 seconds pe
 ### Does the AI control the robot's movements?
 
 The AI camera module makes the real-time ripeness and targeting decision. The GBNI narrative tier only reads batch records from the event log afterwards and never controls the harvest cycle.
-
-### Has the Aglier research been published?
-
-The paper "Aglier: A Force-Adaptive, Lizard-Inspired Tree-Climbing Harvester with a Tiered Edge-Cloud Decision Architecture and an Asynchronous Narrative Layer" was submitted to IEEE Transactions on Robotics as a Regular Paper in September 2026 and is under review.
 
 ### Is Aglier patented?
 

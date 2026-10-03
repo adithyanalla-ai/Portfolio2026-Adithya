@@ -11,7 +11,7 @@ export function localAnswer(question: string): string {
   const lead = experience[0];
   const find = (name: string) => projects.find((p) => p.name.toLowerCase().startsWith(name));
 
-  if (has(q, "aglier", "robot", "harvest", "patent", "t-ro", "robotics")) {
+  if (has(q, "aglier", "robot", "harvest", "patent", "robotics")) {
     const p = find("aglier")!;
     return `${p.name} is my ${p.kicker.toLowerCase()}: ${p.summary} ${p.points.join(" ")}`;
   }

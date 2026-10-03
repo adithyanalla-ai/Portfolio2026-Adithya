@@ -40,7 +40,7 @@ Reporting automation, campaign dashboards, A/B testing and cohort analysis for w
 
 ## Selected work
 
-- **Aglier:** a force-adaptive, lizard-inspired tree-climbing fruit harvester with a tiered edge–cloud decision architecture. The paper is under review at *IEEE Transactions on Robotics*. I'm the sole inventor and I'm drafting the patent specification. It carries an onboard GBNI subsystem.
+- **Aglier:** a force-adaptive, lizard-inspired tree-climbing fruit harvester with a tiered edge–cloud decision architecture. I'm the sole inventor and I'm drafting the patent specification. It carries an onboard GBNI subsystem.
 - **GBNI (V2) & Autonomous Agency Workflows:** a state-aware multimodal agent framework for emotionally adaptive brand communication, published on SSRN (Abstract ID 6845958). I'm expanding it into a 120+ page IEEE paper and a book. Five autonomous agent pipelines run in production, recovering 20+ hours a week.
 - **MITHRA:** a cybercrime rapid-response and intelligence platform. It's self-directed R&D, built with Claude Code and Codex-assisted engineering, and its manuscript targets a Scopus-indexed journal.
 - **Lead generation data pipeline:** Python and SQL, 3,000+ qualified leads, ₹1.4 Cr+ in revenue facilitated.
@@ -48,8 +48,8 @@ Reporting automation, campaign dashboards, A/B testing and cohort analysis for w
 
 ## Publications
 
-1. *Aglier: A Force-Adaptive, Lizard-Inspired Tree-Climbing Harvester with a Tiered Edge-Cloud Decision Architecture and an Asynchronous Narrative Layer.* IEEE Transactions on Robotics, Regular Paper, submitted September 2026 (under review).
-2. *Generative Brand Narrative Intelligence: A State-Aware Multimodal Agent Framework for Emotionally Adaptive Brand Communication.* SSRN, Abstract ID 6845958.
+1. *Generative Brand Narrative Intelligence v2: Consistency-Governed, Causally Self-Optimizing, and Multi-Tenant Extension of the Emotionally Adaptive Brand Narrative (EABN) Framework.* SSRN, Abstract ID 7531958, September 2026.
+2. *Generative Brand Narrative Intelligence: A State-aware Multimodal Agent Framework for Autonomous Emotionally Adaptive Brand Communication.* SSRN, Abstract ID 6845958, May 2026.
 3. *Diabetes Data Analysis and Machine Learning Based Prediction Model on Streamlit Web App.* International Journal of Scientific Research and Engineering Development (IJSRED), October 2022.
 
 ## Skills

@@ -147,7 +147,6 @@ export const projects: Project[] = [
     summary:
       "A robot that climbs trees and harvests fruit, deciding through a tiered edge–cloud architecture with an asynchronous narrative layer on top.",
     points: [
-      "Paper submitted to IEEE Transactions on Robotics (Regular Paper, September 2026).",
       "Sole inventor, drafting the patent specification.",
       "Carries an onboard GBNI subsystem for state-aware reasoning.",
     ],
@@ -216,14 +215,6 @@ export type Publication = {
 };
 
 export const publications: Publication[] = [
-  {
-    title:
-      "Aglier: A Force-Adaptive, Lizard-Inspired Tree-Climbing Harvester with a Tiered Edge-Cloud Decision Architecture and an Asynchronous Narrative Layer",
-    venue: "IEEE Transactions on Robotics",
-    date: "Submitted Sept 2026",
-    id: "Manuscript 26-1805",
-    kind: "Under review · Regular paper",
-  },
   {
     title:
       "Generative Brand Narrative Intelligence v2: Consistency-Governed, Causally Self-Optimizing, and Multi-Tenant Extension of the Emotionally Adaptive Brand Narrative (EABN) Framework",
