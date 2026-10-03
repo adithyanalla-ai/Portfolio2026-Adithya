@@ -152,7 +152,6 @@ export const projects: Project[] = [
       "Carries an onboard GBNI subsystem for state-aware reasoning.",
     ],
     tags: ["Robotics", "Computer Vision", "Embedded AI"],
-    meta: "Submitted · IEEE T-RO",
     logo: "/images/aglier/logo",
     images: ["aglier-fig9", "aglier-fig14", "aglier-fig3", "aglier-fig5"],
     href: "/blog/aglier-ai-tree-climbing-fruit-harvesting-robot",
