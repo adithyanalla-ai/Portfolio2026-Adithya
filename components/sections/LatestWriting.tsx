@@ -13,7 +13,7 @@ export function LatestWriting() {
     <section id="writing" aria-labelledby="writing-title" className="section-y container-x border-t border-line">
       <SectionHeader
         id="writing-title"
-        index="07"
+        index="08"
         label="Writing"
         title={
           <>

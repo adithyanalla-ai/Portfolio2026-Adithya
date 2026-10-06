@@ -9,7 +9,7 @@ export function Publications() {
     <section id="research" aria-labelledby="research-title" className="section-y container-x">
       <SectionHeader
         id="research-title"
-        index="04"
+        index="05"
         label="Publications"
         title={
           <>

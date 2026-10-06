@@ -29,6 +29,7 @@ export const nav: NavItem[] = [
   { id: "about", label: "About" },
   { id: "experience", label: "Experience" },
   { id: "work", label: "Work" },
+  { id: "marketing", label: "Marketing" },
   { id: "research", label: "Research" },
   { id: "skills", label: "Skills" },
   { id: "blog", label: "Blog", href: "/blog" },
@@ -204,6 +205,107 @@ export const projects: Project[] = [
     href: "/blog/explaining-every-prediction-diabetes-risk",
   },
 ];
+
+/** The growth-marketing side of the résumé (Marketing section + AI chat). */
+export const marketing = {
+  headline: "Growth Marketing & Business Development · AI-Powered Lead Generation · Campaign Analytics",
+  summary:
+    "Growth and business development professional with 3+ years of experience in lead generation, campaign management and marketing analytics, backed by engineering skills to automate the work. I've delivered measurable results across online and offline campaigns: led the campaign for a panel that won all 29 of 29 election seats in an association election, achieved the top admission rate in a university admissions drive, produced 3,000+ qualified leads that facilitated INR 1.4 crore+ in revenue, and cut cost per lead by 20% through Meta A/B testing. I communicate with leadership, clients and students in English, Telugu and Hindi.",
+  stats: [
+    { value: "₹1.4Cr+", label: "Revenue facilitated" },
+    { value: "3,000+", label: "Qualified leads" },
+    { value: "29/29", label: "Election seats won" },
+    { value: "20%", label: "Lower cost per lead" },
+    { value: "30%", label: "Conversion lift" },
+  ],
+  roles: [
+    {
+      title: "Lead AI Engineer (Growth & Business Development)",
+      company: "Eject Solutions Pvt Ltd, Hyderabad",
+      period: "Mar 2024 — Present",
+      points: [
+        "Generated 3,000+ segmented, qualified leads for the number 1 outreach campaign of the year by building Python and SQL pipelines that extract, clean, deduplicate and score prospect data, facilitating INR 1.4 crore+ in revenue within 6 months.",
+        "Played a key role in business development, bringing in more leads, 10+ new clients and partners, and strengthening Eject Solutions' credibility in the market.",
+        "Automated content creation, client reporting and scheduling with LLM pipelines (LangChain, Claude API), saving 20+ hours a week and cutting client report delivery time from 3 days to 4 hours.",
+        "Built Power BI dashboards tracking 15+ KPIs that informed 8+ leadership decisions, and architected a placement platform for 18+ hiring organisations that cut coordinator effort by 50%.",
+      ],
+    },
+    {
+      title: "Marketing Analytics Analyst",
+      company: "INT360 Design Studio, Bangalore",
+      period: "Mar 2023 — Mar 2024",
+      points: [
+        "Reduced cost per lead by 20% over 6 months and saved about INR 8 lakh a year by running 15+ Meta A/B tests with statistical significance testing across 10+ clients and INR 50L+ of ad spend.",
+        "Lifted conversion rates by 30% through cohort analysis and customer segmentation in Python (Pandas) for targeted campaign optimisation.",
+        "Built weekly Power BI dashboards (DAX, SQL) tracking CPL, CTR and ROAS, and automated 12 hours a week of reporting and outreach work for a team of 8.",
+      ],
+    },
+  ],
+  campaigns: [
+    {
+      name: "P P Savani University Admissions",
+      tag: "Admissions marketing & student support",
+      period: "2024 — 2025",
+      highlight: "350+ students admitted",
+      points: [
+        "Achieved the top admission rate with 350+ students admitted by running targeted admissions outreach through online and offline campaigns.",
+        "Planned and executed the full marketing campaign, supported by a lead pipeline that segmented and scored prospective students.",
+        "Took responsibility for the safety, welfare and guidance of Telugu students after admission, acting as their point of contact.",
+      ],
+    },
+    {
+      name: "Police Officers Association Election Campaign, Hyderabad City",
+      tag: "Marketing & manifesto",
+      period: "2026",
+      highlight: "29 of 29 seats won",
+      points: [
+        "Led the online and offline marketing and manifesto for the panel that won all 29 of 29 election seats and the presidency of the Police Officers Association, Hyderabad City.",
+      ],
+    },
+  ],
+  competencies: [
+    {
+      label: "Growth & marketing",
+      items: [
+        "Lead generation",
+        "Campaign management",
+        "Online and offline campaigns",
+        "Outreach",
+        "Admissions marketing",
+        "Performance marketing (Meta Ads)",
+        "Conversion optimisation",
+        "A/B testing",
+        "Cohort analysis",
+        "Customer segmentation",
+        "Funnel analytics",
+        "CPL / CTR / ROAS",
+        "Manifesto and messaging",
+      ],
+    },
+    {
+      label: "Business",
+      items: ["Business development", "Stakeholder management", "Client communication", "Leadership", "Technical specification writing"],
+    },
+    {
+      label: "Analytics & automation",
+      items: [
+        "Marketing analytics",
+        "Data-driven decision making",
+        "Python",
+        "SQL",
+        "Pandas",
+        "Power BI",
+        "DAX",
+        "Excel",
+        "Reporting automation",
+        "LLM automation (LangChain, Claude API)",
+      ],
+    },
+    { label: "Tools", items: ["Meta Ads", "Power BI", "Excel", "SQL", "Python"] },
+    { label: "Languages", items: ["English (fluent)", "Telugu (native)", "Hindi (fluent)"] },
+  ],
+  leadership: "Coordinated a 6-person team to deliver a market-ready AI agent 80% faster than planned.",
+};
 
 export type Publication = {
   title: string;

@@ -1,4 +1,4 @@
-import { about, education, experience, projects, publications, site, skills } from "./content";
+import { about, education, experience, marketing, projects, publications, site, skills } from "./content";
 
 /**
  * Offline answers from the résumé data: used when no AI key is configured, when the
@@ -11,6 +11,10 @@ export function localAnswer(question: string): string {
   const lead = experience[0];
   const find = (name: string) => projects.find((p) => p.name.toLowerCase().startsWith(name));
 
+  if (has(q, "marketing", "campaign", "election", "admission", "growth", "meta ads", "a/b", "cost per lead", "business development")) {
+    const [a, b] = marketing.campaigns;
+    return `${marketing.summary} Campaigns: ${a.name} (${a.highlight}) and ${b.name} (${b.highlight}).`;
+  }
   if (has(q, "aglier", "robot", "harvest", "patent", "robotics")) {
     const p = find("aglier")!;
     return `${p.name} is my ${p.kicker.toLowerCase()}: ${p.summary} ${p.points.join(" ")}`;

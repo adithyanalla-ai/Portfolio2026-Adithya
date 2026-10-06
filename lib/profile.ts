@@ -1,4 +1,4 @@
-import { about, education, experience, projects, publications, site, skills } from "./content";
+import { about, education, experience, marketing, projects, publications, site, skills } from "./content";
 
 /**
  * Plain-text profile the AI chat answers from. Built from lib/content.ts so the assistant
@@ -23,6 +23,21 @@ export function profileText(): string {
     if (r.path) lines.push(`Promotion path: ${r.path.map((p) => p.title + (p.note ? ` (${p.note})` : "")).join(" -> ")}`);
     r.highlights.forEach((h) => lines.push(`- ${h}`));
   });
+  lines.push("");
+  lines.push(`Growth marketing side (from my marketing résumé): ${marketing.headline}`);
+  lines.push(marketing.summary);
+  marketing.stats.forEach((s) => lines.push(`- ${s.value}: ${s.label}`));
+  marketing.roles.forEach((r) => {
+    lines.push(`${r.title}, ${r.company} (${r.period})`);
+    r.points.forEach((pt) => lines.push(`- ${pt}`));
+  });
+  lines.push("Campaigns:");
+  marketing.campaigns.forEach((c) => {
+    lines.push(`${c.name} (${c.tag}, ${c.period})`);
+    c.points.forEach((pt) => lines.push(`- ${pt}`));
+  });
+  marketing.competencies.forEach((g) => lines.push(`- ${g.label}: ${g.items.join(", ")}`));
+  lines.push(`- Leadership: ${marketing.leadership}`);
   lines.push("");
   lines.push("Projects:");
   projects.forEach((p) => {

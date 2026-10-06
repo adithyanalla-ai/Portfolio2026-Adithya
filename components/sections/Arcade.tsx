@@ -7,7 +7,7 @@ export function Arcade() {
     <section id="play" aria-labelledby="play-title" className="section-y container-x border-t border-line">
       <SectionHeader
         id="play-title"
-        index="09"
+        index="10"
         label="Play"
         title={
           <>

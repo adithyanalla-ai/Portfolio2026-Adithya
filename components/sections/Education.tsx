@@ -7,7 +7,7 @@ export function Education() {
       <div className="grid gap-8 border-t border-line pt-12 md:grid-cols-12">
         <Reveal className="md:col-span-3">
           <p className="label flex items-center gap-3">
-            <span className="text-accent">06</span>
+            <span className="text-accent">07</span>
             <span aria-hidden className="h-px w-8 bg-line-strong" />
             <span>Education</span>
           </p>
