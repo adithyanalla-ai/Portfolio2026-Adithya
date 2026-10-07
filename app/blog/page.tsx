@@ -5,6 +5,7 @@ import { formatDate, getPosts } from "@/lib/blog";
 import { site } from "@/lib/content";
 import { jsonLd } from "@/lib/jsonld";
 import { pageMeta } from "@/lib/seo";
+import { breadcrumbs, personRef } from "@/lib/schema";
 import { Reveal } from "@/components/ui/Reveal";
 import { Arrow } from "@/components/ui/Arrow";
 import { SubscribeForm } from "@/components/blog/SubscribeForm";
@@ -28,17 +29,24 @@ export default function BlogIndex() {
   const dateLabels = Object.fromEntries(posts.map((p) => [p.slug, formatDate(p.date, "short")]));
   const structured = {
     "@context": "https://schema.org",
-    "@type": "Blog",
-    name: `${site.name}: Field notes`,
-    url: `${site.url}/blog`,
-    author: { "@type": "Person", name: site.name, url: site.url },
-    blogPost: posts.map((p) => ({
-      "@type": "BlogPosting",
-      headline: p.title,
-      url: `${site.url}/blog/${p.slug}`,
-      datePublished: p.date,
-      description: p.description,
-    })),
+    "@graph": [
+      {
+        "@type": "Blog",
+        "@id": `${site.url}/blog#blog`,
+        name: `${site.name}: Field notes`,
+        url: `${site.url}/blog`,
+        author: personRef,
+        blogPost: posts.map((p) => ({
+          "@type": "BlogPosting",
+          headline: p.title,
+          url: `${site.url}/blog/${p.slug}`,
+          datePublished: p.date,
+          description: p.description,
+          author: personRef,
+        })),
+      },
+      breadcrumbs([["Blog", `${site.url}/blog`]]),
+    ],
   };
 
   return (

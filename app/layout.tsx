@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Fraunces, Geist } from "next/font/google";
 import "./globals.css";
 import { site } from "@/lib/content";
-import { jsonLd as serializeJsonLd } from "@/lib/jsonld";
 import { ogImage } from "@/lib/seo";
 import { Providers } from "@/components/ui/Providers";
 import { Nav } from "@/components/ui/Nav";
@@ -73,19 +72,6 @@ export const viewport: Viewport = {
 // Runs before first paint: stored choice → OS preference → dark. Prevents any theme flash.
 const themeScript = `(function(){var d=document.documentElement,t;try{t=localStorage.getItem('theme')}catch(e){}if(t!=='light'&&t!=='dark'){t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'}d.dataset.theme=t})();`;
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  name: site.name,
-  url: site.url,
-  email: `mailto:${site.email}`,
-  jobTitle: "Lead AI Engineer",
-  worksFor: { "@type": "Organization", name: "Eject Solutions Pvt Ltd" },
-  alumniOf: { "@type": "CollegeOrUniversity", name: "KL University" },
-  address: { "@type": "PostalAddress", addressLocality: "Hyderabad", addressCountry: "IN" },
-  sameAs: [site.linkedin],
-};
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
@@ -96,10 +82,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={serializeJsonLd(jsonLd)}
-        />
       </head>
       <body>
         <a

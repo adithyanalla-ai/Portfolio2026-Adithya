@@ -6,6 +6,7 @@ import { formatDate, getAdjacent, getPost, getPosts, getRelated } from "@/lib/bl
 import { site } from "@/lib/content";
 import { figures, figureSrc } from "@/lib/figures";
 import { jsonLd } from "@/lib/jsonld";
+import { breadcrumbs, personRef } from "@/lib/schema";
 import { Arrow } from "@/components/ui/Arrow";
 import { TableOfContents } from "@/components/blog/TableOfContents";
 import { CopyLink } from "@/components/blog/CopyLink";
@@ -54,7 +55,6 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
 
   const url = `${site.url}/blog/${post.slug}`;
   const hero = post.image ? figures[post.image] : undefined;
-  const author = { "@type": "Person", name: site.name, url: site.url, jobTitle: "Lead AI Engineer" };
   const structured = {
     "@context": "https://schema.org",
     "@graph": [
@@ -75,17 +75,14 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
           hero ? `${site.url}${figureSrc(hero, 1600)}` : `${url}/opengraph-image`,
           ...(post.icon ? [`${site.url}${post.icon}-512.webp`] : []),
         ],
-        author,
-        publisher: author,
+        author: personRef,
+        publisher: personRef,
+        isPartOf: { "@type": "Blog", "@id": `${site.url}/blog#blog`, url: `${site.url}/blog` },
       },
-      {
-        "@type": "BreadcrumbList",
-        itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Home", item: site.url },
-          { "@type": "ListItem", position: 2, name: "Blog", item: `${site.url}/blog` },
-          { "@type": "ListItem", position: 3, name: post.title, item: url },
-        ],
-      },
+      breadcrumbs([
+        ["Blog", `${site.url}/blog`],
+        [post.title, url],
+      ]),
       ...(post.faq.length
         ? [
             {

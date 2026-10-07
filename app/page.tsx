@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
+import { jsonLd } from "@/lib/jsonld";
+import { person, website } from "@/lib/schema";
 import { Hero } from "@/components/sections/Hero";
 import { About } from "@/components/sections/About";
 import { Experience } from "@/components/sections/Experience";
@@ -34,6 +36,10 @@ export default function Home() {
       <LatestWriting />
       <Contact />
       <Arcade />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLd({ "@context": "https://schema.org", "@graph": [person, website] })}
+      />
     </main>
   );
 }
