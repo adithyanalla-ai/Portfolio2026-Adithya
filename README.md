@@ -1,7 +1,7 @@
 # Adithya Reddy
 
 **AI/ML Engineer · Agentic AI & LLM Systems · Business Analyst**
-Hyderabad, India · [adithyareddy.online](https://adithyareddy.online)
+Hyderabad, India · [adithyareddy.online](https://www.adithyareddy.online)
 
 I design agentic AI and LLM systems that leave the notebook, ship to production, and move the numbers a business actually reports on.
 
@@ -72,4 +72,4 @@ Reporting automation, campaign dashboards, A/B testing and cohort analysis for w
 - Email: [adithyareddy639@gmail.com](mailto:adithyareddy639@gmail.com)
 - Phone: +91-90594 73960
 - LinkedIn: [linkedin.com/in/adithyareddy-ai](https://www.linkedin.com/in/adithyareddy-ai)
-- Website and blog: [adithyareddy.online](https://adithyareddy.online)
+- Website and blog: [adithyareddy.online](https://www.adithyareddy.online)

@@ -196,7 +196,7 @@ The floating assistant answers visitors on your behalf from your profile. It use
 1. Push this repo to GitHub.
 2. In Vercel, click **Add New → Project** and import the repo. It's detected as Next.js, and no settings or environment variables are needed.
 3. Click **Deploy**.
-4. To use the custom domain, go to **Project → Settings → Domains**, add `adithyareddy.online`, and create the DNS records Vercel shows.
+4. To use the custom domain, go to **Project → Settings → Domains**, add `www.adithyareddy.online` (the primary, canonical domain) and `adithyareddy.online` (redirecting to www), and create the DNS records Vercel shows. If the canonical domain ever changes, update `site.url` in `lib/content.ts`; canonicals, the sitemap, robots.txt, RSS and structured data all derive from it.
 
 Or from the CLI: `npx vercel` for a preview, `npx vercel --prod` for production.
 

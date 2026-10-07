@@ -34,6 +34,8 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
       title: post.title,
       description: post.description,
       url: `/blog/${post.slug}`,
+      siteName: site.name,
+      locale: "en_IN",
       publishedTime: post.date,
       modifiedTime: post.updated ?? post.date,
       authors: [site.name],

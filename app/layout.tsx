@@ -41,10 +41,8 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: site.name, url: site.url }],
   creator: site.name,
-  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
-    url: site.url,
     title: `${site.name} — AI/ML Engineer`,
     description: site.description,
     siteName: site.name,

@@ -14,6 +14,15 @@ export const metadata: Metadata = {
   description:
     "Adithya Reddy's blog on agentic AI, LLM systems, explainable machine learning, AI robotics and measuring AI in business outcomes.",
   alternates: { canonical: "/blog", types: { "application/rss+xml": "/blog/rss.xml" } },
+  openGraph: {
+    type: "website",
+    url: "/blog",
+    title: "Blog: agentic AI, explainable ML and robotics",
+    description:
+      "Adithya Reddy's blog on agentic AI, LLM systems, explainable machine learning, AI robotics and measuring AI in business outcomes.",
+    siteName: site.name,
+    locale: "en_IN",
+  },
 };
 
 export default function BlogIndex() {

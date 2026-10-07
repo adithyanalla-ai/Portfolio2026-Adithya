@@ -12,7 +12,8 @@ export const site = {
     "I design agentic AI and LLM systems that leave the notebook, ship to production, and move the numbers a business actually reports on.",
   location: "Hyderabad, India",
   timezone: "Asia/Kolkata",
-  url: "https://adithyareddy.online",
+  /** Canonical origin (www). The apex domain 301-redirects here; no trailing slash. */
+  url: "https://www.adithyareddy.online",
   email: "adithyareddy639@gmail.com",
   phone: "+91-90594 73960",
   phoneHref: "tel:+919059473960",
