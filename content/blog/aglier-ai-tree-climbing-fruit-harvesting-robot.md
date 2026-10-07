@@ -7,7 +7,6 @@ keywords: fruit harvesting robot, tree climbing robot, lizard-inspired climbing 
 tags: Robotics, Research, Agentic AI
 image: aglier-fig9
 icon: /images/aglier/logo
-featured: true
 ---
 
 Aglier is a robot that climbs a fruit tree, finds ripe fruit with an onboard camera, picks it and drops it into a basket it carries. I am its sole inventor and I'm drafting the patent specification. The figures in this post come from that specification.

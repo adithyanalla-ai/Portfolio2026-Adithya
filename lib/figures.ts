@@ -47,6 +47,28 @@ export const figures: Record<string, Figure> = {
     maxWidth: 1536,
     alt: "Six alternative bark-engagement designs: claw friction clamp, microspine array, hybrid adhesive and microspine foot, tendon-driven wrap gripper, wheeled spring-cinch mechanism and pneumatic flexible clamp.",
   },
+  "parity-fig1": {
+    base: "/images/algorithmic-parity/fig1-ai-adoption",
+    width: 1400,
+    height: 680,
+    maxWidth: 1400,
+    alt: "Line chart of organizational AI use from 2020 to 2025: any AI use rises from about 50 percent to 88 percent, and generative AI use rises from 33 percent in 2023 to 79 percent in 2025.",
+  },
+  "parity-fig2": {
+    base: "/images/algorithmic-parity/fig2-stylized-advantage",
+    width: 1400,
+    height: 720,
+    maxWidth: 1400,
+    alt: "Stylized chart: advantage from generic AI adoption falls linearly as category adoption share rises from 0 to 1, while advantage from Differentiation Capital rises slowly; the lines cross near 0.6, in the algorithmic parity phase.",
+  },
+  "parity-fig3": {
+    base: "/images/algorithmic-parity/fig3-differentiation-capital",
+    width: 1400,
+    height: 1240,
+    maxWidth: 1400,
+    caption: "The Differentiation Capital framework: from AI diffusion to sustainable marketing advantage.",
+    alt: "Framework diagram: AI diffusion leads to algorithmic parity, which moves advantage to five Differentiation Capital components (brand, proprietary data, human trust, causal learning, visibility), producing sustainable marketing advantage, reinforced by the Synthetic Content Paradox.",
+  },
 };
 
 export const figureSrc = (f: Figure, w: 800 | 1600) => `${f.base}-${w}.webp`;

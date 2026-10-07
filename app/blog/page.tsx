@@ -6,6 +6,7 @@ import { site } from "@/lib/content";
 import { jsonLd } from "@/lib/jsonld";
 import { Reveal } from "@/components/ui/Reveal";
 import { Arrow } from "@/components/ui/Arrow";
+import { SubscribeForm } from "@/components/blog/SubscribeForm";
 import { BlogExplorer } from "@/components/blog/BlogExplorer";
 
 export const metadata: Metadata = {
@@ -122,11 +123,11 @@ export default function BlogIndex() {
       ) : null}
 
       {posts.length === 0 ? <p className="mt-16 text-secondary">The first post is on its way.</p> : null}
-      <p className="mt-16 md:ml-[25%]">
-        <a href="/blog/rss.xml" className="tap label link-draw hover:text-primary">
-          Subscribe via RSS
-        </a>
-      </p>
+      <section aria-label="Subscribe" className="mt-20 grid gap-10 border-t border-line pt-12 md:grid-cols-12">
+        <div className="md:col-span-9 md:col-start-4">
+          <SubscribeForm />
+        </div>
+      </section>
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(structured)} />
     </main>
   );
