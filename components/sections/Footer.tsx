@@ -2,8 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { isHomePath, nav, navHref, site } from "@/lib/content";
+import { isHomePath, nav, navHref, site, type NavItem } from "@/lib/content";
 import { Arrow } from "@/components/ui/Arrow";
+
+// Same as the main nav, but About points to the About page and Projects is added (internal links on every page).
+const footerNav: NavItem[] = nav.flatMap((n) =>
+  n.id === "about"
+    ? [{ ...n, href: "/about" }]
+    : n.id === "work"
+      ? [n, { id: "projects", label: "Projects", href: "/projects" }]
+      : [n],
+);
 
 export function Footer() {
   const onHome = isHomePath(usePathname());
@@ -15,7 +24,7 @@ export function Footer() {
         </p>
         <nav aria-label="Footer">
           <ul className="flex flex-wrap gap-x-5 gap-y-2">
-            {nav.map((n) => {
+            {footerNav.map((n) => {
               const href = navHref(n, onHome);
               return (
                 <li key={n.id}>

@@ -126,6 +126,8 @@ export type Project = {
   href?: string;
   /** Animated diagram shown as the card's main visual. */
   diagram?: "lead-pipeline";
+  /** Dedicated project page (/projects/<page>), see lib/projectPages.ts. */
+  page?: string;
 };
 
 export const projects: Project[] = [
@@ -141,6 +143,7 @@ export const projects: Project[] = [
     ],
     tags: ["Agentic AI", "LLMs", "Security", "R&D"],
     meta: "Self-directed R&D",
+    page: "mithra-cybercrime-rapid-response-intelligence-platform",
   },
   {
     index: "02",
@@ -172,6 +175,7 @@ export const projects: Project[] = [
     tags: ["Multi-agent", "Multimodal", "LLMs", "Production"],
     meta: "SSRN · 7531958",
     href: "/blog/gbni-state-aware-agents",
+    page: "gbni-generative-brand-narrative-intelligence",
   },
   {
     index: "04",
@@ -204,6 +208,7 @@ export const projects: Project[] = [
     tags: ["scikit-learn", "SHAP", "Streamlit"],
     meta: "Peer-reviewed",
     href: "/blog/explaining-every-prediction-diabetes-risk",
+    page: "diabetes-risk-prediction-web-app",
   },
 ];
 

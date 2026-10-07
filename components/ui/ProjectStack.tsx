@@ -294,6 +294,16 @@ function ProjectCard({
                   </li>
                 ))}
               </ul>
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+              {p.page ? (
+                <Link href={`/projects/${p.page}`} className="tap group/page inline-flex items-center gap-2 text-sm font-medium text-accent hover:text-accent-hover">
+                  <span className="link-draw">Project page</span>
+                  <span className="transition-transform duration-500 ease-[var(--ease-spring)] group-hover/page:translate-x-0.5">
+                    <Arrow direction="right" />
+                  </span>
+                  <span className="sr-only">for {p.name}</span>
+                </Link>
+              ) : null}
               {p.href ? (
                 <Link href={p.href} className="tap group/link inline-flex items-center gap-2 text-sm font-medium text-accent hover:text-accent-hover">
                   <span className="link-draw">Read the write-up</span>
@@ -303,6 +313,7 @@ function ProjectCard({
                   <span className="sr-only">about {p.name}</span>
                 </Link>
               ) : null}
+              </div>
             </div>
           </div>
         </div>
