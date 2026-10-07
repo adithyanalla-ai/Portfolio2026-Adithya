@@ -277,7 +277,7 @@ function ProjectCard({
                         src={figureSrc(f, 800)}
                         width={800}
                         height={Math.round((800 * f.height) / f.width)}
-                        alt=""
+                        alt={f.alt}
                         sizes="12rem"
                         className="aspect-[3/2] h-auto w-full object-contain"
                       />

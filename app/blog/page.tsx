@@ -89,7 +89,7 @@ export default function BlogIndex() {
                   src={`${featured.icon}-512.webp`}
                   width={512}
                   height={512}
-                  alt=""
+                  alt={`${featured.title.split(":")[0]} logo`}
                   sizes="(min-width: 768px) 12rem, 7rem"
                   unoptimized
                   className="w-28 rounded-3xl border border-line bg-[#fefefe] p-3 transition-[scale] duration-700 ease-[var(--ease-spring)] group-hover:scale-[1.03] md:w-48 md:p-5"

@@ -132,7 +132,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
                   src={`${post.icon}-256.webp`}
                   width={256}
                   height={256}
-                  alt=""
+                  alt={`${post.title.split(":")[0]} logo`}
                   sizes="3.5rem"
                   loading="eager"
                   unoptimized

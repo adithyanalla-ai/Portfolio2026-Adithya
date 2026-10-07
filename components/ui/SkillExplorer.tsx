@@ -107,6 +107,20 @@ export function SkillExplorer({ groups }: { groups: SkillGroup[] }) {
             </m.ul>
           </m.div>
         </AnimatePresence>
+        {/* Inactive groups stay in the server HTML (hidden) so every skill is crawlable. */}
+        {groups
+          .filter((g) => g.id !== group.id)
+          .map((g) => (
+            <div key={g.id} hidden>
+              <p>{g.label}</p>
+              <p>{g.blurb}</p>
+              <ul>
+                {g.items.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
       </div>
     </div>
   );

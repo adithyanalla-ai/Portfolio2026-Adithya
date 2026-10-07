@@ -105,15 +105,25 @@ export function MarketingTabs() {
             exit={{ opacity: 0, y: -10 }}
             transition={spring.snappy}
           >
-            {active === "impact" ? <Impact /> : null}
-            {active === "experience" ? <Roles /> : null}
-            {active === "campaigns" ? <Campaigns /> : null}
-            {active === "skills" ? <Competencies /> : null}
+            <Panel id={active} />
           </m.div>
         </AnimatePresence>
+        {/* Inactive panels stay in the server HTML (hidden) so their content is crawlable. */}
+        {TABS.filter((t) => t.id !== active).map((t) => (
+          <div key={t.id} hidden>
+            <Panel id={t.id} />
+          </div>
+        ))}
       </div>
     </div>
   );
+}
+
+function Panel({ id }: { id: TabId }) {
+  if (id === "impact") return <Impact />;
+  if (id === "experience") return <Roles />;
+  if (id === "campaigns") return <Campaigns />;
+  return <Competencies />;
 }
 
 function Impact() {
