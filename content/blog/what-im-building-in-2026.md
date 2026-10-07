@@ -1,6 +1,7 @@
 ---
-title: What I'm building in 2026: agentic AI, a harvesting robot and four manuscripts
+title: What I'm building in 2026: agentic AI, a harvesting robot and three manuscripts
 date: 2026-09-27
+updated: 2026-10-03
 summary: A map of my current work: production AI agents, the GBNI framework, the Aglier fruit-harvesting robot, the MITHRA cybercrime platform, and the papers behind them.
 description: Adithya Reddy's 2026 work: production agentic AI, the GBNI agent framework, the Aglier fruit-harvesting robot and the MITHRA cybercrime platform.
 keywords: agentic AI projects, AI research 2026, fruit harvesting robot, cybercrime intelligence platform, GBNI framework, AI engineer portfolio
