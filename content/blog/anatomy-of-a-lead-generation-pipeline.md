@@ -1,6 +1,7 @@
 ---
 title: How to build a lead generation data pipeline with Python and SQL
 date: 2026-09-01
+updated: 2026-09-29
 summary: The five stages behind a Python and SQL pipeline that produced 3,000+ qualified leads and facilitated ₹1.4 crore in revenue, with the funnel maths that governs yield.
 description: The five stages of a lead generation data pipeline in Python and SQL: collect, clean, deduplicate, qualify, hand off. With funnel maths.
 keywords: lead generation pipeline, data pipeline Python SQL, lead qualification, deduplication SQL, sales funnel conversion, data engineering, B2B lead generation

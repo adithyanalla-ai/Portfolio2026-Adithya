@@ -1,6 +1,7 @@
 ---
 title: Aglier: inside an AI tree-climbing fruit-harvesting robot
 date: 2026-09-28
+updated: 2026-10-03
 summary: How Aglier climbs a trunk, decides which fruit is ripe and picks it in five timed stages, with the claw geometry and cycle-time maths behind the design.
 description: Aglier is an AI tree-climbing fruit-harvesting robot. See its components, claw-closure geometry, five-stage harvest cycle and the maths behind them.
 keywords: fruit harvesting robot, tree climbing robot, lizard-inspired climbing robot, edge-cloud robotics, agricultural robotics, harvesting automation, robotic gripper, claw geometry, harvest cycle time, GBNI
