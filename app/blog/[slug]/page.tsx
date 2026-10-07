@@ -24,7 +24,8 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const post = getPost((await params).slug);
   if (!post) return {};
   return {
-    title: post.title,
+    // Titles that already fill a search result skip the " — Adithya Reddy" suffix.
+    title: post.title.length > 45 ? { absolute: post.title } : post.title,
     description: post.description,
     keywords: [...post.keywords, ...post.tags],
     authors: [{ name: site.name, url: site.url }],

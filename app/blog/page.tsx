@@ -4,25 +4,21 @@ import Link from "next/link";
 import { formatDate, getPosts } from "@/lib/blog";
 import { site } from "@/lib/content";
 import { jsonLd } from "@/lib/jsonld";
+import { pageMeta } from "@/lib/seo";
 import { Reveal } from "@/components/ui/Reveal";
 import { Arrow } from "@/components/ui/Arrow";
 import { SubscribeForm } from "@/components/blog/SubscribeForm";
 import { BlogExplorer } from "@/components/blog/BlogExplorer";
 
-export const metadata: Metadata = {
+const meta = pageMeta({
   title: "Blog: agentic AI, explainable ML and robotics",
   description:
     "Adithya Reddy's blog on agentic AI, LLM systems, explainable machine learning, AI robotics and measuring AI in business outcomes.",
-  alternates: { canonical: "/blog", types: { "application/rss+xml": "/blog/rss.xml" } },
-  openGraph: {
-    type: "website",
-    url: "/blog",
-    title: "Blog: agentic AI, explainable ML and robotics",
-    description:
-      "Adithya Reddy's blog on agentic AI, LLM systems, explainable machine learning, AI robotics and measuring AI in business outcomes.",
-    siteName: site.name,
-    locale: "en_IN",
-  },
+  path: "/blog",
+});
+export const metadata: Metadata = {
+  ...meta,
+  alternates: { ...meta.alternates, types: { "application/rss+xml": "/blog/rss.xml" } },
 };
 
 export default function BlogIndex() {

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { site } from "@/lib/content";
+import { pageMeta } from "@/lib/seo";
 import { Hero } from "@/components/sections/Hero";
 import { About } from "@/components/sections/About";
 import { Experience } from "@/components/sections/Experience";
@@ -12,17 +12,13 @@ import { LatestWriting } from "@/components/sections/LatestWriting";
 import { Contact } from "@/components/sections/Contact";
 import { Arcade } from "@/components/sections/Arcade";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/" },
-  openGraph: {
-    type: "website",
-    url: "/",
-    title: `${site.name} — AI/ML Engineer`,
-    description: site.description,
-    siteName: site.name,
-    locale: "en_IN",
-  },
-};
+export const metadata: Metadata = pageMeta({
+  title: "Adithya Reddy Nalla | Lead AI Engineer in Hyderabad",
+  description:
+    "Portfolio of Adithya Reddy Nalla, a Lead AI Engineer in Hyderabad building LLM and machine learning applications. Explore projects, research, and contact details.",
+  path: "/",
+  absoluteTitle: true,
+});
 
 export default function Home() {
   return (

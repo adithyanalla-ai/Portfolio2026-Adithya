@@ -3,6 +3,7 @@ import { Fraunces, Geist } from "next/font/google";
 import "./globals.css";
 import { site } from "@/lib/content";
 import { jsonLd as serializeJsonLd } from "@/lib/jsonld";
+import { ogImage } from "@/lib/seo";
 import { Providers } from "@/components/ui/Providers";
 import { Nav } from "@/components/ui/Nav";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
@@ -47,11 +48,13 @@ export const metadata: Metadata = {
     description: site.description,
     siteName: site.name,
     locale: "en_IN",
+    images: [ogImage],
   },
   twitter: {
     card: "summary_large_image",
     title: `${site.name} — AI/ML Engineer`,
     description: site.description,
+    images: [ogImage],
   },
   robots: { index: true, follow: true },
 };
