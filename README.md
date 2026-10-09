@@ -48,9 +48,10 @@ Reporting automation, campaign dashboards, A/B testing and cohort analysis for w
 
 ## Publications
 
-1. *Generative Brand Narrative Intelligence v2: Consistency-Governed, Causally Self-Optimizing, and Multi-Tenant Extension of the Emotionally Adaptive Brand Narrative (EABN) Framework.* SSRN, Abstract ID 7531958, September 2026.
-2. *Generative Brand Narrative Intelligence: A State-aware Multimodal Agent Framework for Autonomous Emotionally Adaptive Brand Communication.* SSRN, Abstract ID 6845958, May 2026.
-3. *Diabetes Data Analysis and Machine Learning Based Prediction Model on Streamlit Web App.* International Journal of Scientific Research and Engineering Development (IJSRED), October 2022.
+1. *When Everyone has AI: A Theory of Marketing Advantage under Algorithmic Parity.* SSRN, Abstract ID 7575263, October 2026.
+2. *Generative Brand Narrative Intelligence v2: Consistency-Governed, Causally Self-Optimizing, and Multi-Tenant Extension of the Emotionally Adaptive Brand Narrative (EABN) Framework.* SSRN, Abstract ID 7531958, September 2026.
+3. *Generative Brand Narrative Intelligence: A State-aware Multimodal Agent Framework for Autonomous Emotionally Adaptive Brand Communication.* SSRN, Abstract ID 6845958, May 2026.
+4. *Diabetes Data Analysis and Machine Learning Based Prediction Model on Streamlit Web App.* International Journal of Scientific Research and Engineering Development (IJSRED), October 2022.
 
 ## Skills
 

@@ -324,6 +324,14 @@ export type Publication = {
 
 export const publications: Publication[] = [
   {
+    title: "When Everyone has AI: A Theory of Marketing Advantage under Algorithmic Parity",
+    venue: "SSRN",
+    date: "Oct 2026",
+    id: "Abstract ID: 7575263",
+    href: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7575263",
+    kind: "Working paper · Marketing strategy",
+  },
+  {
     title:
       "Generative Brand Narrative Intelligence v2: Consistency-Governed, Causally Self-Optimizing, and Multi-Tenant Extension of the Emotionally Adaptive Brand Narrative (EABN) Framework",
     venue: "SSRN",

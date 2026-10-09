@@ -7,13 +7,14 @@ keywords: algorithmic parity, differentiation capital, synthetic content paradox
 tags: Marketing, Research, Strategy
 image: parity-fig3
 featured: true
+updated: 2026-10-09
 ---
 
 In 2020, about half of organizations used AI in at least one business function. By 2025 it was 88 percent, and generative AI went from 33 percent to 79 percent in two years. Meta says its end-to-end AI ad tools passed a **USD 60 billion** annual run rate, and that more than 4 million advertisers use at least one of its generative tools.
 
 AI is no longer scarce. That raises a question I couldn't stop thinking about: **if every competitor has the same intelligence, where does a marketing advantage come from?**
 
-This post is the plain-language version of my working paper, *When Everyone Has AI: A Theory of Marketing Advantage Under Algorithmic Parity*. [Download the full paper (PDF)](/papers/when-everyone-has-ai.pdf).
+This post is the plain-language version of my working paper, *When Everyone Has AI: A Theory of Marketing Advantage Under Algorithmic Parity*. It is now on [SSRN (Abstract ID 7575263)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7575263), or you can [download the full paper (PDF)](/papers/when-everyone-has-ai.pdf).
 
 > [!NOTE] What this paper is, and isn't
 > It is a **theory and research-design paper**. It reports no new experimental data. The evidence it cites is secondary, and much of it comes from vendor surveys and platform statements that are directional at best. It does not claim the theory is proven. It claims the theory is coherent, consistent with the direction of the evidence, and testable. The five studies described below are designed but **not yet conducted**.
@@ -213,4 +214,4 @@ No. It is a theory and research-design paper with no new experimental data. It a
 
 ### Where can I read the full paper?
 
-You can [download the PDF](/papers/when-everyone-has-ai.pdf). It is a working paper prepared as a final draft for SSRN.
+You can [download the PDF](/papers/when-everyone-has-ai.pdf). It is published as a working paper on [SSRN (Abstract ID 7575263)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7575263).
