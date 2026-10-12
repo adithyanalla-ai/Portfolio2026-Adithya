@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { formatDate, getAdjacent, getPost, getPosts, getRelated } from "@/lib/blog";
+import { formatDate, getAdjacent, getPost, getPostSlugs, getRelated } from "@/lib/blog";
 import { site } from "@/lib/content";
 import { figures, figureSrc } from "@/lib/figures";
 import { jsonLd } from "@/lib/jsonld";
@@ -18,7 +18,7 @@ type Params = { slug: string };
 export const dynamicParams = false;
 
 export function generateStaticParams(): Params[] {
-  return getPosts().map((p) => ({ slug: p.slug }));
+  return getPostSlugs().map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
@@ -31,6 +31,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     keywords: [...post.keywords, ...post.tags],
     authors: [{ name: site.name, url: site.url }],
     alternates: { canonical: `/blog/${post.slug}` },
+    ...(post.noindex ? { robots: { index: false, follow: false } } : {}),
     openGraph: {
       type: "article",
       title: post.title,

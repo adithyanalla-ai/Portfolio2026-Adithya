@@ -36,6 +36,9 @@ hljs.registerLanguage("yaml", yaml);
  *   icon: /images/aglier/logo (optional — square mark with -256/-512.webp + -256.png variants)
  *   diagram: lead-pipeline    (optional — animated diagram shown as the hero instead of an image)
  *   featured: true            (optional — pins the post to the top of /blog)
+ *   noindex: true             (optional — keeps the post out of search engines AND out of every listing:
+ *                              robots noindex/nofollow, sitemap, blog index, home, RSS, llms.txt, related/prev-next
+ *                              and the AI chat's knowledge. The page still opens at its URL. Delete the line to publish.)
  *   ---
  *
  * Extras on top of standard Markdown:
@@ -67,6 +70,7 @@ export type PostMeta = {
   icon?: string;
   diagram?: "lead-pipeline";
   featured: boolean;
+  noindex: boolean;
   readingMinutes: number;
   wordCount: number;
 };
@@ -243,6 +247,7 @@ function parse(file: string): Post {
     icon: meta.icon,
     diagram: meta.diagram === "lead-pipeline" ? "lead-pipeline" : undefined,
     featured: meta.featured === "true",
+    noindex: meta.noindex === "true",
     readingMinutes: Math.max(1, Math.round(words / 230)),
     wordCount: words,
     html,
@@ -269,9 +274,13 @@ function all(): Post[] {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const toMeta = ({ html, toc, faq, ...meta }: Post): PostMeta => meta;
 
+/** Posts that are public and indexable: the only ones listed, linked, put in the sitemap or fed to the chat. */
 export function getPosts(): PostMeta[] {
-  return all().map(toMeta);
+  return all().filter((p) => !p.noindex).map(toMeta);
 }
+
+/** Slugs of every post that has a page, including `noindex` ones (which stay reachable by URL). */
+export const getPostSlugs = (): string[] => all().map((p) => p.slug);
 
 export function getPost(slug: string): Post | undefined {
   return all().find((p) => p.slug === slug);
@@ -309,6 +318,7 @@ export const formatDate = (iso: string, style: "long" | "short" = "long") =>
 /** Plain-text digest of every post (title, summary, body, FAQs) for the AI chat's knowledge. */
 export function blogKnowledge(): string {
   return all()
+    .filter((p) => !p.noindex)
     .map((p) => {
       const body = p.html
         .replace(/<(script|style|svg)[\s\S]*?<\/\1>/g, " ")

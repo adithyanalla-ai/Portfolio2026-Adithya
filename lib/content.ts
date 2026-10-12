@@ -158,7 +158,9 @@ export const projects: Project[] = [
     tags: ["Robotics", "Computer Vision", "Embedded AI"],
     logo: "/images/aglier/logo",
     images: ["aglier-fig9", "aglier-fig14", "aglier-fig3", "aglier-fig5"],
-    href: "/blog/aglier-ai-tree-climbing-fruit-harvesting-robot",
+    // The write-up is `noindex: true` (patent-pending), so it isn't linked. To re-publish: remove that flag in
+    // content/blog/aglier-ai-tree-climbing-fruit-harvesting-robot.md and restore
+    // href: "/blog/aglier-ai-tree-climbing-fruit-harvesting-robot".
   },
   {
     index: "03",
