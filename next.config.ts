@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
   // STATIC_EXPORT=1 npm run build → plain static files in /out (for static hosts / previews)
   // (export has no image optimiser, so images are served as-is from their pre-sized WebP files)
   ...(process.env.STATIC_EXPORT ? { output: "export" as const, images: { unoptimized: true } } : {}),
+  // Old static-site URL that search engines still crawl. Next's `permanent: true` sends a 308;
+  // an explicit statusCode gives the classic 301. (Not applied in STATIC_EXPORT builds: set it at the host.)
+  async redirects() {
+    return [{ source: "/blog.html", destination: "/blog", statusCode: 301 }];
+  },
   experimental: {
     optimizePackageImports: ["framer-motion"],
     // Inline the (small) Tailwind stylesheet to remove the render-blocking request.

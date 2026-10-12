@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { formatDate, getAdjacent, getPost, getPosts, getRelated } from "@/lib/blog";
+import { formatDate, getAdjacent, getPost, getPostSlugs, getRelated } from "@/lib/blog";
 import { site } from "@/lib/content";
 import { figures, figureSrc } from "@/lib/figures";
 import { jsonLd } from "@/lib/jsonld";
 import { breadcrumbs, personRef } from "@/lib/schema";
+import { projectPages } from "@/lib/projectPages";
 import { Arrow } from "@/components/ui/Arrow";
 import { TableOfContents } from "@/components/blog/TableOfContents";
 import { CopyLink } from "@/components/blog/CopyLink";
@@ -18,7 +19,7 @@ type Params = { slug: string };
 export const dynamicParams = false;
 
 export function generateStaticParams(): Params[] {
-  return getPosts().map((p) => ({ slug: p.slug }));
+  return getPostSlugs().map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
@@ -31,6 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     keywords: [...post.keywords, ...post.tags],
     authors: [{ name: site.name, url: site.url }],
     alternates: { canonical: `/blog/${post.slug}` },
+    ...(post.noindex ? { robots: { index: false, follow: false } } : {}),
     openGraph: {
       type: "article",
       title: post.title,
@@ -54,6 +56,8 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
   const related = getRelated(post.slug).filter((r) => r.slug !== newer?.slug && r.slug !== older?.slug);
 
   const url = `${site.url}/blog/${post.slug}`;
+  // The project page that lists this post (as its write-up or in its links), if there is one.
+  const project = projectPages.find((p) => p.writeUp === `/blog/${post.slug}` || p.links.some((l) => l.href === `/blog/${post.slug}`));
   const hero = post.image ? figures[post.image] : undefined;
   const structured = {
     "@context": "https://schema.org",
@@ -69,7 +73,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
         keywords: [...post.keywords, ...post.tags].join(", "),
         articleSection: post.tags[0],
         inLanguage: "en",
-        mainEntityOfPage: url,
+        mainEntityOfPage: { "@type": "WebPage", "@id": url },
         url,
         image: [
           hero ? `${site.url}${figureSrc(hero, 1600)}` : `${url}/opengraph-image`,
@@ -194,6 +198,21 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
           <div className="prose min-w-0" dangerouslySetInnerHTML={{ __html: post.html }} />
         </div>
 
+        {project ? (
+          <aside aria-labelledby="related-project" className="mx-auto mt-16 max-w-[52rem] border-t border-line pt-6">
+            <h2 id="related-project" className="label">
+              Related project
+            </h2>
+            <p className="mt-3 text-secondary text-pretty">
+              This post is part of the work described on the{" "}
+              <Link href={`/projects/${project.slug}`} className="link-draw text-accent hover:text-accent-hover">
+                {project.keyword} project page
+              </Link>
+              .
+            </p>
+          </aside>
+        ) : null}
+
         {/* Author */}
         <footer className="mx-auto mt-20 max-w-[52rem]">
           <div className="flex flex-col gap-6 rounded-2xl border border-line bg-surface-raised p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
@@ -202,7 +221,11 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
                 AR
               </span>
               <div>
-                <p className="font-medium">{site.name}</p>
+                <p className="font-medium">
+                  <Link href="/about" className="link-draw hover:text-accent">
+                    {site.name}
+                  </Link>
+                </p>
                 <p className="text-sm text-secondary">Lead AI Engineer · Agentic AI &amp; LLM systems · {site.location}</p>
               </div>
             </div>

@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { ImageResponse } from "next/og";
-import { formatDate, getPost, getPosts } from "@/lib/blog";
+import { formatDate, getPost, getPostSlugs } from "@/lib/blog";
 import { site } from "@/lib/content";
 
 export const dynamic = "force-static";
@@ -10,7 +10,7 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export function generateStaticParams() {
-  return getPosts().map((p) => ({ slug: p.slug }));
+  return getPostSlugs().map((slug) => ({ slug }));
 }
 
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
