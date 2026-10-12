@@ -71,6 +71,6 @@ Reporting automation, campaign dashboards, A/B testing and cohort analysis for w
 ## Contact
 
 - Email: [adithyareddy639@gmail.com](mailto:adithyareddy639@gmail.com)
-- Phone: +91-90594 73960
+- Phone: +91-87125 69303
 - LinkedIn: [linkedin.com/in/adithyareddy-ai](https://www.linkedin.com/in/adithyareddy-ai)
 - Website and blog: [adithyareddy.online](https://www.adithyareddy.online)

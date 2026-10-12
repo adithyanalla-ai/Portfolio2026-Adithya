@@ -15,8 +15,8 @@ export const site = {
   /** Canonical origin (www). The apex domain 301-redirects here; no trailing slash. */
   url: "https://www.adithyareddy.online",
   email: "adithyareddy639@gmail.com",
-  phone: "+91-90594 73960",
-  phoneHref: "tel:+919059473960",
+  phone: "+91-87125 69303",
+  phoneHref: "tel:+918712569303",
   linkedin: "https://www.linkedin.com/in/adithyareddy-ai",
   linkedinLabel: "linkedin.com/in/adithyareddy-ai",
   siteLabel: "adithyareddy.online",
