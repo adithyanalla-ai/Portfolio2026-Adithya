@@ -174,7 +174,8 @@ function render(markdown: string) {
             f.height
           }" alt="${escapeHtml(alt)}" loading="lazy" decoding="async"></a>${cap}</figure>`;
         }
-        return `<img src="${escapeHtml(href)}" alt="${escapeHtml(text)}" loading="lazy" decoding="async">`;
+        // Plain image links would ship without width/height; registered figures always carry both and an alt.
+        throw new Error(`Image "${href}" must be registered in lib/figures.ts and used as ![alt](fig:key) (needs width, height and alt).`);
       },
       code({ text, lang }: Tokens.Code) {
         const language = (lang ?? "").split(/\s/)[0];
@@ -216,7 +217,9 @@ function parse(file: string): Post {
   const raw = fs.readFileSync(path.join(DIR, file), "utf8");
   const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
   if (!match) throw new Error(`Missing frontmatter in content/blog/${file}`);
-  const [, front, body] = match;
+  const [, front, rawBody] = match;
+  // <!-- HTML comments --> in a post are author notes (TODOs, placeholders): kept in the file, never published.
+  const body = rawBody.replace(/<!--[\s\S]*?-->/g, "");
 
   const meta: Record<string, string> = {};
   for (const line of front.split(/\r?\n/)) {
