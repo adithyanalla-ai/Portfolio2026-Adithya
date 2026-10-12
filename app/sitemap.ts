@@ -12,12 +12,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const changed = (p: (typeof posts)[number]) => new Date(`${p.updated ?? p.date}T00:00:00Z`);
   // The blog index changes when a post is added or updated; the homepage on every deploy.
   const blogUpdated = new Date(Math.max(...posts.map((p) => changed(p).getTime())));
+  // Bump when the About copy or the résumé data in lib/content.ts changes.
+  const aboutUpdated = new Date("2026-10-12T00:00:00Z");
+  const projectsUpdated = new Date(Math.max(...projectPages.map((p) => new Date(`${p.updated}T00:00:00Z`).getTime())));
+  // The homepage summarises everything, so it changes whenever any of it does (not on every build).
+  const homeUpdated = new Date(Math.max(aboutUpdated.getTime(), projectsUpdated.getTime(), blogUpdated.getTime()));
   return [
-    { url: `${site.url}/`, lastModified: new Date(), changeFrequency: "monthly", priority: 1 },
-    { url: `${site.url}/about`, lastModified: new Date("2026-10-07T00:00:00Z"), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${site.url}/`, lastModified: homeUpdated, changeFrequency: "monthly", priority: 1 },
+    { url: `${site.url}/about`, lastModified: aboutUpdated, changeFrequency: "monthly", priority: 0.8 },
     {
       url: `${site.url}/projects`,
-      lastModified: new Date(Math.max(...projectPages.map((p) => new Date(`${p.updated}T00:00:00Z`).getTime()))),
+      lastModified: projectsUpdated,
       changeFrequency: "monthly",
       priority: 0.8,
     },

@@ -2,7 +2,7 @@
 title: When everyone has AI: where marketing advantage goes
 date: 2026-10-07
 summary: If every competitor rents the same AI from the same platforms, advantage has to come from somewhere else. My new working paper names the condition, Algorithmic Parity, and the five assets that stay scarce, Differentiation Capital.
-description: A plain-language guide to "When Everyone Has AI", a theory of marketing advantage under Algorithmic Parity: Differentiation Capital, the Synthetic Content Paradox, eight testable propositions and five studies.
+description: A plain-language guide to my working paper on Algorithmic Parity: why marketing advantage moves to Differentiation Capital when every firm has AI.
 keywords: algorithmic parity, differentiation capital, synthetic content paradox, AI marketing strategy, marketing advantage, generative AI advertising, brand capital, causal measurement, AI search visibility, resource-based view, SSRN working paper
 tags: Marketing, Research, Strategy
 image: parity-fig3
