@@ -40,6 +40,18 @@ export function Footer() {
                 </li>
               );
             })}
+            {[
+              ["Instagram", site.instagram],
+              ["Upwork", site.upwork],
+              ["LinkedIn", site.linkedin],
+            ].map(([label, href]) => (
+              <li key={href}>
+                <a href={href} target="_blank" rel="noopener noreferrer" className="tap link-draw hover:text-primary">
+                  {label}
+                  <span className="sr-only"> (opens in a new tab)</span>
+                </a>
+              </li>
+            ))}
             <li>
               <a href={onHome ? "#top" : "#main"} className="tap group inline-flex items-center gap-1 hover:text-primary">
                 <span className="link-draw">Back to top</span>
