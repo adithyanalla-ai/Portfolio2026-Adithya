@@ -13,6 +13,7 @@ import { Education } from "@/components/sections/Education";
 import { LatestWriting } from "@/components/sections/LatestWriting";
 import { Contact } from "@/components/sections/Contact";
 import { Arcade } from "@/components/sections/Arcade";
+import { SocialWork } from "@/components/sections/SocialWork";
 
 export const metadata: Metadata = pageMeta({
   title: "Adithya Reddy Nalla | Lead AI Engineer in Hyderabad",
@@ -36,6 +37,7 @@ export default function Home() {
       <LatestWriting />
       <Contact />
       <Arcade />
+      <SocialWork />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={jsonLd({ "@context": "https://schema.org", "@graph": [person, website] })}

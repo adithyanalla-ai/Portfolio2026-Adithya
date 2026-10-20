@@ -19,6 +19,9 @@ export const site = {
   phoneHref: "tel:+918712569303",
   linkedin: "https://www.linkedin.com/in/adithyareddy-ai",
   linkedinLabel: "linkedin.com/in/adithyareddy-ai",
+  upwork: "https://www.upwork.com/freelancers/~01110820a60476489d",
+  instagram: "https://www.instagram.com/adios.marketing/",
+  instagramLabel: "@adios.marketing",
   siteLabel: "adithyareddy.online",
   description:
     "Adithya Reddy — Lead AI Engineer in Hyderabad building agentic AI, LLM automation, and ML systems with measurable business impact. Published researcher.",

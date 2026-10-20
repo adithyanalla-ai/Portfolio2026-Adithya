@@ -21,7 +21,7 @@ export const person = {
     addressCountry: "IN",
   },
   knowsAbout: ["Agentic AI", "Large language models", "Machine learning", "Lead generation", "Marketing analytics"],
-  sameAs: [site.linkedin],
+  sameAs: [site.linkedin, site.upwork, site.instagram],
 };
 
 /** Compact reference to the Person (for author/publisher fields on other pages). */
